@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Path of Heroes - طريق الأبطال</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+```
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: #ecf0f1;
+        overflow-x: hidden;
+        min-height: 100vh;
+    }
+
+    .game-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .screen {
+        display: none;
+        min-height: 100vh;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    .screen.active {
+        display: flex;
+    }
+
+    /* Loading Screen */
+    .loading-content {
+        text-align: center;
+        max-width: 400px;
+    }
+
+    .game-logo h1 {
+        font-size: 3rem;
+        font-weight: bold;
+        background: linear-gradient(45deg, #f1c40f, #e67e22, #e74c3c);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1rem;
+    }
+
+    .game-logo p {
+        font-size: 1.2rem;
+        color: #bdc3c7;
+        margin-bottom: 2rem;
+    }
+
+    .loading-bar {
+        width: 100%;
+        height: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        overflow: hidden;
+        margin-bottom: 1rem;
+    }
+
+    .loading-progress {
+        height: 100%;
+        background: linear-gradient(90deg, #3498db, #2ecc71);
+        width: 0%;
+        transition: width 0.3s ease;
+    }
+
+    /* Main Menu */
+    .menu-content {
+        text-align: center;
+        z-index: 1;
+    }
+
+    .menu-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin: 2rem 0;
+    }
+
+    .menu-btn {
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        border: none;
+        border-radius: 8px;
+        background: rgba(52, 73, 94, 0.8);
+        color: #ecf0f1;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-width: 200px;
+    }
+
+    .menu-btn:hover {
+        background: rgba(52, 73, 94, 1);
+        transform: translateY(-2px);
+    }
+
+    .menu-btn.primary {
+        background: linear-gradient(45deg, #3498db, #2980b9);
+    }
+
+    .menu-btn.primary:hover {
+        background: linear-gradient(45deg, #2980b9, #1f618d);
+    }
+
+    .language-selector {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+
+    .lang-btn {
+        padding: 0.5rem 1rem;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        background: transparent;
+        color: #ecf0f1;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .lang-btn.active {
+        border-color: #3498db;
+        background: rgba(52, 152, 219, 0.2);
+    }
+
+    /* Character Selection */
+    .character-grid {
+        display: flex;
+        gap: 2rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin: 2rem 0;
+    }
+
+    .character-card {
+        background: rgba(44, 62, 80, 0.9);
+        border-radius: 16px;
+        padding: 2rem;
+        width: 280px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 3px solid transparent;
+        text-align: center;
+    }
+
+    .character-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .character-card.selected {
+        border-color: #f1c40f;
+        box-shadow: 0 0 20px rgba(241, 196, 15, 0.5);
+    }
+
+    .character-portrait {
+        margin-bottom: 1.5rem;
+    }
+
+    .character-portrait img {
+        width: 128px;
+        height: 128px;
+        border-radius: 50%;
+        border: 3px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .character-info h3 {
+        font-size: 1.5rem;
+        color: #f1c40f;
+        margin-bottom: 0.5rem;
+    }
+
+    .character-title {
+        color: #bdc3c7;
+        font-style: italic;
+        margin-bottom: 1rem;
+    }
+
+    .character-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .stat {
+        display: flex;
+        justify-content: space-between;
+        background: rgba(0, 0, 0, 0.2);
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+    }
+
+    .stat-value {
+        font-weight: bold;
+        color: #2ecc71;
+    }
+
+    .character-desc {
+        font-size: 0.9rem;
+        line-height: 1.4;
+        color: #bdc3c7;
+    }
+
+    /* Game Screen */
+    .game-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+        background: rgba(0, 0, 0, 0.3);
+        border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .player-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .player-portrait img {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        border: 2px solid #f1c40f;
+    }
+
+    .player-name {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    .resource-bars {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .health-bar, .resource-bar {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .bar-label {
+        min-width: 30px;
+        font-size: 0.8rem;
+        font-weight: bold;
+    }
+
+    .bar {
+        width: 150px;
+        height: 20px;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .bar-fill {
+        height: 100%;
+        transition: width 0.3s ease;
+        border-radius: 10px;
+    }
+
+    .bar-fill.health {
+        background: linear-gradient(90deg, #e74c3c, #c0392b);
+    }
+
+    .bar-fill.resource {
+        background: linear-gradient(90deg, #3498db, #2980b9);
+    }
+
+    .bar-text {
+        font-size: 0.8rem;
+        min-width: 60px;
+    }
+
+    .floor-info {
+        text-align: center;
+    }
+
+    .floor-number {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #f1c40f;
+    }
+
+    .biome-name {
+        font-size: 1rem;
+        color: #bdc3c7;
+    }
+
+    .game-controls {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .control-btn {
+        padding: 0.5rem 1rem;
+        background: rgba(52, 73, 94, 0.8);
+        border: none;
+        border-radius: 4px;
+        color: white;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    .control-btn:hover {
+        background: rgba(52, 73, 94, 1);
+    }
+
+    /* Battle Area */
+    .game-content {
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .battle-area {
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .battlefield {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .enemy-section, .player-section {
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .enemy-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+    }
+
+    .enemy {
+        background: rgba(231, 76, 60, 0.8);
+        border-radius: 8px;
+        padding: 1rem;
+        text-align: center;
+        min-width: 120px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .enemy:hover {
+        border-color: #f1c40f;
+        transform: scale(1.05);
+    }
+
+    .enemy.selected {
+        border-color: #e74c3c;
+        box-shadow: 0 0 15px rgba(231, 76, 60, 0.5);
+    }
+
+    .enemy img {
+        width: 64px;
+        height: 64px;
+        border-radius: 4px;
+    }
+
+    .enemy-name {
+        font-weight: bold;
+        margin: 0.5rem 0;
+    }
+
+    .enemy-health {
+        font-size: 0.9rem;
+        color: #ecf0f1;
+    }
+
+    .player-character img {
+        width: 128px;
+        height: 128px;
+        border-radius: 8px;
+        border: 3px solid #f1c40f;
+    }
+
+    /* Combat UI */
+    .combat-ui {
+        background: rgba(0, 0, 0, 0.8);
+        padding: 1rem;
+        border-radius: 12px;
+        border-top: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .abilities-panel {
+        margin-bottom: 1rem;
+    }
+
+    .ability-cards {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .ability-card {
+        background: linear-gradient(145deg, #3498db, #2980b9);
+        border-radius: 8px;
+        padding: 1rem;
+        min-width: 120px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .ability-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .ability-card.selected {
+        border-color: #f1c40f;
+    }
+
+    .ability-card.disabled {
+        background: linear-gradient(145deg, #7f8c8d, #95a5a6);
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    .ability-name {
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    .ability-cost {
+        font-size: 0.8rem;
+        color: #ecf0f1;
+    }
+
+    .combat-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    /* Status Messages */
+    .status-message {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(44, 62, 80, 0.95);
+        border-radius: 16px;
+        padding: 2rem;
+        text-align: center;
+        min-width: 300px;
+        border: 2px solid #f1c40f;
+        z-index: 1000;
+    }
+
+    .status-message.hidden {
+        display: none;
+    }
+
+    /* Demo Features */
+    .demo-info {
+        background: rgba(52, 152, 219, 0.1);
+        border: 2px solid #3498db;
+        border-radius: 8px;
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+
+    /* RTL Support */
+    [dir="rtl"] {
+        direction: rtl;
+    }
+
+    [dir="rtl"] .game-header {
+        direction: rtl;
+    }
+
+    [dir="rtl"] .player-info {
+        flex-direction: row-reverse;
+    }
+
+    [dir="rtl"] .combat-info {
+        flex-direction: row-reverse;
+    }
+
+    [dir="rtl"] .character-stats {
+        direction: rtl;
+    }
+
+    [dir="rtl"] .stat {
+        flex-direction: row-reverse;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .character-grid {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .character-card {
+            width: 280px;
+        }
+
+        .game-header {
+            flex-direction: column;
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        .battlefield {
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .abilities-panel .ability-cards {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .bar {
+            width: 120px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .game-logo h1 {
+            font-size: 2rem;
+        }
+
+        .menu-btn {
+            min-width: 150px;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+        }
+
+        .character-card {
+            width: 250px;
+            padding: 1.5rem;
+        }
+
+        .character-portrait img {
+            width: 96px;
+            height: 96px;
+        }
+
+        .player-character img {
+            width: 96px;
+            height: 96px;
+        }
+
+        .enemy {
+            min-width: 100px;
+        }
+
+        .enemy img {
+            width: 48px;
+            height: 48px;
+        }
+
+        .ability-card {
+            min-width: 100px;
+            padding: 0.8rem;
+        }
+    }
+
+    /* Animations */
+    .fade-in {
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .pulse {
+        animation: pulse 0.6s ease-in-out;
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+
+    /* Hidden utility */
+    .hidden {
+        display: none !important;
+    }
+</style>
+```
+
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="screen active">
+        <div class="loading-content">
+            <div class="game-logo">
+                <h1 data-i18n="game.title">Path of Heroes</h1>
+                <p data-i18n="game.subtitle">Embark on an Epic Journey</p>
+            </div>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <p class="loading-text" data-i18n="ui.loading">Loading...</p>
+        </div>
+    </div>
+
+```
+<!-- Main Menu -->
+<div id="main-menu" class="screen">
+    <div class="menu-content">
+        <div class="game-logo">
+            <h1 data-i18n="game.title">Path of Heroes</h1>
+            <p data-i18n="game.tagline">A Roguelike Adventure</p>
+        </div>
+        <div class="demo-info">
+            <p><strong>🎮 Demo Version</strong></p>
+            <p>Experience 20 floors across 4 biomes with 3 unique characters!</p>
+        </div>
+        <div class="menu-buttons">
+            <button id="new-game-btn" class="menu-btn primary" data-i18n="ui.button.new_game">New Game</button>
+            <button id="continue-btn" class="menu-btn" data-i18n="ui.button.continue">Continue</button>
+            <button id="settings-btn" class="menu-btn" data-i18n="ui.button.settings">Settings</button>
+            <button id="achievements-btn" class="menu-btn" data-i18n="ui.button.achievements">Achievements</button>
+        </div>
+        <div class="language-selector">
+            <button id="lang-en" class="lang-btn active">English</button>
+            <button id="lang-ar" class="lang-btn">العربية</button>
+        </div>
+    </div>
+</div>
+
+<!-- Character Selection -->
+<div id="character-select" class="screen">
+    <div class="game-container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h2 data-i18n="ui.character_select.title" style="color: #f1c40f; font-size: 2.5rem;">Choose Your Hero</h2>
+            <button id="back-to-menu" class="control-btn" data-i18n="ui.button.back">Back</button>
+        </div>
+        
+        <div class="character-grid">
+            <div class="character-card" data-character="warrior">
+                <div class="character-portrait">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSIjMzQ0MDUwIi8+Cjx0ZXh0IHg9IjY0IiB5PSI2NCIgZmlsbD0iI2VjZjBmMSIgZm9udC1zaXplPSIxNCIgZm9udC1mYW1pbHk9IkFyaWFsIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+V2FycmlvcjwvdGV4dD4KPC9zdmc+" alt="Warrior Portrait">
+                </div>
+                <div class="character-info">
+                    <h3 data-i18n="character.warrior.name">Omar</h3>
+                    <p class="character-title" data-i18n="character.warrior.title">Iron Vanguard</p>
+                    <div class="character-stats">
+                        <div class="stat">
+                            <span data-i18n="ui.stat.hp">HP</span>
+                            <span class="stat-value">120</span>
+                        </div>
+                        <div class="stat">
+                            <span data-i18n="ui.stat.attack">ATK</span>
+                            <span class="stat-value">15</span>
+                        </div>
+                        <div class="stat">
+                            <span data-i18n="ui.stat.defense">DEF</span>
+                            <span class="stat-value">12</span>
+                        </div>
+                        <div class="stat">
+                            <span data-i18n="ui.stat.speed">SPD</span>
+                            <span class="stat-value">8</span>
+                        </div>
+                    </div>
+                    <p class="character-desc" data-i18n="character.warrior.description">A stalwart defender with unmatched resilience and powerful strikes.</p>
+                </div>
+            </div>
+
+            <div class="character-card" data-character="sorceress">
+                <div class="character-portrait">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSIjOGUzZGZmIi8+Cjx0ZXh0IHg9IjY0IiB5PSI2NCIgZmlsbD0iI2VjZjBmMSIgZm9udC1zaXplPSIxNCIgZm9udC1mYW1pbHk9IkFyaWFsIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+U29yY2VyZXNzPC90ZXh0Pgo8L3N2Zz4=" alt="Sorceress Portrait">
+                </div>
+                <div class="character-info">
+                    <h3 data-i18n="character.sorceress.name">Salma</h3>
+                    <p class="character-title" data-i18n="character.sorceress.title">Arcane Scholar</p>
+                    <div class="character-stats">
+                        <div class="stat">
+                            <span data-i18n="ui.stat.hp">HP</span>
+                            <span class="stat-value">80</span>
+                        </div>
+                        <div class="stat">
+                            <span data-i18n="ui.stat.attack">ATK</span>
+                            <span class="stat-value">20</span>
+                        </div>
+                        <div class="stat">
+                            <span data-i18n="ui.stat.defense">DEF</span>
+                            <span class="stat-value">8</span>
+                        </div>
+                        <div class="stat">
+                            <span data-i18n="ui.stat.speed">SPD</span>
+                            <span class="stat-value">10</span>
+                        </div>
+                    </div>
+                    <p class="character-desc" data-i18n="character.sorceress.description">A master of arcane arts who devastates enemies with elemental magic.</p>
+                </div>
+            </div>
+
+            <div class="character-card" data-character="rogue">
+                <div class="character-portrait">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSIjMjc0ZTUzIi8+Cjx0ZXh0IHg9IjY0IiB5PSI2NCIgZmlsbD0iI2VjZjBmMSIgZm9udC1zaXplPSIxNCIgZm9udC1mYW1pbHk9IkFyaWFsIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+Um9ndWU8L3RleHQ+Cjwvc3ZnPg==" alt="Rogue Portrait">
+                </div>
+                <div class="character-info">
+                    <h3 data-i18n="character.rogue.name">Shadi</h3>
+                    <p class="character-title" data-i18n="character.rogue.title">Shadow Dancer</p>
+                    <div class="character-stats">
+                        <div class="stat">
+                            <span data-i18n="ui.stat.hp">HP</span>
+                            <span class="stat-value">100</span>
+                        </div>
+                        <div class="stat">
+                            <span data-i18n="ui.stat.attack">ATK</span>
+                            <span class="stat-value">18</span>
+                        </div>
+                        <div class="stat">
+                            <span data-i18n="ui.stat.defense">DEF</span>
+                            <span class="stat-value">10</span>
+                        </div>
+                        <div class="stat">
+                            <span data-i18n="ui.stat.speed">SPD</span>
+                            <span class="stat-value">15</span>
+                        </div>
+                    </div>
+                    <p class="character-desc" data-i18n="character.rogue.description">A swift assassin who strikes from the shadows with deadly precision.</p>
+                </div>
+            </div>
+        </div>
+        <button id="confirm-character" class="menu-btn primary" style="margin-top: 2rem; opacity: 0.5;" data-i18n="ui.button.confirm">Confirm Selection</button>
+    </div>
+</div>
+
+<!-- Game Screen -->
+<div id="game-screen" class="screen">
+    <!-- Game Header -->
+    <div class="game-header">
+        <div class="player-info">
+            <div class="player-portrait">
+                <img id="player-portrait" src="" alt="Player Portrait">
+            </div>
+            <div class="player-stats">
+                <div class="player-name">
+                    <span id="player-name">Omar</span>
+                    <span id="player-level">Lv. 1</span>
+                </div>
+                <div class="resource-bars">
+                    <div class="health-bar">
+                        <div class="bar-label" data-i18n="ui.stat.hp">HP</div>
+                        <div class="bar">
+                            <div id="health-fill" class="bar-fill health" style="width: 100%"></div>
+                        </div>
+                        <div id="health-text" class="bar-text">120/120</div>
+                    </div>
+                    <div class="resource-bar">
+                        <div class="bar-label" id="resource-label">Vigor</div>
+                        <div class="bar">
+                            <div id="resource-fill" class="bar-fill resource" style="width: 100%"></div>
+                        </div>
+                        <div id="resource-text" class="bar-text">25/25</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="floor-info">
+            <div class="floor-number">
+                <span data-i18n="ui.floor">Floor</span>
+                <span id="current-floor">1</span>
+            </div>
+            <div class="biome-name" id="biome-name" data-i18n="biome.ruins.name">Ancient Ruins</div>
+        </div>
+        <div class="game-controls">
+            <button id="inventory-btn" class="control-btn" data-i18n="ui.button.inventory">Inventory</button>
+            <button id="abilities-btn" class="control-btn" data-i18n="ui.button.abilities">Abilities</button>
+            <button id="pause-btn" class="control-btn" data-i18n="ui.button.pause">Pause</button>
+        </div>
+    </div>
+
+    <!-- Game Content -->
+    <div class="game-content">
+        <!-- Battle Area -->
+        <div class="battle-
+```
