@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
@@ -12,804 +11,685 @@
             box-sizing: border-box;
         }
 
-```
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-        color: #ecf0f1;
-        overflow-x: hidden;
-        min-height: 100vh;
-    }
-
-    .game-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
-    }
-
-    .screen {
-        display: none;
-        min-height: 100vh;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-    }
-
-    .screen.active {
-        display: flex;
-    }
-
-    /* Loading Screen */
-    .loading-content {
-        text-align: center;
-        max-width: 400px;
-    }
-
-    .game-logo h1 {
-        font-size: 3rem;
-        font-weight: bold;
-        background: linear-gradient(45deg, #f1c40f, #e67e22, #e74c3c);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin-bottom: 1rem;
-    }
-
-    .game-logo p {
-        font-size: 1.2rem;
-        color: #bdc3c7;
-        margin-bottom: 2rem;
-    }
-
-    .loading-bar {
-        width: 100%;
-        height: 8px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 4px;
-        overflow: hidden;
-        margin-bottom: 1rem;
-    }
-
-    .loading-progress {
-        height: 100%;
-        background: linear-gradient(90deg, #3498db, #2ecc71);
-        width: 0%;
-        transition: width 0.3s ease;
-    }
-
-    /* Main Menu */
-    .menu-content {
-        text-align: center;
-        z-index: 1;
-    }
-
-    .menu-buttons {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        margin: 2rem 0;
-    }
-
-    .menu-btn {
-        padding: 1rem 2rem;
-        font-size: 1.1rem;
-        border: none;
-        border-radius: 8px;
-        background: rgba(52, 73, 94, 0.8);
-        color: #ecf0f1;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        min-width: 200px;
-    }
-
-    .menu-btn:hover {
-        background: rgba(52, 73, 94, 1);
-        transform: translateY(-2px);
-    }
-
-    .menu-btn.primary {
-        background: linear-gradient(45deg, #3498db, #2980b9);
-    }
-
-    .menu-btn.primary:hover {
-        background: linear-gradient(45deg, #2980b9, #1f618d);
-    }
-
-    .language-selector {
-        display: flex;
-        gap: 0.5rem;
-        justify-content: center;
-        margin-top: 2rem;
-    }
-
-    .lang-btn {
-        padding: 0.5rem 1rem;
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        background: transparent;
-        color: #ecf0f1;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    .lang-btn.active {
-        border-color: #3498db;
-        background: rgba(52, 152, 219, 0.2);
-    }
-
-    /* Character Selection */
-    .character-grid {
-        display: flex;
-        gap: 2rem;
-        justify-content: center;
-        flex-wrap: wrap;
-        margin: 2rem 0;
-    }
-
-    .character-card {
-        background: rgba(44, 62, 80, 0.9);
-        border-radius: 16px;
-        padding: 2rem;
-        width: 280px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        border: 3px solid transparent;
-        text-align: center;
-    }
-
-    .character-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    }
-
-    .character-card.selected {
-        border-color: #f1c40f;
-        box-shadow: 0 0 20px rgba(241, 196, 15, 0.5);
-    }
-
-    .character-portrait {
-        margin-bottom: 1.5rem;
-    }
-
-    .character-portrait img {
-        width: 128px;
-        height: 128px;
-        border-radius: 50%;
-        border: 3px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .character-info h3 {
-        font-size: 1.5rem;
-        color: #f1c40f;
-        margin-bottom: 0.5rem;
-    }
-
-    .character-title {
-        color: #bdc3c7;
-        font-style: italic;
-        margin-bottom: 1rem;
-    }
-
-    .character-stats {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0.5rem;
-        margin-bottom: 1rem;
-    }
-
-    .stat {
-        display: flex;
-        justify-content: space-between;
-        background: rgba(0, 0, 0, 0.2);
-        padding: 0.25rem 0.5rem;
-        border-radius: 4px;
-    }
-
-    .stat-value {
-        font-weight: bold;
-        color: #2ecc71;
-    }
-
-    .character-desc {
-        font-size: 0.9rem;
-        line-height: 1.4;
-        color: #bdc3c7;
-    }
-
-    /* Game Screen */
-    .game-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem 2rem;
-        background: rgba(0, 0, 0, 0.3);
-        border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-        flex-wrap: wrap;
-        gap: 1rem;
-    }
-
-    .player-info {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .player-portrait img {
-        width: 64px;
-        height: 64px;
-        border-radius: 50%;
-        border: 2px solid #f1c40f;
-    }
-
-    .player-name {
-        font-size: 1.2rem;
-        font-weight: bold;
-        margin-bottom: 0.5rem;
-    }
-
-    .resource-bars {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-    }
-
-    .health-bar, .resource-bar {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .bar-label {
-        min-width: 30px;
-        font-size: 0.8rem;
-        font-weight: bold;
-    }
-
-    .bar {
-        width: 150px;
-        height: 20px;
-        background: rgba(0, 0, 0, 0.5);
-        border-radius: 10px;
-        overflow: hidden;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .bar-fill {
-        height: 100%;
-        transition: width 0.3s ease;
-        border-radius: 10px;
-    }
-
-    .bar-fill.health {
-        background: linear-gradient(90deg, #e74c3c, #c0392b);
-    }
-
-    .bar-fill.resource {
-        background: linear-gradient(90deg, #3498db, #2980b9);
-    }
-
-    .bar-text {
-        font-size: 0.8rem;
-        min-width: 60px;
-    }
-
-    .floor-info {
-        text-align: center;
-    }
-
-    .floor-number {
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: #f1c40f;
-    }
-
-    .biome-name {
-        font-size: 1rem;
-        color: #bdc3c7;
-    }
-
-    .game-controls {
-        display: flex;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-    }
-
-    .control-btn {
-        padding: 0.5rem 1rem;
-        background: rgba(52, 73, 94, 0.8);
-        border: none;
-        border-radius: 4px;
-        color: white;
-        cursor: pointer;
-        transition: background 0.3s ease;
-    }
-
-    .control-btn:hover {
-        background: rgba(52, 73, 94, 1);
-    }
-
-    /* Battle Area */
-    .game-content {
-        padding: 2rem;
-        text-align: center;
-    }
-
-    .battle-area {
-        background: rgba(0, 0, 0, 0.1);
-        border-radius: 12px;
-        border: 2px solid rgba(255, 255, 255, 0.1);
-        padding: 2rem;
-        margin-bottom: 2rem;
-    }
-
-    .battlefield {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 2rem;
-        flex-wrap: wrap;
-    }
-
-    .enemy-section, .player-section {
-        flex: 1;
-        min-width: 200px;
-    }
-
-    .enemy-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-        justify-content: center;
-    }
-
-    .enemy {
-        background: rgba(231, 76, 60, 0.8);
-        border-radius: 8px;
-        padding: 1rem;
-        text-align: center;
-        min-width: 120px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        border: 2px solid transparent;
-    }
-
-    .enemy:hover {
-        border-color: #f1c40f;
-        transform: scale(1.05);
-    }
-
-    .enemy.selected {
-        border-color: #e74c3c;
-        box-shadow: 0 0 15px rgba(231, 76, 60, 0.5);
-    }
-
-    .enemy img {
-        width: 64px;
-        height: 64px;
-        border-radius: 4px;
-    }
-
-    .enemy-name {
-        font-weight: bold;
-        margin: 0.5rem 0;
-    }
-
-    .enemy-health {
-        font-size: 0.9rem;
-        color: #ecf0f1;
-    }
-
-    .player-character img {
-        width: 128px;
-        height: 128px;
-        border-radius: 8px;
-        border: 3px solid #f1c40f;
-    }
-
-    /* Combat UI */
-    .combat-ui {
-        background: rgba(0, 0, 0, 0.8);
-        padding: 1rem;
-        border-radius: 12px;
-        border-top: 2px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .abilities-panel {
-        margin-bottom: 1rem;
-    }
-
-    .ability-cards {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-
-    .ability-card {
-        background: linear-gradient(145deg, #3498db, #2980b9);
-        border-radius: 8px;
-        padding: 1rem;
-        min-width: 120px;
-        text-align: center;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        border: 2px solid transparent;
-    }
-
-    .ability-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    }
-
-    .ability-card.selected {
-        border-color: #f1c40f;
-    }
-
-    .ability-card.disabled {
-        background: linear-gradient(145deg, #7f8c8d, #95a5a6);
-        cursor: not-allowed;
-        opacity: 0.6;
-    }
-
-    .ability-name {
-        font-weight: bold;
-        margin-bottom: 0.5rem;
-    }
-
-    .ability-cost {
-        font-size: 0.8rem;
-        color: #ecf0f1;
-    }
-
-    .combat-info {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 1rem;
-    }
-
-    /* Status Messages */
-    .status-message {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: rgba(44, 62, 80, 0.95);
-        border-radius: 16px;
-        padding: 2rem;
-        text-align: center;
-        min-width: 300px;
-        border: 2px solid #f1c40f;
-        z-index: 1000;
-    }
-
-    .status-message.hidden {
-        display: none;
-    }
-
-    /* Demo Features */
-    .demo-info {
-        background: rgba(52, 152, 219, 0.1);
-        border: 2px solid #3498db;
-        border-radius: 8px;
-        padding: 1rem;
-        margin: 1rem 0;
-    }
-
-    /* RTL Support */
-    [dir="rtl"] {
-        direction: rtl;
-    }
-
-    [dir="rtl"] .game-header {
-        direction: rtl;
-    }
-
-    [dir="rtl"] .player-info {
-        flex-direction: row-reverse;
-    }
-
-    [dir="rtl"] .combat-info {
-        flex-direction: row-reverse;
-    }
-
-    [dir="rtl"] .character-stats {
-        direction: rtl;
-    }
-
-    [dir="rtl"] .stat {
-        flex-direction: row-reverse;
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-        .character-grid {
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Loading Screen Styles */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            display: flex;
             flex-direction: column;
+            justify-content: center;
             align-items: center;
+            z-index: 9999;
+        }
+
+        .loading-title {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: pulse 2s infinite;
+        }
+
+        .loading-text {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.8;
+        }
+
+        .loading-progress-container {
+            width: 300px;
+            height: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .loading-progress {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700, #ffed4e, #ffd700);
+            transition: width 0.3s ease;
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -300px 0; }
+            100% { background-position: 300px 0; }
+        }
+
+        /* Main Game Styles */
+        .main-menu, .character-selection, .game-screen, .demo-complete, .game-over {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+
+        .language-selector {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .lang-btn {
+            padding: 0.5rem 1rem;
+            margin: 0 0.25rem;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn.active, .lang-btn:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: #ffd700;
+        }
+
+        .game-title h1 {
+            font-size: 3rem;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .subtitle {
+            opacity: 0.8;
+            margin: 0.5rem 0 2rem;
+            font-size: 1.2rem;
+        }
+
+        .menu-btn, .action-btn {
+            display: block;
+            width: 100%;
+            max-width: 400px;
+            padding: 1rem 2rem;
+            margin: 1rem auto;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .menu-btn:hover, .action-btn:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: rgba(255,255,255,0.5);
+            transform: translateY(-2px);
+        }
+
+        .menu-btn.primary, .action-btn.primary {
+            background: rgba(255,215,0,0.2);
+            border-color: #ffd700;
+        }
+
+        .action-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .character-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+            max-width: 1200px;
         }
 
         .character-card {
-            width: 280px;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .character-card:hover, .character-card.selected {
+            border-color: #ffd700;
+            background: rgba(255,215,0,0.1);
+            transform: translateY(-5px);
+        }
+
+        .character-sprite {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .character-title {
+            color: #ffd700;
+            margin: 0.5rem 0;
+        }
+
+        .character-description {
+            opacity: 0.8;
+            font-size: 0.9rem;
+            margin: 1rem 0;
+        }
+
+        .character-stats {
+            margin-top: 1rem;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem;
+            background: rgba(0,0,0,0.3);
+            margin: 0.25rem 0;
+            border-radius: 4px;
+        }
+
+        .selection-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 2rem;
+            margin-top: 2rem;
+            width: 100%;
+            max-width: 600px;
         }
 
         .game-header {
-            flex-direction: column;
+            background: rgba(0,0,0,0.8);
+            padding: 1rem;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
             gap: 1rem;
+        }
+
+        .player-avatar {
+            font-size: 3rem;
+        }
+
+        .health-bar, .enemy-health-bar {
+            width: 200px;
+            height: 20px;
+            background: rgba(255,0,0,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            margin: 0.5rem 0;
+        }
+
+        .health-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00);
+            transition: width 0.3s ease;
+        }
+
+        .health-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+
+        .game-stats {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .stat-item {
+            padding: 0.5rem 1rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .game-area {
+            flex: 1;
+            padding: 2rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .battle-area {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .enemies-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .enemy-card {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,0,0,0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .enemy-sprite {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .battle-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .battle-actions .action-btn {
+            width: auto;
+            min-width: 120px;
+        }
+
+        .game-log {
+            height: 150px;
+            background: rgba(0,0,0,0.8);
+            width: 100%;
+            border-top: 2px solid rgba(255,255,255,0.2);
+            overflow-y: auto;
+        }
+
+        .log-content {
             padding: 1rem;
         }
 
-        .battlefield {
-            flex-direction: column;
-            gap: 2rem;
+        .log-content p {
+            margin: 0.5rem 0;
+            opacity: 0.9;
         }
 
-        .abilities-panel .ability-cards {
-            flex-direction: column;
-            align-items: center;
+        .demo-complete, .game-over {
+            text-align: center;
         }
 
-        .bar {
-            width: 120px;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .game-logo h1 {
-            font-size: 2rem;
+        .final-stats {
+            background: rgba(255,255,255,0.1);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            max-width: 400px;
         }
 
-        .menu-btn {
-            min-width: 150px;
-            padding: 0.8rem 1.5rem;
-            font-size: 1rem;
+        .demo-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
-        .character-card {
-            width: 250px;
-            padding: 1.5rem;
+        @media (max-width: 768px) {
+            .game-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .character-grid {
+                grid-template-columns: 1fr;
+            }
+            .selection-actions {
+                flex-direction: column;
+            }
+            .battle-actions {
+                flex-direction: column;
+                align-items: center;
+            }
         }
-
-        .character-portrait img {
-            width: 96px;
-            height: 96px;
-        }
-
-        .player-character img {
-            width: 96px;
-            height: 96px;
-        }
-
-        .enemy {
-            min-width: 100px;
-        }
-
-        .enemy img {
-            width: 48px;
-            height: 48px;
-        }
-
-        .ability-card {
-            min-width: 100px;
-            padding: 0.8rem;
-        }
-    }
-
-    /* Animations */
-    .fade-in {
-        animation: fadeIn 0.5s ease-in-out;
-    }
-
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .pulse {
-        animation: pulse 0.6s ease-in-out;
-    }
-
-    @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.1); }
-        100% { transform: scale(1); }
-    }
-
-    /* Hidden utility */
-    .hidden {
-        display: none !important;
-    }
-</style>
-```
-
+    </style>
 </head>
 <body>
     <!-- Loading Screen -->
-    <div id="loading-screen" class="screen active">
-        <div class="loading-content">
-            <div class="game-logo">
-                <h1 data-i18n="game.title">Path of Heroes</h1>
-                <p data-i18n="game.subtitle">Embark on an Epic Journey</p>
-            </div>
-            <div class="loading-bar">
-                <div class="loading-progress"></div>
-            </div>
-            <p class="loading-text" data-i18n="ui.loading">Loading...</p>
+    <div class="loading-screen">
+        <h1 class="loading-title">Path of Heroes</h1>
+        <p class="loading-text">Loading...</p>
+        <div class="loading-progress-container">
+            <div class="loading-progress"></div>
         </div>
     </div>
 
-```
-<!-- Main Menu -->
-<div id="main-menu" class="screen">
-    <div class="menu-content">
-        <div class="game-logo">
-            <h1 data-i18n="game.title">Path of Heroes</h1>
-            <p data-i18n="game.tagline">A Roguelike Adventure</p>
-        </div>
-        <div class="demo-info">
-            <p><strong>🎮 Demo Version</strong></p>
-            <p>Experience 20 floors across 4 biomes with 3 unique characters!</p>
-        </div>
-        <div class="menu-buttons">
-            <button id="new-game-btn" class="menu-btn primary" data-i18n="ui.button.new_game">New Game</button>
-            <button id="continue-btn" class="menu-btn" data-i18n="ui.button.continue">Continue</button>
-            <button id="settings-btn" class="menu-btn" data-i18n="ui.button.settings">Settings</button>
-            <button id="achievements-btn" class="menu-btn" data-i18n="ui.button.achievements">Achievements</button>
-        </div>
-        <div class="language-selector">
-            <button id="lang-en" class="lang-btn active">English</button>
-            <button id="lang-ar" class="lang-btn">العربية</button>
-        </div>
-    </div>
-</div>
+    <!-- JavaScript -->
+    <script>
+        class PathOfHeroes {
+            constructor() {
+                this.gameState = {
+                    currentScreen: 'loading',
+                    language: 'en',
+                    selectedCharacter: null,
+                    player: null,
+                    currentFloor: 1,
+                    maxDemoFloor: 20,
+                    gameStarted: false,
+                    inventory: [],
+                    gold: 100,
+                    enemies: [],
+                    currentTurn: 0,
+                    turnOrder: [],
+                    battleActive: false,
+                    gameTime: 0,
+                    enemiesDefeated: 0,
+                    floorsCompleted: 0
+                };
 
-<!-- Character Selection -->
-<div id="character-select" class="screen">
-    <div class="game-container">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-            <h2 data-i18n="ui.character_select.title" style="color: #f1c40f; font-size: 2.5rem;">Choose Your Hero</h2>
-            <button id="back-to-menu" class="control-btn" data-i18n="ui.button.back">Back</button>
-        </div>
-        
-        <div class="character-grid">
-            <div class="character-card" data-character="warrior">
-                <div class="character-portrait">
-                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSIjMzQ0MDUwIi8+Cjx0ZXh0IHg9IjY0IiB5PSI2NCIgZmlsbD0iI2VjZjBmMSIgZm9udC1zaXplPSIxNCIgZm9udC1mYW1pbHk9IkFyaWFsIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+V2FycmlvcjwvdGV4dD4KPC9zdmc+" alt="Warrior Portrait">
-                </div>
-                <div class="character-info">
-                    <h3 data-i18n="character.warrior.name">Omar</h3>
-                    <p class="character-title" data-i18n="character.warrior.title">Iron Vanguard</p>
-                    <div class="character-stats">
-                        <div class="stat">
-                            <span data-i18n="ui.stat.hp">HP</span>
-                            <span class="stat-value">120</span>
+                this.localization = {
+                    "game.title": { "en": "Path of Heroes", "ar": "طريق الأبطال" },
+                    "game.subtitle": { "en": "Embark on an Epic Journey", "ar": "انطلق في رحلة ملحمية" },
+                    "ui.button.new_game": { "en": "New Game", "ar": "لعبة جديدة" },
+                    "ui.button.continue": { "en": "Continue", "ar": "متابعة" },
+                    "ui.button.settings": { "en": "Settings", "ar": "الإعدادات" },
+                    "ui.button.attack": { "en": "Attack", "ar": "هجوم" },
+                    "ui.button.next_floor": { "en": "Next Floor", "ar": "الطابق التالي" },
+                    "ui.stat.hp": { "en": "HP", "ar": "صحة" },
+                    "ui.stat.attack": { "en": "ATK", "ar": "هجوم" },
+                    "ui.stat.defense": { "en": "DEF", "ar": "دفاع" },
+                    "ui.stat.speed": { "en": "SPD", "ar": "سرعة" },
+                    "ui.floor": { "en": "Floor", "ar": "الطابق" },
+                    "ui.level": { "en": "Level", "ar": "المستوى" },
+                    "combat.victory": { "en": "Victory!", "ar": "النصر!" },
+                    "combat.defeat": { "en": "Defeat", "ar": "الهزيمة" },
+                    "demo.complete.title": { "en": "Congratulations, Hero!", "ar": "تهانينا أيها البطل!" },
+                    "demo.complete.message": { "en": "You've completed the Path of Heroes demo!", "ar": "لقد أكملت العرض التجريبي لطريق الأبطال!" }
+                };
+
+                this.characters = {
+                    'warrior': {
+                        id: 'warrior',
+                        name: { en: "Omar", ar: "عمر" },
+                        title: { en: "Iron Vanguard", ar: "طليعة الحديد" },
+                        description: { en: "A stalwart defender with unmatched resilience.", ar: "مدافع صامد بمرونة لا مثيل لها." },
+                        baseStats: { hp: 120, maxHp: 120, atk: 15, def: 12, spd: 8, crit: 10 },
+                        resource: { type: "vigor", current: 25, max: 25, regen: 2 },
+                        abilities: ["heavy_strike", "defensive_stance", "berserker_rage"],
+                        sprite: '🛡️'
+                    },
+                    'sorceress': {
+                        id: 'sorceress',
+                        name: { en: "Salma", ar: "سلمى" },
+                        title: { en: "Arcane Scholar", ar: "عالمة السحر" },
+                        description: { en: "A master of arcane arts who devastates enemies.", ar: "معلمة الفنون السحرية التي تدمر الأعداء." },
+                        baseStats: { hp: 80, maxHp: 80, atk: 20, def: 8, spd: 10, crit: 15 },
+                        resource: { type: "mana", current: 40, max: 40, regen: 3 },
+                        abilities: ["fireball", "frost_shield", "meteor_storm"],
+                        sprite: '🔮'
+                    },
+                    'rogue': {
+                        id: 'rogue',
+                        name: { en: "Shadi", ar: "شادي" },
+                        title: { en: "Shadow Dancer", ar: "راقص الظلال" },
+                        description: { en: "A swift assassin who strikes from the shadows.", ar: "قاتل سريع يضرب من الظلال." },
+                        baseStats: { hp: 100, maxHp: 100, atk: 18, def: 10, spd: 15, crit: 25 },
+                        resource: { type: "energy", current: 30, max: 30, regen: 4 },
+                        abilities: ["quick_strike", "smoke_bomb", "assassinate"],
+                        sprite: '🗡️'
+                    }
+                };
+
+                this.biomes = {
+                    ruins: { name: { en: "Ancient Ruins", ar: "الأطلال القديمة" }, floors: [1, 5], enemies: ["skeleton_warrior", "bone_archer", "undead_mage"] },
+                    frozen: { name: { en: "Frozen Wastes", ar: "الأراضي المتجمدة" }, floors: [6, 10], enemies: ["frost_wolf", "ice_elemental", "frozen_knight"] },
+                    forest: { name: { en: "Cursed Forest", ar: "الغابة الملعونة" }, floors: [11, 15], enemies: ["dire_wolf", "corrupted_treant", "shadow_stalker"] },
+                    shadow: { name: { en: "Shadow Realm", ar: "عالم الظلال" }, floors: [16, 20], enemies: ["shadow_demon", "void_walker", "nightmare"] }
+                };
+
+                this.enemies = {
+                    skeleton_warrior: { name: { en: "Skeleton Warrior", ar: "محارب الهيكل العظمي" }, hp: 45, atk: 12, def: 8, spd: 6, sprite: '💀', xp: 20 },
+                    bone_archer: { name: { en: "Bone Archer", ar: "رامي العظام" }, hp: 35, atk: 15, def: 5, spd: 9, sprite: '🏹', xp: 25 },
+                    undead_mage: { name: { en: "Undead Mage", ar: "الساحر الميت" }, hp: 40, atk: 18, def: 6, spd: 7, sprite: '🧙‍♂️', xp: 35 },
+                    frost_wolf: { name: { en: "Frost Wolf", ar: "ذئب الصقيع" }, hp: 50, atk: 14, def: 9, spd: 12, sprite: '🐺', xp: 22 },
+                    ice_elemental: { name: { en: "Ice Elemental", ar: "عنصر الجليد" }, hp: 55, atk: 16, def: 12, spd: 5, sprite: '❄️', xp: 28 },
+                    frozen_knight: { name: { en: "Frozen Knight", ar: "الفارس المتجمد" }, hp: 70, atk: 13, def: 16, spd: 6, sprite: '⚔️', xp: 32 },
+                    dire_wolf: { name: { en: "Dire Wolf", ar: "الذئب الشرس" }, hp: 65, atk: 17, def: 11, spd: 14, sprite: '🐺', xp: 26 },
+                    corrupted_treant: { name: { en: "Corrupted Treant", ar: "شجرة فاسدة" }, hp: 80, atk: 15, def: 18, spd: 3, sprite: '🌳', xp: 30 },
+                    shadow_stalker: { name: { en: "Shadow Stalker", ar: "مطارد الظلال" }, hp: 55, atk: 22, def: 8, spd: 16, sprite: '👤', xp: 35 },
+                    shadow_demon: { name: { en: "Shadow Demon", ar: "شيطان الظلال" }, hp: 75, atk: 25, def: 12, spd: 18, sprite: '👹', xp: 45 },
+                    void_walker: { name: { en: "Void Walker", ar: "ماشي الفراغ" }, hp: 70, atk: 28, def: 10, spd: 15, sprite: '🕳️', xp: 50 },
+                    nightmare: { name: { en: "Nightmare", ar: "الكابوس" }, hp: 60, atk: 30, def: 8, spd: 20, sprite: '😈', xp: 55 }
+                };
+
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.detectLanguage();
+                this.startLoadingSequence();
+                setInterval(() => this.gameState.gameTime++, 1000);
+            }
+
+            detectLanguage() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const urlLang = urlParams.get('lang');
+                const savedLang = localStorage.getItem('poh_language');
+                const browserLang = navigator.language.startsWith('ar') ? 'ar' : 'en';
+                this.gameState.language = urlLang || savedLang || browserLang;
+                this.setLanguage(this.gameState.language);
+            }
+
+            setLanguage(lang) {
+                this.gameState.language = lang;
+                document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+                document.documentElement.setAttribute('lang', lang);
+                localStorage.setItem('poh_language', lang);
+                this.updateAllLocalizedText();
+            }
+
+            getText(key) {
+                return this.localization[key] ? this.localization[key][this.gameState.language] : key;
+            }
+
+            updateAllLocalizedText() {
+                document.querySelectorAll('[data-i18n]').forEach(element => {
+                    const key = element.getAttribute('data-i18n');
+                    element.textContent = this.getText(key);
+                });
+            }
+
+            setupEventListeners() {
+                document.addEventListener('click', (e) => {
+                    if (this.gameState.currentScreen === 'loading-complete') {
+                        this.showMainMenu();
+                    }
+
+                    if (e.target.closest('.character-card')) {
+                        const characterId = e.target.closest('.character-card').dataset.character;
+                        this.selectCharacter(characterId);
+                    }
+
+                    const action = e.target.dataset.action;
+                    if (action) this.handleAction(action);
+
+                    if (e.target.classList.contains('lang-btn')) {
+                        this.setLanguage(e.target.dataset.lang);
+                    }
+                });
+            }
+
+            startLoadingSequence() {
+                let progress = 0;
+                const messages = [
+                    { en: 'Loading assets...', ar: 'تحميل الملفات...' },
+                    { en: 'Preparing heroes...', ar: 'إعداد الأبطال...' },
+                    { en: 'Generating dungeons...', ar: 'إنشاء الأبراج المحصنة...' },
+                    { en: 'Almost ready...', ar: 'تقريباً جاهز...' }
+                ];
+
+                const loadingInterval = setInterval(() => {
+                    progress += Math.random() * 12 + 3;
+                    
+                    if (progress >= 100) {
+                        progress = 100;
+                        clearInterval(loadingInterval);
+                        setTimeout(() => this.completeLoading(), 500);
+                    }
+
+                    const progressBar = document.querySelector('.loading-progress');
+                    if (progressBar) progressBar.style.width = `${progress}%`;
+
+                    const loadingText = document.querySelector('.loading-text');
+                    if (loadingText) {
+                        const messageIndex = Math.floor((progress / 100) * (messages.length - 1));
+                        loadingText.textContent = messages[messageIndex][this.gameState.language];
+                    }
+                }, 150);
+            }
+
+            completeLoading() {
+                this.gameState.currentScreen = 'loading-complete';
+                const loadingText = document.querySelector('.loading-text');
+                
+                if (loadingText) {
+                    loadingText.textContent = this.gameState.language === 'ar' ? 
+                        'انقر في أي مكان للمتابعة...' : 
+                        'Click anywhere to continue...';
+                    loadingText.style.animation = 'pulse 1.5s infinite';
+                }
+            }
+
+            showMainMenu() {
+                this.gameState.currentScreen = 'menu';
+                document.body.innerHTML = `
+                    <div class="main-menu">
+                        <div class="language-selector">
+                            <button class="lang-btn ${this.gameState.language === 'en' ? 'active' : ''}" data-lang="en">EN</button>
+                            <button class="lang-btn ${this.gameState.language === 'ar' ? 'active' : ''}" data-lang="ar">العربية</button>
                         </div>
-                        <div class="stat">
-                            <span data-i18n="ui.stat.attack">ATK</span>
-                            <span class="stat-value">15</span>
+                        
+                        <div class="game-title">
+                            <h1>${this.getText('game.title')}</h1>
+                            <p class="subtitle">${this.getText('game.subtitle')}</p>
                         </div>
-                        <div class="stat">
-                            <span data-i18n="ui.stat.defense">DEF</span>
-                            <span class="stat-value">12</span>
-                        </div>
-                        <div class="stat">
-                            <span data-i18n="ui.stat.speed">SPD</span>
-                            <span class="stat-value">8</span>
+                        
+                        <div class="menu-options">
+                            <button class="menu-btn primary" data-action="new-game">
+                                <span>${this.getText('ui.button.new_game')}</span>
+                                <small>🎮 Demo Version - 20 Floors</small>
+                            </button>
+                            
+                            ${this.hasSavedGame() ? `
+                                <button class="menu-btn" data-action="continue-game">
+                                    <span>${this.getText('ui.button.continue')}</span>
+                                    <small>Floor ${this.getSavedFloor()}</small>
+                                </button>
+                            ` : ''}
+                            
+                            <button class="menu-btn" data-action="show-settings">
+                                <span>${this.getText('ui.button.settings')}</span>
+                            </button>
                         </div>
                     </div>
-                    <p class="character-desc" data-i18n="character.warrior.description">A stalwart defender with unmatched resilience and powerful strikes.</p>
-                </div>
-            </div>
+                `;
+            }
 
-            <div class="character-card" data-character="sorceress">
-                <div class="character-portrait">
-                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSIjOGUzZGZmIi8+Cjx0ZXh0IHg9IjY0IiB5PSI2NCIgZmlsbD0iI2VjZjBmMSIgZm9udC1zaXplPSIxNCIgZm9udC1mYW1pbHk9IkFyaWFsIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+U29yY2VyZXNzPC90ZXh0Pgo8L3N2Zz4=" alt="Sorceress Portrait">
-                </div>
-                <div class="character-info">
-                    <h3 data-i18n="character.sorceress.name">Salma</h3>
-                    <p class="character-title" data-i18n="character.sorceress.title">Arcane Scholar</p>
-                    <div class="character-stats">
-                        <div class="stat">
-                            <span data-i18n="ui.stat.hp">HP</span>
-                            <span class="stat-value">80</span>
+            showCharacterSelection() {
+                this.gameState.currentScreen = 'character-select';
+                document.body.innerHTML = `
+                    <div class="character-selection">
+                        <div class="selection-header">
+                            <h2>${this.gameState.language === 'ar' ? 'اختر بطلك' : 'Choose Your Hero'}</h2>
                         </div>
-                        <div class="stat">
-                            <span data-i18n="ui.stat.attack">ATK</span>
-                            <span class="stat-value">20</span>
+                        
+                        <div class="character-grid">
+                            ${Object.entries(this.characters).map(([id, char]) => `
+                                <div class="character-card ${this.gameState.selectedCharacter === id ? 'selected' : ''}" data-character="${id}">
+                                    <div class="character-sprite">${char.sprite}</div>
+                                    <h3>${char.name[this.gameState.language]}</h3>
+                                    <h4 class="character-title">${char.title[this.gameState.language]}</h4>
+                                    <p class="character-description">${char.description[this.gameState.language]}</p>
+                                    
+                                    <div class="character-stats">
+                                        <div class="stat-row">
+                                            <span class="stat-label">${this.getText('ui.stat.hp')}</span>
+                                            <span class="stat-value">${char.baseStats.hp}</span>
+                                        </div>
+                                        <div class="stat-row">
+                                            <span class="stat-label">${this.getText('ui.stat.attack')}</span>
+                                            <span class="stat-value">${char.baseStats.atk}</span>
+                                        </div>
+                                        <div class="stat-row">
+                                            <span class="stat-label">${this.getText('ui.stat.defense')}</span>
+                                            <span class="stat-value">${char.baseStats.def}</span>
+                                        </div>
+                                        <div class="stat-row">
+                                            <span class="stat-label">${this.getText('ui.stat.speed')}</span>
+                                            <span class="stat-value">${char.baseStats.spd}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
                         </div>
-                        <div class="stat">
-                            <span data-i18n="ui.stat.defense">DEF</span>
-                            <span class="stat-value">8</span>
-                        </div>
-                        <div class="stat">
-                            <span data-i18n="ui.stat.speed">SPD</span>
-                            <span class="stat-value">10</span>
+                        
+                        <div class="selection-actions">
+                            <button class="action-btn" data-action="back-to-menu">← ${this.gameState.language === 'ar' ? 'عودة' : 'Back'}</button>
+                            <button class="action-btn primary ${!this.gameState.selectedCharacter ? 'disabled' : ''}" data-action="confirm-character">
+                                ${this.gameState.language === 'ar' ? 'ابدأ المغامرة' : 'Start Adventure'} →
+                            </button>
                         </div>
                     </div>
-                    <p class="character-desc" data-i18n="character.sorceress.description">A master of arcane arts who devastates enemies with elemental magic.</p>
-                </div>
-            </div>
+                `;
+            }
 
-            <div class="character-card" data-character="rogue">
-                <div class="character-portrait">
-                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSIjMjc0ZTUzIi8+Cjx0ZXh0IHg9IjY0IiB5PSI2NCIgZmlsbD0iI2VjZjBmMSIgZm9udC1zaXplPSIxNCIgZm9udC1mYW1pbHk9IkFyaWFsIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+Um9ndWU8L3RleHQ+Cjwvc3ZnPg==" alt="Rogue Portrait">
-                </div>
-                <div class="character-info">
-                    <h3 data-i18n="character.rogue.name">Shadi</h3>
-                    <p class="character-title" data-i18n="character.rogue.title">Shadow Dancer</p>
-                    <div class="character-stats">
-                        <div class="stat">
-                            <span data-i18n="ui.stat.hp">HP</span>
-                            <span class="stat-value">100</span>
-                        </div>
-                        <div class="stat">
-                            <span data-i18n="ui.stat.attack">ATK</span>
-                            <span class="stat-value">18</span>
-                        </div>
-                        <div class="stat">
-                            <span data-i18n="ui.stat.defense">DEF</span>
-                            <span class="stat-value">10</span>
-                        </div>
-                        <div class="stat">
-                            <span data-i18n="ui.stat.speed">SPD</span>
-                            <span class="stat-value">15</span>
-                        </div>
-                    </div>
-                    <p class="character-desc" data-i18n="character.rogue.description">A swift assassin who strikes from the shadows with deadly precision.</p>
-                </div>
-            </div>
-        </div>
-        <button id="confirm-character" class="menu-btn primary" style="margin-top: 2rem; opacity: 0.5;" data-i18n="ui.button.confirm">Confirm Selection</button>
-    </div>
-</div>
+            selectCharacter(characterId) {
+                this.gameState.selectedCharacter = characterId;
+                document.querySelectorAll('.character-card').forEach(card => card.classList.remove('selected'));
+                document.querySelector(`[data-character="${characterId}"]`).classList.add('selected');
+                document.querySelector('[data-action="confirm-character"]').classList.remove('disabled');
+            }
 
-<!-- Game Screen -->
-<div id="game-screen" class="screen">
-    <!-- Game Header -->
-    <div class="game-header">
-        <div class="player-info">
-            <div class="player-portrait">
-                <img id="player-portrait" src="" alt="Player Portrait">
-            </div>
-            <div class="player-stats">
-                <div class="player-name">
-                    <span id="player-name">Omar</span>
-                    <span id="player-level">Lv. 1</span>
-                </div>
-                <div class="resource-bars">
-                    <div class="health-bar">
-                        <div class="bar-label" data-i18n="ui.stat.hp">HP</div>
-                        <div class="bar">
-                            <div id="health-fill" class="bar-fill health" style="width: 100%"></div>
-                        </div>
-                        <div id="health-text" class="bar-text">120/120</div>
-                    </div>
-                    <div class="resource-bar">
-                        <div class="bar-label" id="resource-label">Vigor</div>
-                        <div class="bar">
-                            <div id="resource-fill" class="bar-fill resource" style="width: 100%"></div>
-                        </div>
-                        <div id="resource-text" class="bar-text">25/25</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="floor-info">
-            <div class="floor-number">
-                <span data-i18n="ui.floor">Floor</span>
-                <span id="current-floor">1</span>
-            </div>
-            <div class="biome-name" id="biome-name" data-i18n="biome.ruins.name">Ancient Ruins</div>
-        </div>
-        <div class="game-controls">
-            <button id="inventory-btn" class="control-btn" data-i18n="ui.button.inventory">Inventory</button>
-            <button id="abilities-btn" class="control-btn" data-i18n="ui.button.abilities">Abilities</button>
-            <button id="pause-btn" class="control-btn" data-i18n="ui.button.pause">Pause</button>
-        </div>
-    </div>
+            handleAction(action) {
+                switch (action) {
+                    case 'new-game': this.showCharacterSelection(); break;
+                    case 'continue-game': this.loadGame(); break;
+                    case 'show-settings': this.showSettings(); break;
+                    case 'back-to-menu': this.showMainMenu(); break;
+                    case 'confirm-character': this.startGame(); break;
+                    case 'attack': this.playerAttack(); break;
+                    case 'ability': this.useAbility(); break;
+                    case 'defend': this.playerDefend(); break;
+                    case 'next-floor': this.nextFloor(); break;
+                }
+            }
 
-    <!-- Game Content -->
-    <div class="game-content">
-        <!-- Battle Area -->
-        <div class="battle-
-```
+            startGame() {
+                if (!this.gameState.selectedCharacter) {
+                    this.showCharacterSelection();
+                    return;
+                }
+
+                this.gameState.currentScreen = 'game';
+                this.gameState.gameStarted = true;
+                this.gameState.player = this.createPlayer(this.gameState.selectedCharacter);
+                this.gameState.currentFloor = 1;
+                this.generateFloor();
+                this
