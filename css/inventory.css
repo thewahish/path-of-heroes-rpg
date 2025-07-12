@@ -1,0 +1,228 @@
+#inventory-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    z-index: 100;
+    justify-content: flex-start;
+    padding-top: 1rem;
+}
+
+.inventory-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--primary-color);
+    padding: 0 1rem 1rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    width: 100%;
+    max-width: 900px;
+}
+
+.inventory-container {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 1rem;
+    width: 100%;
+    max-width: 900px;
+    padding: 1rem;
+    overflow-y: auto;
+    height: calc(100% - 60px);
+}
+
+.left-panel,
+.right-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.equipment-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+}
+
+.equipment-slot,
+.inventory-slot {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background-color: #111;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.slot-icon-placeholder {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.item-icon {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.char-stats-table {
+    width: 100%;
+    font-size: 0.9rem;
+    text-align: left;
+    border-collapse: collapse;
+}
+
+[dir="rtl"] .char-stats-table {
+    text-align: right;
+}
+
+.char-stats-table td {
+    padding: 0.4rem 0.2rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.char-stats-table tr:last-child td {
+    border-bottom: none;
+}
+
+.char-stats-table td:last-child {
+    text-align: right;
+    font-weight: 600;
+}
+
+[dir="rtl"] .char-stats-table td:last-child {
+    text-align: left;
+}
+
+.inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(55px, 1fr));
+    gap: 0.5rem;
+}
+
+.inventory-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.inventory-actions .action-btn {
+    width: auto;
+    flex-grow: 1;
+    padding: 0.5rem;
+    font-size: 0.8rem;
+}
+
+.inventory-actions .action-btn:hover {
+    background-color: var(--border-color);
+}
+
+/* --- Rarity Glows --- */
+.rarity-uncommon {
+    border-color: #27ae60;
+}
+
+.rarity-rare {
+    border-color: #3498db;
+}
+
+.rarity-epic {
+    border-color: #9b59b6;
+}
+
+.rarity-mythic {
+    border-color: #e67e22;
+}
+
+.rarity-legendary {
+    border-color: #f1c40f;
+    box-shadow: 0 0 8px #f1c40f;
+}
+
+/* --- Tooltips --- */
+.item-tooltip,
+.tooltip {
+    position: fixed;
+    background-color: #2c2c2c;
+    border: 1px solid var(--primary-color);
+    border-radius: 8px;
+    padding: 0.75rem;
+    width: 250px;
+    z-index: 101;
+    pointer-events: none;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+[dir="rtl"] .item-tooltip,
+[dir="rtl"] .tooltip {
+    text-align: right;
+}
+
+.tooltip-header {
+    margin-bottom: 0.5rem;
+}
+
+.tooltip-name {
+    font-family: var(--font-primary);
+    font-size: 1.1rem;
+}
+
+.tooltip-type {
+    font-size: 0.8rem;
+    color: #aaa;
+}
+
+.tooltip-stats {
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.5rem 0;
+    margin: 0.5rem 0;
+}
+
+.tooltip-stat {
+    display: flex;
+    justify-content: space-between;
+}
+
+.tooltip-stat span:last-child {
+    font-weight: bold;
+}
+
+.tooltip-description {
+    font-size: 0.8rem;
+    font-style: italic;
+    color: #ccc;
+}
+
+.item-comparison-tooltip {
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    right: 1rem;
+    display: flex;
+    gap: 1rem;
+    z-index: 101;
+    pointer-events: none;
+    justify-content: center;
+}
+
+.item-comparison-tooltip .tooltip {
+    width: 45%;
+    max-width: 220px;
+}
+
+.stat-comparison .increase {
+    color: var(--stat-increase);
+}
+
+.stat-comparison .decrease {
+    color: var(--stat-decrease);
+}

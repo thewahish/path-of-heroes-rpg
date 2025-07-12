@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Choose Hero</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #0c0c0c url('https://images.unsplash.com/photo-1549887534-3083d9a6a921?fit=crop&w=420&q=80') no-repeat center;
+      background-size: cover;
+      font-family: 'Cinzel', serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero-select {
+      max-width: 420px;
+      width: 100%;
+      padding: 2rem 1rem;
+      background: linear-gradient(to bottom, rgba(30, 20, 10, 0.9), rgba(10, 5, 0, 0.95));
+      color: #f0e6d2;
+      text-align: center;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(241, 196, 15, 0.15);
+    }
+
+    .hero-select h1 {
+      font-size: 1.8rem;
+      color: #f1c40f;
+      margin-bottom: 1.2rem;
+      text-shadow: 0 0 6px #f1c40f;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 1.5rem;
+    }
+
+    .tab-btn {
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      color: #f0e6d2;
+      border: 2px solid #555;
+      background: rgba(0,0,0,0.3);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn.active {
+      background: #f1c40f;
+      color: #1a1a1a;
+      border-color: #f1c40f;
+    }
+
+    .hero-card {
+      background: rgba(40, 30, 15, 0.8);
+      border: 1px solid #5a4b3a;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-portrait {
+      font-size: 3.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-name {
+      font-size: 1.4rem;
+      color: #fff8d0;
+      margin-bottom: 0.25rem;
+    }
+
+    .hero-class {
+      color: #f1c40f;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-desc {
+      font-size: 0.95rem;
+      color: #ddd;
+      margin-bottom: 1rem;
+    }
+
+    .hero-stats {
+      font-size: 0.9rem;
+      border-top: 1px solid #666;
+      padding-top: 0.5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      color: #f0e6d2;
+    }
+
+    .btn-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 0.75rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.2s ease;
+    }
+
+    .btn.back {
+      background-color: #444;
+      color: #f0e6d2;
+    }
+
+    .btn.start {
+      background-color: #f1c40f;
+      color: #1a1a1a;
+    }
+
+    .btn.start:hover {
+      background-color: #ffe94d;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hero-select">
+    <h1>Choose Your Hero</h1>
+
+    <div class="tabs">
+      <button class="tab-btn active">Taha</button>
+      <button class="tab-btn">Mais</button>
+      <button class="tab-btn">Ibrahim</button>
+    </div>
+
+    <div class="hero-card">
+      <div class="hero-portrait">⚔️</div>
+      <div class="hero-name">TAHA</div>
+      <div class="hero-class">Steel Knight</div>
+      <div class="hero-desc">A stalwart defender with unmatched courage.</div>
+
+      <div class="hero-stats">
+        <div>HP: 120</div><div>ATK: 15</div>
+        <div>DEF: 12</div><div>SPD: 8</div>
+        <div>CRIT: 10%</div><div></div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn back">Back</button>
+      <button class="btn start">Start Journey</button>
+    </div>
+  </div>
+
+</body>
+</html>

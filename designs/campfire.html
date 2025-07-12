@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Campfire</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #0e0a0a url('https://images.unsplash.com/photo-1524492412937-4961d66aa114?fit=crop&w=420&q=80') no-repeat center;
+      background-size: cover;
+      font-family: 'Cinzel', serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .camp-container {
+      max-width: 420px;
+      width: 100%;
+      padding: 2rem 1rem;
+      background: linear-gradient(to bottom, rgba(40, 20, 10, 0.9), rgba(10, 5, 0, 0.95));
+      color: #f0e6d2;
+      text-align: center;
+      border-radius: 12px;
+      box-shadow: 0 0 25px rgba(255, 120, 40, 0.3);
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      color: #ffa94d;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 8px #ff7500;
+    }
+
+    .campfire-icon {
+      font-size: 4rem;
+      margin-bottom: 1.5rem;
+      text-shadow: 0 0 10px #ff4d00;
+    }
+
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .btn {
+      background-color: rgba(255, 85, 0, 0.7);
+      border: none;
+      color: #fefae0;
+      font-weight: bold;
+      padding: 0.75rem;
+      font-size: 1.1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 0 8px #ff914d;
+    }
+
+    .btn:hover {
+      background-color: #ff5e00;
+      box-shadow: 0 0 12px #ffbb88;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="camp-container">
+    <div class="campfire-icon">🔥</div>
+    <h1>Campfire Rest</h1>
+    <p>Take a moment to recover before your next battle.</p>
+
+    <div class="action-buttons">
+      <button class="btn">🔥 Rest & Heal</button>
+      <button class="btn">🎒 Open Inventory</button>
+      <button class="btn">💾 Save Progress</button>
+    </div>
+  </div>
+
+</body>
+</html>
