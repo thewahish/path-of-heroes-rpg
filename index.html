@@ -1,100 +1,86 @@
+// index.html
+// jump-V.36.6-1
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-    <title>Path of Heroes - طريق الأبطال</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Noto+Sans:wght@400;600&family=Noto+Sans+Arabic:wght@400;600&display=swap" rel="stylesheet">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Path of Heroes</title>
     <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/battle.css">
     <link rel="stylesheet" href="css/inventory.css">
+    <link rel="stylesheet" href="css/battle.css">
 </head>
-
 <body>
-    <div id="game-wrapper">
-        <button id="lang-toggle-btn" class="global-btn" aria-label="Toggle Language">🌐</button>
-        <button id="debug-open-btn" class="global-btn" aria-label="Open Debug Panel">🐛</button>
-        
-        <div id="debug-panel" class="hidden">
-            <button id="debug-toggle-btn" aria-label="Close Debug Panel">×</button>
-            <div id="debug-content"></div>
-        </div>
-
-        <div id="global-hud" class="hidden"></div>
-
-        <div id="loading-screen" class="screen">
-            <h1 class="loading-title" data-i18n="game.title">Path of Heroes</h1>
-            <p class="loading-text" data-i18n="loading.text">Loading...</p>
-            <div class="loading-progress-container">
-                <div id="loading-progress" class="loading-progress"></div>
+    <div id="lang-toggle-btn" class="global-btn">🌐</div>
+    <div id="debug-open-btn" class="global-btn">🐛</div>
+    
+    <div id="debug-panel" class="debug-panel hidden">
+        <div id="debug-header">
+            <span>Debugger</span>
+            <div class="debug-actions">
+                <button id="debug-copy-btn">Copy Logs</button>
+                <button id="debug-close-btn">×</button>
             </div>
         </div>
-
-        <div id="main-menu" class="screen hidden">
-            <h1 class="game-title" data-i18n="game.title">Path of Heroes</h1>
-            <div class="button-group">
-                <button id="btn-new-game" class="menu-btn primary action-btn" data-i18n="menu.new_game">New Game</button>
-                <button id="btn-load-game" class="menu-btn action-btn" data-i18n="menu.load_game">Load Game</button>
-                <button id="btn-options" class="menu-btn action-btn" data-i18n="menu.options">Options</button>
-            </div>
+        <div class="debug-section" id="debug-state-section">
+            <h4>Game State</h4>
+            <pre id="debug-content"></pre>
         </div>
-
-        <div id="character-selection" class="screen hidden">
-            <h1 class="screen-title" data-i18n="character.select_title">Choose Your Hero</h1>
-            
-            <div class="char-tabs" id="character-tabs">
-                </div>
-
-            <div class="content-area">
-                <div class="portrait-panel" id="hero-portrait"></div>
-                <div class="info-panel">
-                    <div class="hero-name-header">
-                        <h2 class="hero-name" id="hero-name"></h2>
-                        <button id="open-stats-modal" title="Show Base Stats">i</button>
-                    </div>
-                    <h3 class="hero-title" id="hero-title"></h3>
-                    <p class="hero-desc" id="hero-desc"></p>
-                    <div class="core-strengths" id="core-strengths-list">
-                        </div>
-                </div>
-            </div>
-
-            <div class="action-buttons">
-                <button id="btn-char-back" class="btn back" data-i18n="menu.back">Back</button>
-                <button id="start-game-btn" class="btn start" data-i18n="character.start_journey" disabled>Start Journey</button>
-            </div>
-
-            <div class="modal-overlay" id="stats-modal-overlay">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 class="modal-title" data-i18n="character.base_stats">Base Stats</h3>
-                        <button class="modal-close-btn" id="close-stats-modal">&times;</button>
-                    </div>
-                    <div class="stats-grid" id="modal-stats-grid">
-                        </div>
-                </div>
-            </div>
+        <div class="debug-section" id="debug-log-section">
+            <h4>Console</h4>
+            <div id="debug-log-content"></div>
         </div>
-
-        <div id="battle-screen" class="screen hidden">
-            </div>
-
-        <div id="inventory-screen" class="screen hidden">
-            </div>
-
-        <div id="item-tooltip" class="item-tooltip hidden"></div>
-        <div id="item-comparison-tooltip" class="item-comparison-tooltip hidden"></div>
     </div>
+
+    <div id="loading-screen" class="screen">
+        <h1 data-i18n="game.title">Path of Heroes</h1>
+        <div class="loading-text" data-i18n="loading.text">Loading...</div>
+        <div class="loading-progress-container"><div id="loading-progress" class="loading-progress"></div></div>
+    </div>
+
+    <div id="main-menu" class="screen hidden">
+        <h1 data-i18n="game.title">Path of Heroes</h1>
+        <div class="menu-buttons">
+            <button id="btn-new-game" data-i18n="menu.new_game">New Game</button>
+            <button id="btn-load-game" data-i18n="menu.load_game">Load Game</button>
+            <button id="btn-options" data-i18n="menu.options">Options</button>
+        </div>
+    </div>
+
+    <div id="character-selection" class="screen hidden">
+        <h1 data-i18n="character.select_title">Choose Your Hero</h1>
+        <div id="character-tabs"></div>
+        <div id="character-details">
+            <div id="hero-portrait"></div>
+            <h2 id="hero-name"></h2>
+            <h3 id="hero-title"></h3>
+            <p id="hero-desc"></p>
+            <button id="open-stats-modal" data-i18n="character.base_stats">Base Stats</button>
+            <div id="core-strengths-list"></div>
+        </div>
+        <div class="nav-buttons">
+            <button id="btn-char-back" data-i18n="menu.back">Back</button>
+            <button id="start-game-btn" data-i18n="character.start_journey">Start Journey</button>
+        </div>
+        <div id="stats-modal-overlay" class="modal-overlay">
+            <div id="modal-stats">
+                <button id="close-stats-modal">×</button>
+                <div id="modal-stats-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="battle-screen" class="screen hidden">
+        </div>
+
+    <div id="inventory-screen" class="screen hidden">
+        </div>
 
     <script src="js/core/config.js"></script>
     <script src="js/core/localization.js"></script>
     <script src="js/core/state.js"></script>
-    <script src="js/systems/combat.js"></script>
     <script src="js/systems/inventory.js"></script>
+    <script src="js/systems/combat.js"></script>
     <script src="js/core/game.js"></script>
     <script src="js/debug.js"></script>
     <script src="js/main.js"></script>
