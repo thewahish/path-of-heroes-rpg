@@ -1,0 +1,17 @@
+# Ignore Visual Studio folders
+.vs/
+*.db
+*.db-shm
+*.db-wal
+*.suo
+*.sqlite
+*.backup.json
+
+# Ignore VS-specific files
+ProjectSettings.json
+VSWorkspaceState.json
+
+# Ignore temp & system stuff
+*.user
+*.log
+FileContentIndex/
