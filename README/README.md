@@ -280,3 +280,26 @@ v36.2: Reconstructed full debug.js implementation for missing file. Updated arch
 v36.3: Updated scope to 10-floor demo (1 biome, boss at 10); full game 60 floors (6 biomes). Removed dungeon map for random events. Changed boss/biome to every 10 floors, checkpoints every 5. Added randomized narratives/mob names. Updated death respawn (Floors 1,5). Removed Konami code from debugger (mobile-only). Added item level hover display. Updated progression (shrine random increases). Enforced rules override in old code. Adjusted orientation phrasing and inventory expand/minimize note. Updated biomes table with planned full game.
 v36.4: Added file identifier comment rule to Jump Code system (e.g., '// filename.js' at top of code blocks for standalone copying).
 v36.5: (Current) Refined Chat Management rule to be qualitative (suggest on truncation/performance issues) and user-triggered (prepare new chat if user says it's heavy, regardless of assessment).
+Path of Heroes – Master README (v42.0)
+
+Last Updated: July 13, 2025
+
+Current Status: In progress (~85% complete). Character selection is functional. **The battle screen now dynamically renders the UI based on game state, and action buttons are functional.** Next step is to implement the full combat turn-flow logic in `combat.js`.
+
+...
+
+#### UI & Screen Design Blueprints
+
+| Screen/Feature | Design Blueprint File | Status | Key Functionality |
+| :--- | :--- | :--- | :--- |
+| ... | ... | ... | ... |
+| Battle Screen | `designs/battle.html` | **Implemented (UI Rendering)** | Engage in turn-based combat. UI is now dynamically rendered. |
+| ... | ... | ... | ... |
+
+...
+
+#### Log of Major Historical Updates
+
+...
+- **v41.0:** Established a new baseline by accepting user-provided complete code.
+- **v42.0:** **(Current)** Implemented the dynamic UI rendering for the battle screen. The `updateBattleDisplay` function now generates the player/enemy portraits, info panels, and health/resource bars based on game state. Added static HTML for action buttons to resolve event listener attachment errors.
