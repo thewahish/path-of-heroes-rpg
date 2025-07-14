@@ -85,8 +85,3 @@
 #credits-button:hover {
     background: linear-gradient(to right, #af7ac5, #c39bd9);
 }
-
-/* RTL adjustments for Intro screen */
-[dir="rtl"] .intro-title {
-    /* No specific RTL adjustment needed for centered text */
-}
