@@ -21,7 +21,9 @@
         
         <div id="debug-panel" class="hidden">
             <button id="debug-toggle-btn" aria-label="Close Debug Panel">×</button>
-            <div id="debug-content"></div>
+            <pre id="debug-content"></pre>
+            <hr class="debug-divider">
+            <div id="debug-log-content"></div>
         </div>
 
         <div id="global-hud" class="hidden"></div>
@@ -47,7 +49,7 @@
             <h1 class="screen-title" data-i18n="character.select_title">Choose Your Hero</h1>
             
             <div class="char-tabs" id="character-tabs">
-                </div>
+            </div>
 
             <div class="content-area">
                 <div class="portrait-panel" id="hero-portrait"></div>
@@ -59,7 +61,7 @@
                     <h3 class="hero-title" id="hero-title"></h3>
                     <p class="hero-desc" id="hero-desc"></p>
                     <div class="core-strengths" id="core-strengths-list">
-                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -75,16 +77,24 @@
                         <button class="modal-close-btn" id="close-stats-modal">&times;</button>
                     </div>
                     <div class="stats-grid" id="modal-stats-grid">
-                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div id="battle-screen" class="screen hidden">
+            <div id="battle-dynamic-content"></div>
+            <div class="action-buttons-bar">
+                <button id="btn-attack" class="b-action-btn" data-i18n="battle.attack">Attack</button>
+                <button id="btn-skill" class="b-action-btn" data-i18n="battle.skill">Skill</button>
+                <button id="btn-item" class="b-action-btn" data-i18n="battle.item">Item</button>
+                <button id="btn-defend" class="b-action-btn" data-i18n="battle.defend">Defend</button>
+                <button id="btn-flee" class="b-action-btn" data-i18n="battle.flee">Flee</button>
             </div>
+        </div>
 
         <div id="inventory-screen" class="screen hidden">
-            </div>
+        </div>
 
         <div id="item-tooltip" class="item-tooltip hidden"></div>
         <div id="item-comparison-tooltip" class="item-comparison-tooltip hidden"></div>

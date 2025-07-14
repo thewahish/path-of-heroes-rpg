@@ -1,4 +1,5 @@
-// Game State Management
+// Game State Management State.js
+// This module manages the game state, including player data, inventory, and game progress.
 window.GameState = {
     current: {
         gameStarted: false,

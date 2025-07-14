@@ -248,9 +248,68 @@ window.PathOfHeroes = class PathOfHeroes {
     }
     
     updateBattleDisplay() {
-        // This function will be implemented later to match the new battle screen design
-        // For now, it remains a placeholder.
-        console.log("Placeholder: updateBattleDisplay called.");
+        const dynamicContent = document.getElementById('battle-dynamic-content');
+        if (!dynamicContent) {
+            console.error("Battle dynamic content area not found!");
+            return;
+        }
+
+        const player = this.state.current.player;
+        const enemy = this.state.current.enemies[0]; // Assuming one enemy for now
+        if (!player || !enemy) {
+            dynamicContent.innerHTML = ''; // Clear if no battle
+            return;
+        }
+
+        const lang = this.localization.getCurrentLanguage();
+
+        const createBar = (label, value, max, barClass) => {
+            const percentage = max > 0 ? (Math.ceil(value) / max) * 100 : 0;
+            return `
+                <div class="bar-container">
+                    <div class="bar-label">
+                        <span>${label}</span>
+                        <span>${Math.ceil(value)} / ${max}</span>
+                    </div>
+                    <div class="bar-bg">
+                        <div class="bar-fill ${barClass}" style="width: ${percentage}%;"></div>
+                    </div>
+                </div>
+            `;
+        };
+        
+        const createInfoPanel = (character) => {
+            if(!character) return '';
+            const resourceName = character.resource ? character.resource.name[lang] : '';
+            const resourceBarClass = character.resource ? `${character.resource.type}-bar` : '';
+            
+            return `
+                <div class="info-panel">
+                    <div class="character-header">${this.localization.getCharacterName(character)}</div>
+                    ${createBar('HP', character.stats.hp, character.stats.maxHp, 'hp-bar')}
+                    ${character.resource ? createBar(resourceName, character.resource.current, character.resource.max, resourceBarClass) : ''}
+                </div>
+            `;
+        };
+        
+        const battleHTML = `
+            <div class="battle-background"></div>
+            <div class="battle-ui-grid">
+                <div class="combat-log"><span id="combat-log-text">Battle Begins!</span></div>
+                <div class="portraits-area">
+                    <div class="portrait player-portrait">${player.sprite}</div>
+                    <div class="vs-text">VS</div>
+                    <div class="portrait enemy-portrait">${enemy.sprite}</div>
+                </div>
+                <div class="info-panels-area">
+                    ${createInfoPanel(player)}
+                    ${createInfoPanel(enemy)}
+                </div>
+            </div>
+        `;
+
+        dynamicContent.innerHTML = battleHTML;
+        this.localization.updateAllText();
     }
 
     updateBar(barId, current, max) {
