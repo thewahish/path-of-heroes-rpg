@@ -15,7 +15,7 @@ window.CombatSystem = class CombatSystem {
         };
 
         this.calculateTurnOrder();
-        this.game.updateBattleDisplay();
+        this.game.updateBattleDisplay(); // Tell the UI to render the initial state
         this.startNextTurn();
     }
 
@@ -46,14 +46,13 @@ window.CombatSystem = class CombatSystem {
 
         const currentActor = this.getCurrentActor();
         if (!currentActor) {
-            // Check if all enemies are defeated and player is alive
             if (this.currentBattle.enemies.length === 0 && this.currentBattle.player.stats.hp > 0) {
-                this.endBattle(true); // All enemies defeated, victory
+                this.endBattle(true);
             }
             return;
         }
 
-        this.game.updateBattleDisplay(); // Update UI at the start of each turn
+        this.game.updateBattleDisplay(); // Tell the UI to update for the new turn
 
         if (currentActor.type === 'player') {
             this.startPlayerTurn();
@@ -63,19 +62,26 @@ window.CombatSystem = class CombatSystem {
     }
 
     startPlayerTurn() {
-        this.enablePlayerActions(true);
+        // Delegate UI button enabling/disabling to the BattleScreen module
+        if (this.game.activeScreenModule && typeof this.game.activeScreenModule.enablePlayerActions === 'function') {
+            this.game.activeScreenModule.enablePlayerActions(true);
+        } else {
+            console.warn("CombatSystem: BattleScreen module not active or missing enablePlayerActions.");
+        }
         this.regenerateResource(this.currentBattle.player);
         this.game.updateBattleDisplay(); // Re-render to show resource regen
         this.game.updateElement('combat-log-text', this.game.localization.getText('battle.your_turn'));
     }
 
     startEnemyTurn(enemy) {
-        this.enablePlayerActions(false);
+        // Delegate UI button enabling/disabling to the BattleScreen module
+        if (this.game.activeScreenModule && typeof this.game.activeScreenModule.enablePlayerActions === 'function') {
+            this.game.activeScreenModule.enablePlayerActions(false);
+        }
         this.game.updateElement('combat-log-text', `${this.game.localization.getText('battle.enemy_turn')}: ${this.game.localization.getCharacterName(enemy)}`);
         
         setTimeout(() => {
             this.executeEnemyAction(enemy);
-            // After enemy action, if battle still active, advance turn
             if (this.currentBattle) { 
                 this.endEnemyTurn();
             }
@@ -121,18 +127,16 @@ window.CombatSystem = class CombatSystem {
         if (!currentActor || currentActor.type !== 'player') return;
 
         const inventory = this.game.state.current.inventory;
-        const potion = inventory.find(item => item.consumable && item.effect === 'heal_hp'); // Find any heal potion
+        const potion = inventory.find(item => item.consumable && item.effect === 'heal_hp');
 
         if (!potion) {
             this.game.updateElement('combat-log-text', "You don't have any healing items!");
             return; 
         }
 
-        // Pass the actual potion object to useItem
         const wasUsed = this.game.inventory.useItem(potion);
 
         if (wasUsed) {
-            // Item usage counts as a turn
             this.endPlayerTurn();
         } else {
             this.game.updateElement('combat-log-text', "Item could not be used.");
@@ -154,7 +158,7 @@ window.CombatSystem = class CombatSystem {
         
         if (Math.random() < fleeChance) {
             this.game.updateElement('combat-log-text', 'Successfully fled from battle!');
-            setTimeout(() => this.endBattle(false, true), 1000); // Small delay for message
+            setTimeout(() => this.endBattle(false, true), 1000);
         } else {
             this.game.updateElement('combat-log-text', 'Failed to flee!');
             this.endPlayerTurn();
@@ -176,7 +180,7 @@ window.CombatSystem = class CombatSystem {
         if (isCritical) message += ' (Critical Hit!)';
         this.game.updateElement('combat-log-text', message);
         
-        this.game.updateBattleDisplay(); // Update UI after damage calculation
+        this.game.updateBattleDisplay(); // Tell the UI to update after damage calculation
 
         if (target.stats.hp <= 0) {
             this.handleActorDeath({ entity: target, type: attacker.id === 'player' ? 'enemy' : 'player' });
@@ -187,7 +191,7 @@ window.CombatSystem = class CombatSystem {
         if (!caster || !abilityData) return;
         
         caster.resource.current = Math.max(0, caster.resource.current - abilityData.cost);
-        this.game.updateBattleDisplay(); // Update UI to show resource cost
+        this.game.updateBattleDisplay(); // Tell the UI to update to show resource cost
 
         const casterName = this.game.localization.getCharacterName(caster);
         const abilityName = abilityData.name[this.game.localization.getCurrentLanguage()];
@@ -238,11 +242,9 @@ window.CombatSystem = class CombatSystem {
             return;
         }
         
-        // Ensure player is alive before attacking
         if (this.currentBattle.player.stats.hp > 0) {
             this.executeAttack(enemy, this.currentBattle.player);
         } else {
-            // Player is already defeated, end battle
             this.endBattle(false);
         }
     }
@@ -253,9 +255,12 @@ window.CombatSystem = class CombatSystem {
     }
 
     endPlayerTurn() {
-        this.enablePlayerActions(false);
+        // Delegate UI button disabling to the BattleScreen module
+        if (this.game.activeScreenModule && typeof this.game.activeScreenModule.enablePlayerActions === 'function') {
+            this.game.activeScreenModule.enablePlayerActions(false);
+        }
         setTimeout(() => {
-            if (this.currentBattle) { // Ensure battle is still active
+            if (this.currentBattle) {
                 this.advanceTurn();
             }
         }, 1200);
@@ -263,7 +268,7 @@ window.CombatSystem = class CombatSystem {
 
     endEnemyTurn() {
         setTimeout(() => {
-            if (this.currentBattle) { // Ensure battle is still active
+            if (this.currentBattle) {
                 this.advanceTurn();
             }
         }, 1200);
@@ -272,19 +277,17 @@ window.CombatSystem = class CombatSystem {
     advanceTurn() {
         if (!this.currentBattle) return;
 
-        // Filter out defeated actors
         this.currentBattle.turnOrder = this.currentBattle.turnOrder.filter(actor => actor.entity.stats.hp > 0);
         
-        // Check battle end conditions
         const remainingPlayers = this.currentBattle.turnOrder.filter(actor => actor.type === 'player');
         const remainingEnemies = this.currentBattle.turnOrder.filter(actor => actor.type === 'enemy');
 
         if (remainingPlayers.length === 0) {
-            this.endBattle(false); // Player defeated
+            this.endBattle(false);
             return;
         }
         if (remainingEnemies.length === 0) {
-            this.endBattle(true); // All enemies defeated
+            this.endBattle(true);
             return;
         }
 
@@ -303,7 +306,7 @@ window.CombatSystem = class CombatSystem {
 
         setTimeout(() => {
             if (actor.type === 'player') {
-                this.endBattle(false); // Player died
+                this.endBattle(false);
             } else {
                 const loot = this.game.inventory.generateLootDrop(actor.entity, this.game.state.current.currentFloor);
                 if (loot) {
@@ -314,15 +317,12 @@ window.CombatSystem = class CombatSystem {
                     }
                 }
                 
-                // Remove defeated enemy from current battle enemies list
                 this.currentBattle.enemies = this.currentBattle.enemies.filter(e => e.id !== actor.entity.id);
                 this.game.state.current.enemiesDefeated++;
                 
-                // If all enemies are defeated in this battle
                 if (this.currentBattle.enemies.length === 0) {
-                    this.endBattle(true); // Victory
+                    this.endBattle(true);
                 } else {
-                    // If more enemies remain, continue the battle
                     this.advanceTurn(); 
                 }
             }
@@ -330,8 +330,11 @@ window.CombatSystem = class CombatSystem {
     }
 
     endBattle(victory, fled = false) {
-        this.enablePlayerActions(false);
-        this.currentBattle = null; // Clear current battle state
+        // Delegate UI button disabling to the BattleScreen module
+        if (this.game.activeScreenModule && typeof this.game.activeScreenModule.enablePlayerActions === 'function') {
+            this.game.activeScreenModule.enablePlayerActions(false);
+        }
+        this.currentBattle = null;
         
         if (victory) {
             this.game.victory();
@@ -342,19 +345,6 @@ window.CombatSystem = class CombatSystem {
         }
     }
 
-    enablePlayerActions(enabled) {
-        // Target elements by ID since we added them in index.html
-        const attackBtn = document.getElementById('btn-attack');
-        const skillBtn = document.getElementById('btn-skill');
-        const itemBtn = document.getElementById('btn-item');
-        const defendBtn = document.getElementById('btn-defend');
-        const fleeBtn = document.getElementById('btn-flee');
-
-        [attackBtn, skillBtn, itemBtn, defendBtn, fleeBtn].forEach(btn => {
-            if (btn) {
-                btn.disabled = !enabled;
-                btn.classList.toggle('disabled', !enabled);
-            }
-        });
-    }
+    // enablePlayerActions is now handled by js/screens/battle.js
+    // Removed from here to decouple combat logic from direct UI manipulation.
 };

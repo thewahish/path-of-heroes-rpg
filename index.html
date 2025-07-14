@@ -9,10 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Noto+Sans:wght@400;600&family=Noto+Sans+Arabic:wght@400;600&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/battle.css">
-    <link rel="stylesheet" href="css/inventory.css">
-</head>
+    <link rel="stylesheet" href="css/reset.css"> <link rel="stylesheet" href="css/global/main.css"> </head>
 
 <body>
     <div id="game-wrapper">
@@ -36,94 +33,12 @@
             <button id="hud-inventory-btn" class="hud-btn" data-i18n="hud.inventory">Inventory</button>
         </div>
 
-        <div id="loading-screen" class="screen">
-            <h1 class="loading-title" data-i18n="game.title">Path of Heroes</h1>
-            <p class="loading-text" data-i18n="loading.text">Loading...</p>
-            <div class="loading-progress-container">
-                <div id="loading-progress" class="loading-progress"></div>
-            </div>
-        </div>
-
-        <div id="main-menu" class="screen hidden">
-            <h1 class="game-title" data-i18n="game.title">Path of Heroes</h1>
-            <div class="button-group">
-                <button id="btn-new-game" class="menu-btn primary action-btn" data-i18n="menu.new_game">New Game</button>
-                <button id="btn-load-game" class="menu-btn action-btn" data-i18n="menu.load_game">Load Game</button>
-                <button id="btn-options" class="menu-btn action-btn" data-i18n="menu.options">Options</button>
-            </div>
-        </div>
-
-        <div id="character-selection" class="screen hidden">
-            <h1 class="screen-title" data-i18n="character.select_title">Choose Your Hero</h1>
-            
-            <div class="char-tabs" id="character-tabs">
-            </div>
-
-            <div class="content-area">
-                <div class="portrait-panel" id="hero-portrait"></div>
-                <div class="info-panel">
-                    <div class="hero-name-header">
-                        <h2 class="hero-name" id="hero-name"></h2>
-                        <button id="open-stats-modal" title="Show Base Stats">i</button>
-                    </div>
-                    <h3 class="hero-title" id="hero-title"></h3>
-                    <p class="hero-desc" id="hero-desc"></p>
-                    <div class="core-strengths" id="core-strengths-list">
-                    </div>
-                </div>
-            </div>
-
-            <div class="action-buttons">
-                <button id="btn-char-back" class="btn back" data-i18n="menu.back">Back</button>
-                <button id="start-game-btn" class="btn start" data-i18n="character.start_journey" disabled>Start Journey</button>
-            </div>
-
-            <div class="modal-overlay" id="stats-modal-overlay">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 class="modal-title" data-i18n="character.base_stats">Base Stats</h3>
-                        <button class="modal-close-btn" id="close-stats-modal">&times;</button>
-                    </div>
-                    <div class="stats-grid" id="modal-stats-grid">
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="battle-screen" class="screen hidden">
-            <div id="battle-dynamic-content"></div> 
-            <div class="action-buttons-bar">
-                <button id="btn-attack" class="b-action-btn" data-i18n="battle.attack">Attack</button>
-                <button id="btn-skill" class="b-action-btn" data-i18n="battle.skill">Skill</button>
-                <button id="btn-item" class="b-action-btn" data-i18n="battle.item">Item</button>
-                <button id="btn-defend" class="b-action-btn" data-i18n="battle.defend">Defend</button>
-                <button id="btn-flee" class="b-action-btn" data-i18n="battle.flee">Flee</button>
-            </div>
-        </div>
-
-        <div id="inventory-screen" class="screen hidden">
-            <div class="inventory-header">
-                <button id="btn-inv-close" class="btn back" data-i18n="menu.back">Back</button>
-                <h1 class="screen-title" data-i18n="hud.inventory">Inventory</h1>
-                <span><span data-i18n="hud.gold">Gold</span>: <span id="inventory-gold-value">0</span></span>
-            </div>
-            <div class="inventory-container">
-                <div class="left-panel">
-                    <h2 class="section-title" data-i18n="inventory.equipment">Equipment</h2>
-                    <div class="equipment-grid" id="equipment-grid">
-                        </div>
-                    <h2 class="section-title" data-i18n="inventory.stats">Character Stats</h2>
-                    <table class="char-stats-table" id="inventory-stats-table">
-                        </table>
-                </div>
-                <div class="right-panel">
-                    <h2 class="section-title" data-i18n="inventory.items">Items</h2>
-                    <div class="inventory-actions">
-                        <button id="btn-inv-sort" class="action-btn" data-i18n="inventory.sort">Sort Items</button>
-                        <button id="btn-inv-sell-common" class="action-btn" data-i18n="inventory.sell_common">Sell Common</button>
-                    </div>
-                    <div class="inventory-grid" id="inventory-grid">
-                        </div>
+        <div id="app-content">
+            <div id="loading-screen" class="screen">
+                <h1 class="loading-title" data-i18n="game.title">Path of Heroes</h1>
+                <p class="loading-text" data-i18n="loading.text">Loading...</p>
+                <div class="loading-progress-container">
+                    <div id="loading-progress" class="loading-progress"></div>
                 </div>
             </div>
         </div>
@@ -140,5 +55,5 @@
     <script src="js/core/game.js"></script>
     <script src="js/debug.js"></script>
     <script src="js/main.js"></script>
-</body>
+    </body>
 </html>

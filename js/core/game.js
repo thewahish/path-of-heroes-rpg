@@ -4,6 +4,7 @@ window.PathOfHeroes = class PathOfHeroes {
     constructor() {
         this.initialized = false;
         this.debugUpdateInterval = null;
+        this.activeScreenModule = null; // Track the currently active screen module
         this.bindMethods();
     }
 
@@ -29,7 +30,7 @@ window.PathOfHeroes = class PathOfHeroes {
         this.showOptions = this.showOptions.bind(this);
         this.showStatsModal = this.showStatsModal.bind(this);
         this.hideStatsModal = this.hideStatsModal.bind(this);
-        this.updateGlobalHUD = this.updateGlobalHUD.bind(this); // Bind new method
+        this.updateGlobalHUD = this.updateGlobalHUD.bind(this);
     }
 
     async init() {
@@ -59,15 +60,7 @@ window.PathOfHeroes = class PathOfHeroes {
     }
 
     handleKeyDown(event) {
-        if (this.state.current.currentScreen === 'battle-screen') {
-            switch(event.code) {
-                case 'KeyA': this.combat?.playerAttack(); break;
-                case 'KeyS': this.combat?.playerUseSkill(0); break;
-                case 'KeyD': this.combat?.playerDefend(); break;
-                case 'KeyF': this.combat?.playerFlee(); break;
-                case 'KeyI': this.combat?.playerUseItem(); break;
-            }
-        }
+        // Inventory toggle for all non-battle game screens
         if (event.code === 'KeyI' && this.state.current.gameStarted) {
             if (this.state.current.currentScreen !== 'battle-screen') {
                  if (this.state.current.currentScreen === 'inventory-screen') {
@@ -77,54 +70,142 @@ window.PathOfHeroes = class PathOfHeroes {
                 }
             }
         }
+        // Battle actions only if battle screen is active AND it's player's turn
+        if (this.state.current.currentScreen === 'battle-screen' && this.combat.getCurrentActor()?.type === 'player') {
+            switch(event.code) {
+                case 'KeyA': this.combat?.playerAttack(); break;
+                case 'KeyS': this.combat?.playerUseSkill(0); break;
+                case 'KeyD': this.combat?.playerDefend(); break;
+                case 'KeyF': this.combat?.playerFlee(); break;
+                case 'KeyI': this.combat?.playerUseItem(); break; // 'I' for item in battle also
+            }
+        }
     }
 
     startLoadingSequence() {
         let progress = 0;
         const progressBar = document.getElementById('loading-progress');
+        const appContent = document.getElementById('app-content');
         
         const interval = setInterval(() => {
             progress += Math.random() * 20 + 5;
             if (progress >= 100) {
                 progress = 100;
                 clearInterval(interval);
-                setTimeout(() => this.showMainMenu(), 500);
+                setTimeout(() => {
+                    // Remove loading screen HTML if present
+                    const loadingScreen = document.getElementById('loading-screen');
+                    if(loadingScreen && appContent) {
+                        appContent.innerHTML = '';
+                    }
+                    this.showMainMenu();
+                }, 500);
             }
             if (progressBar) progressBar.style.width = `${progress}%`;
         }, 200);
     }
 
-    setScreen(screenId) {
-        document.querySelectorAll('.screen').forEach(screen => {
-            screen.classList.add('hidden');
-        });
-        
-        const targetScreen = document.getElementById(screenId);
-        if (targetScreen) {
-            targetScreen.classList.remove('hidden');
-            this.state.current.currentScreen = screenId;
+    async setScreen(screenId) {
+        const appContent = document.getElementById('app-content');
+        if (!appContent) {
+            console.error("App content div not found!");
+            return;
         }
 
-        // Manage global HUD visibility based on screen
+        // 1. Destroy previous screen's module if active
+        if (this.activeScreenModule && typeof this.activeScreenModule.destroy === 'function') {
+            this.activeScreenModule.destroy();
+            this.activeScreenModule = null;
+        }
+        // Remove previous screen's CSS if dynamically loaded (more advanced for later)
+        // For now, assume CSS is mostly global or specific to the new screen
+        
+        // 2. Load HTML for the new screen
+        try {
+            const htmlPath = `screens/${screenId}.html`;
+            const response = await fetch(htmlPath);
+            if (!response.ok) throw new Error(`Failed to load screen HTML: ${response.statusText}`);
+            const htmlContent = await response.text();
+            appContent.innerHTML = htmlContent;
+            this.state.current.currentScreen = screenId; // Update game state immediately
+        } catch (error) {
+            console.error(`Error loading screen ${screenId}:`, error);
+            // Fallback or error display
+            appContent.innerHTML = `<div class="screen error-screen"><h1>Error loading screen!</h1><p>${error.message}</p></div>`;
+            return;
+        }
+
+        // 3. Load/ensure CSS for the new screen
+        // We'll manage CSS by removing/adding link tags for screen-specific styles
+        // Remove all screen-specific CSS links first
+        document.querySelectorAll('link[data-screen-css]').forEach(link => link.remove());
+        
+        const cssPath = `css/screens/${screenId}.css`;
+        // Check if the CSS file exists before trying to load it (optional, but good for flexibility)
+        // For simplicity, we'll assume it exists if it's supposed to.
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = cssPath;
+        link.setAttribute('data-screen-css', screenId); // Mark it as screen-specific CSS
+        document.head.appendChild(link);
+        
+        // 4. Load and initialize JavaScript module for the new screen
+        const screenJsPath = `js/screens/${screenId}.js`;
+        try {
+            // Check if the script is already loaded (e.g., if re-entering a screen)
+            if (!window[this.capitalizeFirstLetter(screenId) + 'Screen']) { // e.g. window.BattleScreen
+                const script = document.createElement('script');
+                script.src = screenJsPath;
+                script.type = 'module'; // Use type="module" for independent modules if needed
+                script.setAttribute('data-screen-js', screenId); // Mark it as screen-specific JS
+                await new Promise((resolve, reject) => {
+                    script.onload = resolve;
+                    script.onerror = reject;
+                    document.head.appendChild(script);
+                });
+            }
+
+            // Initialize the screen module
+            const ScreenClass = window[this.capitalizeFirstLetter(screenId) + 'Screen'];
+            if (ScreenClass) {
+                this.activeScreenModule = new ScreenClass(this);
+                if (typeof this.activeScreenModule.init === 'function') {
+                    this.activeScreenModule.init();
+                }
+            } else {
+                console.warn(`No JavaScript module found for screen: ${screenId}`);
+            }
+
+        } catch (error) {
+            console.error(`Error loading or initializing JS for screen ${screenId}:`, error);
+        }
+
+        // 5. Manage global HUD visibility
         const globalHud = document.getElementById('global-hud');
         if (globalHud) {
-            if (screenId === 'main-menu' || screenId === 'character-selection' || screenId === 'loading-screen') {
+            if (['main-menu', 'character-selection', 'loading-screen'].includes(screenId)) {
                 globalHud.classList.add('hidden');
             } else {
                 globalHud.classList.remove('hidden');
                 this.updateGlobalHUD();
             }
         }
+
+        this.updateLanguageDisplay(); // Ensure language is applied to newly loaded content
+    }
+
+    capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
     showMainMenu() {
-        this.setScreen('main-menu');
-        this.updateLanguageDisplay();
+        this.setScreen('main_menu'); // Will load screens/main_menu.html etc.
     }
 
     showCharacterSelect() {
-        this.setScreen('character-selection');
-        this.updateLanguageDisplay();
+        this.setScreen('character_selection'); // Will load screens/character_selection.html etc.
+        // Special setup for character selection as it relies on game config
+        this.setupCharacterScreen();
     }
     
     showLoadGame() { 
@@ -139,11 +220,12 @@ window.PathOfHeroes = class PathOfHeroes {
         if (!this.localization) return;
         this.localization.updateAllText();
         
-        if (this.state.current.currentScreen === 'character-selection') {
-            this.setupCharacterScreen();
+        // Specific UI updates for currently active screen handled by its module
+        if (this.activeScreenModule && typeof this.activeScreenModule.updateBattleUI === 'function') {
+             this.activeScreenModule.updateBattleUI(); // For battle screen
         }
         if (this.state.current.currentScreen === 'inventory-screen') {
-            this.inventory.updateDisplay();
+            this.inventory.updateDisplay(); // Inventory still handled by system module for now
         }
         this.updateGlobalHUD(); // Ensure HUD updates on language change
     }
@@ -155,9 +237,17 @@ window.PathOfHeroes = class PathOfHeroes {
         this.updateLanguageDisplay();
     }
     
+    // NOTE: setupCharacterScreen will need to be re-evaluated for its new home
+    // It currently depends on direct DOM elements that will be loaded dynamically.
+    // For now, keeping it here but its calls in showCharacterSelect might need adjustment.
     setupCharacterScreen() {
+        // This function will need to move to js/screens/character_selection.js later
+        // For now, it will run after character_selection.html is loaded.
         const tabsContainer = document.getElementById('character-tabs');
-        if (!tabsContainer) return;
+        if (!tabsContainer) {
+            console.warn("setupCharacterScreen: Character tabs container not found.");
+            return;
+        }
         
         tabsContainer.innerHTML = '';
         const characters = Object.values(window.GameConfig.CHARACTERS);
@@ -177,6 +267,8 @@ window.PathOfHeroes = class PathOfHeroes {
         }
     }
     
+    // NOTE: selectCharacter and displayCharacterDetails also need to move to character_selection.js
+    // Temporarily keeping them here for current functionality.
     selectCharacter(characterId) {
         document.querySelectorAll('#character-tabs .tab-btn').forEach(tab => {
             tab.classList.toggle('active', tab.dataset.characterId === characterId);
@@ -225,6 +317,8 @@ window.PathOfHeroes = class PathOfHeroes {
         }
     }
 
+    // NOTE: showStatsModal and hideStatsModal also need to move to character_selection.js
+    // Temporarily keeping them here for current functionality.
     showStatsModal(characterId) {
         const modal = document.getElementById('stats-modal-overlay');
         const grid = document.getElementById('modal-stats-grid');
@@ -269,91 +363,22 @@ window.PathOfHeroes = class PathOfHeroes {
     enterBattle() {
         const enemies = this.generateEnemiesForFloor();
         this.state.startBattle(enemies);
-        this.setScreen('battle-screen'); // Use the new setScreen method
-        this.combat.startBattle(enemies);
+        this.setScreen('battle'); // Will load screens/battle.html and js/screens/battle.js
+        // The activeScreenModule (BattleScreen instance) will handle its own updateBattleUI()
     }
     
+    // This function is now responsible for telling the active screen's UI module to update
+    // It's no longer generating HTML dynamically, but telling the BattleScreen to update its elements
     updateBattleDisplay() {
-        const dynamicContent = document.getElementById('battle-dynamic-content');
-        if (!dynamicContent) {
-            console.error("Battle dynamic content area not found!");
-            return;
+        if (this.activeScreenModule && typeof this.activeScreenModule.updateBattleUI === 'function') {
+            this.activeScreenModule.updateBattleUI();
+        } else {
+            console.warn("No active screen module with updateBattleUI method found. Cannot update battle display.");
         }
-
-        const player = this.state.current.player;
-        const enemy = this.state.current.enemies[0]; // Assuming one enemy for now
-        if (!player || !enemy) {
-            dynamicContent.innerHTML = ''; // Clear if no battle
-            return;
-        }
-
-        const lang = this.localization.getCurrentLanguage();
-        const playerResourceName = player.resource ? player.resource.name[lang] : '';
-        const playerResourceBarClass = player.resource ? `${player.resource.type}-bar` : '';
-
-        const createBarHtml = (label, current, max, barClass) => {
-            const percentage = max > 0 ? (Math.ceil(current) / max) * 100 : 0;
-            return `
-                <div class="bar-container">
-                    <div class="bar-label">
-                        <span>${label}</span>
-                        <span>${Math.ceil(current)} / ${max}</span>
-                    </div>
-                    <div class="bar-bg">
-                        <div class="bar-fill ${barClass}" style="width: ${percentage}%;"></div>
-                    </div>
-                </div>
-            `;
-        };
-        
-        const createInfoPanelHtml = (character, isPlayer = false) => {
-            if(!character) return '';
-            const resourceSection = isPlayer && character.resource ? 
-                createBarHtml(playerResourceName, character.resource.current, character.resource.max, playerResourceBarClass) : '';
-
-            // Stats table generation
-            const statsHtml = `
-                <table class="stats-table">
-                    <tr><td>${this.localization.getText('stat.atk')}</td><td>${character.stats.attack}</td></tr>
-                    <tr><td>${this.localization.getText('stat.def')}</td><td>${character.stats.defense}</td></tr>
-                    <tr><td>${this.localization.getText('stat.spd')}</td><td>${character.stats.speed}</td></tr>
-                    <tr><td>${this.localization.getText('stat.crit')}</td><td>${character.stats.crit}%</td></tr>
-                </table>
-            `;
-
-            return `
-                <div class="info-panel">
-                    <div class="character-header">${this.localization.getCharacterName(character)}</div>
-                    ${createBarHtml(this.localization.getText('stat.hp'), character.stats.hp, character.stats.maxHp, 'hp-bar')}
-                    ${resourceSection}
-                    ${statsHtml}
-                </div>
-            `;
-        };
-        
-        const battleHTML = `
-            <div class="battle-background"></div>
-            <div class="battle-ui-grid">
-                <div class="combat-log"><span id="combat-log-text">Battle Begins!</span></div>
-                <div class="portraits-area">
-                    <div class="portrait player-portrait">${player.sprite}</div>
-                    <div class="vs-text" data-i18n="ui.vs">VS</div>
-                    <div class="portrait enemy-portrait">${enemy.sprite}</div>
-                </div>
-                <div class="info-panels-area">
-                    ${createInfoPanelHtml(player, true)}
-                    ${createInfoPanelHtml(enemy, false)}
-                </div>
-            </div>
-        `;
-
-        dynamicContent.innerHTML = battleHTML;
-        this.localization.updateAllText(); // Ensure dynamic text is localized
     }
 
     updateBar(barId, current, max) {
-        // This function is currently not directly used by updateBattleDisplay,
-        // as bars are recreated with innerHTML. Keeping for potential future use.
+        // This function remains a utility that screen modules can use
         const bar = document.getElementById(barId);
         if (bar) {
             const percentage = (max > 0) ? (current / max) * 100 : 0;
@@ -362,6 +387,7 @@ window.PathOfHeroes = class PathOfHeroes {
     }
 
     updateElement(id, value) {
+        // This function remains a utility that screen modules can use
         const element = document.getElementById(id);
         if (element) {
             element.textContent = value;
@@ -380,26 +406,23 @@ window.PathOfHeroes = class PathOfHeroes {
             alert('Start a game first!');
             return;
         }
-        this.setScreen('inventory-screen'); // Use the new setScreen method
+        this.setScreen('inventory'); // Will load screens/inventory.html and js/screens/inventory.js (once created)
         this.inventory.updateDisplay();
         this.updateElement('inventory-gold-value', this.state.current.gold); // Update gold in inventory
     }
     
     closeInventory() {
         if (this.state.current.battleInProgress) {
-            this.setScreen('battle-screen'); // Use the new setScreen method
-            this.updateBattleDisplay(); // Re-render battle UI
+            this.setScreen('battle'); // Return to battle screen
         } else {
             // TODO: This should return to the previous non-inventory screen, not always main menu.
-            // For now, let's return to Main Menu if not in battle.
-            this.showMainMenu(); // Use the new setScreen method
+            this.showMainMenu(); // For now, return to Main Menu if not in battle.
         }
     }
 
     generateEnemiesForFloor() {
         const floor = this.state.current.currentFloor;
         const enemyTypes = Object.keys(window.GameConfig.ENEMIES);
-        // Ensure there's at least one enemy, even if random pick fails somehow
         const enemyType = enemyTypes.length > 0 ? enemyTypes[Math.floor(Math.random() * enemyTypes.length)] : null;
         if (!enemyType) {
             console.error("No enemy types defined in GameConfig.ENEMIES!");
