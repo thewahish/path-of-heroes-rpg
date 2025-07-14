@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Shrine</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #0e0a0a url('https://images.unsplash.com/photo-1606925775944-4763a5f9eefa?fit=crop&w=420&q=80') no-repeat center;
+      background-size: cover;
+      font-family: 'Cinzel', serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .shrine-container {
+      max-width: 420px;
+      width: 100%;
+      padding: 2rem 1rem;
+      background: linear-gradient(to bottom, rgba(25, 20, 30, 0.9), rgba(10, 5, 15, 0.95));
+      color: #f0e6d2;
+      text-align: center;
+      border-radius: 12px;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      color: #f1c40f;
+      text-shadow: 0 0 12px #f1c40f;
+    }
+
+    .blessing-options {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .blessing-card {
+      background: rgba(40, 30, 15, 0.8);
+      border: 2px solid #f1c40f;
+      border-radius: 10px;
+      padding: 1rem;
+      cursor: pointer;
+      box-shadow: 0 0 8px #f1c40f66;
+      transition: all 0.2s ease;
+    }
+
+    .blessing-card:hover {
+      background: rgba(70, 50, 20, 0.9);
+      box-shadow: 0 0 15px #f1c40f;
+    }
+
+    .blessing-card h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1.2rem;
+      color: #fff8d0;
+    }
+
+    .blessing-card p {
+      margin: 0;
+      font-size: 0.95rem;
+      color: #ddd;
+    }
+
+    .confirm-btn {
+      background-color: #f1c40f;
+      border: none;
+      color: #1a1a1a;
+      font-weight: bold;
+      padding: 0.75rem;
+      width: 100%;
+      font-size: 1.1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .confirm-btn:hover {
+      background-color: #ffe600;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="shrine-container">
+    <h1>Blessings of the Shrine</h1>
+
+    <div class="blessing-options">
+      <div class="blessing-card">
+        <h3>💖 Vital Surge</h3>
+        <p>+15% Max HP permanently</p>
+      </div>
+      <div class="blessing-card">
+        <h3>🔥 Blade of Wrath</h3>
+        <p>+25% Critical Hit for next 3 battles</p>
+      </div>
+      <div class="blessing-card">
+        <h3>🛡️ Divine Barrier</h3>
+        <p>Gain a shield that absorbs 50 damage</p>
+      </div>
+    </div>
+
+    <button class="confirm-btn">Confirm Blessing</button>
+  </div>
+
+</body>
+</html>

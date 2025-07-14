@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Game Over</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #1a0000 url('https://images.unsplash.com/photo-1523995462484-5aa3d65f51e2?fit=crop&w=420&q=80') no-repeat center;
+      background-size: cover;
+      font-family: 'Cinzel', serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .game-over-container {
+      max-width: 420px;
+      width: 100%;
+      padding: 2rem 1rem;
+      background: linear-gradient(to bottom, rgba(60, 0, 0, 0.9), rgba(30, 0, 0, 0.95));
+      color: #f0e6d2;
+      text-align: center;
+      border: 2px solid #400000;
+      border-radius: 12px;
+      box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 8px #ff0000;
+    }
+
+    .stats {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid #5a2c2c;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+    }
+
+    .stats p {
+      margin: 0.5rem 0;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      margin-bottom: 1rem;
+      padding: 0.75rem;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #f0e6d2;
+      background-color: rgba(80, 0, 0, 0.8);
+      border: 2px solid #b22222;
+      border-radius: 8px;
+      text-shadow: 0 0 4px #b22222;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .btn:hover {
+      background-color: #a00000;
+      border-color: #ff4444;
+      box-shadow: 0 0 10px #ff4444;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="game-over-container">
+    <h1>You Have Fallen…</h1>
+
+    <div class="stats">
+      <p>Floor Reached: <strong>12</strong></p>
+      <p>XP Earned: <strong>250</strong></p>
+      <p>Gold Lost: <strong>140</strong></p>
+    </div>
+
+    <button class="btn">Retry from Checkpoint</button>
+    <button class="btn">Main Menu</button>
+  </div>
+
+</body>
+</html>

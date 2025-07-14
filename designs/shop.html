@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Merchant's Wares</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #1a0f05 url('https://images.unsplash.com/photo-1585241936931-860eee694d7b?fit=crop&w=420&q=80') no-repeat center;
+      background-size: cover;
+      font-family: 'Cinzel', serif;
+      color: #f0e6d2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .shop-container {
+      max-width: 420px;
+      width: 100%;
+      height: 95vh;
+      padding: 1rem;
+      background: linear-gradient(to bottom, rgba(40, 20, 5, 0.92), rgba(20, 10, 5, 0.98));
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 0 30px rgba(255, 170, 0, 0.15);
+    }
+
+    .shop-header {
+      text-align: center;
+      color: #f1c40f;
+      font-size: 1.6rem;
+      text-shadow: 0 0 8px #f1c40f;
+      margin-bottom: 1rem;
+    }
+
+    .gold-display {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .gold-icon {
+      font-size: 1.5rem;
+      color: gold;
+    }
+
+    .item-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+
+    .item-card {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid #5a4b3a;
+      border-radius: 10px;
+      padding: 0.75rem;
+      text-align: center;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+
+    .item-card:hover {
+      background: rgba(255, 200, 100, 0.1);
+      border-color: #f1c40f;
+    }
+
+    .item-icon {
+      font-size: 2rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .item-name {
+      font-weight: bold;
+      color: #f1c40f;
+      margin-bottom: 0.25rem;
+    }
+
+    .item-desc {
+      font-size: 0.8rem;
+      color: #ddd;
+      margin-bottom: 0.5rem;
+    }
+
+    .item-price {
+      color: gold;
+      font-size: 0.9rem;
+    }
+
+    .shop-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1.5rem;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 0.75rem;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn.buy {
+      background-color: #f1c40f;
+      color: #1a1a1a;
+      margin-left: 0.5rem;
+    }
+
+    .btn.close {
+      background-color: #444;
+      color: #f0e6d2;
+      margin-right: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="shop-container">
+    <div>
+      <div class="shop-header">MERCHANT'S WARES</div>
+      <div class="gold-display">
+        <span class="gold-icon">🪙</span>
+        <span>1370</span>
+      </div>
+
+      <div class="item-grid">
+        <div class="item-card">
+          <div class="item-icon">🗡️</div>
+          <div class="item-name">Sword</div>
+          <div class="item-desc">+6 Damage</div>
+          <div class="item-price">150 🪙</div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-icon">🧪</div>
+          <div class="item-name">Potion</div>
+          <div class="item-desc">Restore 50 HP</div>
+          <div class="item-price">100 🪙</div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-icon">🥾</div>
+          <div class="item-name">Boots</div>
+          <div class="item-desc">+2 Armor, +1 Agility</div>
+          <div class="item-price">300 🪙</div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-icon">🛡️</div>
+          <div class="item-name">Buckler</div>
+          <div class="item-desc">+1 Defense</div>
+          <div class="item-price">120 🪙</div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-icon">🥾</div>
+          <div class="item-name">Rare Boots</div>
+          <div class="item-desc">+2 Armor, +1 Agility</div>
+          <div class="item-price">200 🪙</div>
+        </div>
+
+        <div class="item-card">
+          <div class="item-icon">🔥</div>
+          <div class="item-name">Torch</div>
+          <div class="item-desc">Light up dark floors</div>
+          <div class="item-price">50 🪙</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="shop-actions">
+      <button class="btn close">Close</button>
+      <button class="btn buy">Buy</button>
+    </div>
+  </div>
+
+</body>
+</html>

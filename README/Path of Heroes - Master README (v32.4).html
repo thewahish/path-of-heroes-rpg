@@ -1,0 +1,63 @@
+Path of Heroes – Master README (v32.4)
+Last Updated: July 9, 2025
+GitHub Repository: https://github.com/thewahish/path-of-heroes-rpg
+Current Status: ~70% complete (Core loop logic implemented; UI designs finalized and documented; development and version control guidelines established).
+
+📘 Project Purpose & Master Record
+(This section remains unchanged from v32.3)
+
+🎮 Game Overview
+(This section remains unchanged from v32.3)
+
+🎨 UI & Screen Design Blueprints
+(This section remains unchanged from v32.3)
+
+🎨 UI Design Principles & Color Palette
+Golden Rules:
+
+Portrait-Only: All screens are designed and optimized exclusively for portrait orientation.
+
+Static Layouts: All UI elements, especially those containing text like buttons and panels, must have static, fixed dimensions. These dimensions should be calculated to accommodate the text of all supported languages without causing the element to resize or shift the layout. Text within these elements should be centered to handle varying string lengths gracefully.
+
+No Scrolling: UI layouts must fit within a standard mobile viewport without vertical scrolling.
+
+Note: The shop.html design includes a scrollable item grid (overflow-y: auto). This should be reviewed to align with the no-scrolling principle, perhaps by implementing a paginated view.
+
+Safe Zones: All interactive UI elements should be contained within 80-95% of the screen area to ensure accessibility on all devices.
+
+No Redundant Globals: Global controls like the language toggle are part of the main game shell and should not be included in individual screen mockups.
+
+Dark RPG Palette:
+(This section remains unchanged)
+
+Rarity Colors:
+(This section remains unchanged)
+
+🔄 Core Gameplay Loop
+(This section remains unchanged from v32.3)
+
+🧙 Playable Characters
+(This section remains unchanged from v31)
+
+⚔️ Combat System
+(This section remains unchanged from v31)
+
+⚙️ Architecture & File Structure
+(This section remains unchanged from v32.3)
+
+🛠️ Development & Version Control
+(This section remains unchanged from v32.3)
+
+✅ Log of Major Historical Updates
+v30 - v31: Initial setup, scope definition.
+
+v32: Overhauled UI/UX with new screen designs.
+
+v32.1: Added formal Version Control and AI Collaboration rules.
+
+v32.2: Added the UI & Screen Design Blueprints table to the guide.
+
+v32.3: Reorganized project structure to place all design mockups in a dedicated /designs folder.
+
+v32.4: (Current) Added the "Static Layouts" master rule to ensure UI dimensions do not change when switching languages.
+
