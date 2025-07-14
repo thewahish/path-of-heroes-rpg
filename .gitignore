@@ -1,0 +1,27 @@
+```plaintext
+# Node.js and build artifacts
+node_modules/
+dist/
+build/
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+
+# IDE and editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Batch file (after use)
+setup_project_structure.bat
+```
