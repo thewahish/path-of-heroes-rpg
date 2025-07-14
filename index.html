@@ -26,7 +26,15 @@
             <div id="debug-log-content"></div>
         </div>
 
-        <div id="global-hud" class="hidden"></div>
+        <div id="global-hud" class="hidden">
+            <div class="hud-element">
+                <span data-i18n="hud.floor">Floor</span> <span id="hud-floor-value">1</span>
+            </div>
+            <div class="hud-element">
+                <span data-i18n="hud.gold">Gold</span> <span id="hud-gold-value">0</span>
+            </div>
+            <button id="hud-inventory-btn" class="hud-btn" data-i18n="hud.inventory">Inventory</button>
+        </div>
 
         <div id="loading-screen" class="screen">
             <h1 class="loading-title" data-i18n="game.title">Path of Heroes</h1>
@@ -83,7 +91,7 @@
         </div>
 
         <div id="battle-screen" class="screen hidden">
-            <div id="battle-dynamic-content"></div>
+            <div id="battle-dynamic-content"></div> 
             <div class="action-buttons-bar">
                 <button id="btn-attack" class="b-action-btn" data-i18n="battle.attack">Attack</button>
                 <button id="btn-skill" class="b-action-btn" data-i18n="battle.skill">Skill</button>
@@ -94,6 +102,30 @@
         </div>
 
         <div id="inventory-screen" class="screen hidden">
+            <div class="inventory-header">
+                <button id="btn-inv-close" class="btn back" data-i18n="menu.back">Back</button>
+                <h1 class="screen-title" data-i18n="hud.inventory">Inventory</h1>
+                <span><span data-i18n="hud.gold">Gold</span>: <span id="inventory-gold-value">0</span></span>
+            </div>
+            <div class="inventory-container">
+                <div class="left-panel">
+                    <h2 class="section-title" data-i18n="inventory.equipment">Equipment</h2>
+                    <div class="equipment-grid" id="equipment-grid">
+                        </div>
+                    <h2 class="section-title" data-i18n="inventory.stats">Character Stats</h2>
+                    <table class="char-stats-table" id="inventory-stats-table">
+                        </table>
+                </div>
+                <div class="right-panel">
+                    <h2 class="section-title" data-i18n="inventory.items">Items</h2>
+                    <div class="inventory-actions">
+                        <button id="btn-inv-sort" class="action-btn" data-i18n="inventory.sort">Sort Items</button>
+                        <button id="btn-inv-sell-common" class="action-btn" data-i18n="inventory.sell_common">Sell Common</button>
+                    </div>
+                    <div class="inventory-grid" id="inventory-grid">
+                        </div>
+                </div>
+            </div>
         </div>
 
         <div id="item-tooltip" class="item-tooltip hidden"></div>

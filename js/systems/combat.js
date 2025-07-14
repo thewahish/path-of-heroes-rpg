@@ -46,13 +46,14 @@ window.CombatSystem = class CombatSystem {
 
         const currentActor = this.getCurrentActor();
         if (!currentActor) {
-            if (this.currentBattle.enemies.length === 0) {
-                this.endBattle(true);
+            // Check if all enemies are defeated and player is alive
+            if (this.currentBattle.enemies.length === 0 && this.currentBattle.player.stats.hp > 0) {
+                this.endBattle(true); // All enemies defeated, victory
             }
             return;
         }
 
-        this.game.updateBattleDisplay();
+        this.game.updateBattleDisplay(); // Update UI at the start of each turn
 
         if (currentActor.type === 'player') {
             this.startPlayerTurn();
@@ -64,15 +65,20 @@ window.CombatSystem = class CombatSystem {
     startPlayerTurn() {
         this.enablePlayerActions(true);
         this.regenerateResource(this.currentBattle.player);
+        this.game.updateBattleDisplay(); // Re-render to show resource regen
         this.game.updateElement('combat-log-text', this.game.localization.getText('battle.your_turn'));
     }
 
     startEnemyTurn(enemy) {
         this.enablePlayerActions(false);
-        this.game.updateElement('combat-log-text', this.game.localization.getText('battle.enemy_turn'));
+        this.game.updateElement('combat-log-text', `${this.game.localization.getText('battle.enemy_turn')}: ${this.game.localization.getCharacterName(enemy)}`);
         
         setTimeout(() => {
             this.executeEnemyAction(enemy);
+            // After enemy action, if battle still active, advance turn
+            if (this.currentBattle) { 
+                this.endEnemyTurn();
+            }
         }, 1200);
     }
 
@@ -94,7 +100,7 @@ window.CombatSystem = class CombatSystem {
         const player = this.currentBattle.player;
         const abilityId = player.abilities[skillIndex];
         if (!abilityId) {
-            alert('No ability available!');
+            this.game.updateElement('combat-log-text', "No ability available!");
             return;
         }
 
@@ -102,7 +108,7 @@ window.CombatSystem = class CombatSystem {
         if (!abilityData) return;
 
         if (player.resource.current < abilityData.cost) {
-            alert(`Not enough ${player.resource.name[this.game.localization.getCurrentLanguage()]}!`);
+            this.game.updateElement('combat-log-text', `Not enough ${player.resource.name[this.game.localization.getCurrentLanguage()]}!`);
             return;
         }
         
@@ -115,17 +121,21 @@ window.CombatSystem = class CombatSystem {
         if (!currentActor || currentActor.type !== 'player') return;
 
         const inventory = this.game.state.current.inventory;
-        const potion = inventory.find(item => item.type === 'health_potion');
+        const potion = inventory.find(item => item.consumable && item.effect === 'heal_hp'); // Find any heal potion
 
         if (!potion) {
-            alert("You don't have any healing items!");
+            this.game.updateElement('combat-log-text', "You don't have any healing items!");
             return; 
         }
 
+        // Pass the actual potion object to useItem
         const wasUsed = this.game.inventory.useItem(potion);
 
         if (wasUsed) {
+            // Item usage counts as a turn
             this.endPlayerTurn();
+        } else {
+            this.game.updateElement('combat-log-text', "Item could not be used.");
         }
     }
 
@@ -143,8 +153,8 @@ window.CombatSystem = class CombatSystem {
         const fleeChance = window.GameConfig.COMBAT.fleeChance;
         
         if (Math.random() < fleeChance) {
-            alert('Successfully fled from battle!');
-            this.endBattle(false, true);
+            this.game.updateElement('combat-log-text', 'Successfully fled from battle!');
+            setTimeout(() => this.endBattle(false, true), 1000); // Small delay for message
         } else {
             this.game.updateElement('combat-log-text', 'Failed to flee!');
             this.endPlayerTurn();
@@ -152,6 +162,8 @@ window.CombatSystem = class CombatSystem {
     }
 
     executeAttack(attacker, target, damageMultiplier = 1.0) {
+        if (!attacker || !target || target.stats.hp <= 0) return;
+
         const isCritical = this.calculateCritical(attacker);
         const damage = this.calculateDamage(attacker, target, damageMultiplier, isCritical);
 
@@ -164,7 +176,7 @@ window.CombatSystem = class CombatSystem {
         if (isCritical) message += ' (Critical Hit!)';
         this.game.updateElement('combat-log-text', message);
         
-        this.game.updateBattleDisplay();
+        this.game.updateBattleDisplay(); // Update UI after damage calculation
 
         if (target.stats.hp <= 0) {
             this.handleActorDeath({ entity: target, type: attacker.id === 'player' ? 'enemy' : 'player' });
@@ -172,7 +184,10 @@ window.CombatSystem = class CombatSystem {
     }
 
     executeAbility(caster, abilityData) {
+        if (!caster || !abilityData) return;
+        
         caster.resource.current = Math.max(0, caster.resource.current - abilityData.cost);
+        this.game.updateBattleDisplay(); // Update UI to show resource cost
 
         const casterName = this.game.localization.getCharacterName(caster);
         const abilityName = abilityData.name[this.game.localization.getCurrentLanguage()];
@@ -218,12 +233,18 @@ window.CombatSystem = class CombatSystem {
     }
 
     executeEnemyAction(enemy) {
-        if (!enemy || enemy.stats.hp <= 0) {
+        if (!enemy || enemy.stats.hp <= 0 || !this.currentBattle || !this.currentBattle.player) {
             this.endEnemyTurn();
             return;
         }
-
-        this.executeAttack(enemy, this.currentBattle.player);
+        
+        // Ensure player is alive before attacking
+        if (this.currentBattle.player.stats.hp > 0) {
+            this.executeAttack(enemy, this.currentBattle.player);
+        } else {
+            // Player is already defeated, end battle
+            this.endBattle(false);
+        }
     }
 
     regenerateResource(actor) {
@@ -233,19 +254,37 @@ window.CombatSystem = class CombatSystem {
 
     endPlayerTurn() {
         this.enablePlayerActions(false);
-        setTimeout(() => this.advanceTurn(), 1200);
+        setTimeout(() => {
+            if (this.currentBattle) { // Ensure battle is still active
+                this.advanceTurn();
+            }
+        }, 1200);
     }
 
     endEnemyTurn() {
-        setTimeout(() => this.advanceTurn(), 1200);
+        setTimeout(() => {
+            if (this.currentBattle) { // Ensure battle is still active
+                this.advanceTurn();
+            }
+        }, 1200);
     }
 
     advanceTurn() {
         if (!this.currentBattle) return;
 
+        // Filter out defeated actors
         this.currentBattle.turnOrder = this.currentBattle.turnOrder.filter(actor => actor.entity.stats.hp > 0);
         
-        if (this.currentBattle.turnOrder.length <= 1) {
+        // Check battle end conditions
+        const remainingPlayers = this.currentBattle.turnOrder.filter(actor => actor.type === 'player');
+        const remainingEnemies = this.currentBattle.turnOrder.filter(actor => actor.type === 'enemy');
+
+        if (remainingPlayers.length === 0) {
+            this.endBattle(false); // Player defeated
+            return;
+        }
+        if (remainingEnemies.length === 0) {
+            this.endBattle(true); // All enemies defeated
             return;
         }
 
@@ -264,22 +303,27 @@ window.CombatSystem = class CombatSystem {
 
         setTimeout(() => {
             if (actor.type === 'player') {
-                this.endBattle(false);
+                this.endBattle(false); // Player died
             } else {
                 const loot = this.game.inventory.generateLootDrop(actor.entity, this.game.state.current.currentFloor);
                 if (loot) {
                     if (!this.game.state.addItemToInventory(loot)) {
-                        alert(`Found: ${loot.name}!\nBut your inventory is full!`);
+                        this.game.updateElement('combat-log-text', `Found: ${loot.name}!\nBut your inventory is full!`);
                     } else {
-                        alert(`Found: ${loot.name}!`);
+                        this.game.updateElement('combat-log-text', `Found: ${loot.name}!`);
                     }
                 }
                 
+                // Remove defeated enemy from current battle enemies list
                 this.currentBattle.enemies = this.currentBattle.enemies.filter(e => e.id !== actor.entity.id);
                 this.game.state.current.enemiesDefeated++;
                 
+                // If all enemies are defeated in this battle
                 if (this.currentBattle.enemies.length === 0) {
-                    this.endBattle(true);
+                    this.endBattle(true); // Victory
+                } else {
+                    // If more enemies remain, continue the battle
+                    this.advanceTurn(); 
                 }
             }
         }, 1500);
@@ -287,7 +331,7 @@ window.CombatSystem = class CombatSystem {
 
     endBattle(victory, fled = false) {
         this.enablePlayerActions(false);
-        this.currentBattle = null;
+        this.currentBattle = null; // Clear current battle state
         
         if (victory) {
             this.game.victory();
@@ -299,10 +343,18 @@ window.CombatSystem = class CombatSystem {
     }
 
     enablePlayerActions(enabled) {
-        const buttons = document.querySelectorAll('.battle-action-btn');
-        buttons.forEach(btn => {
-            btn.disabled = !enabled;
-            btn.classList.toggle('disabled', !enabled);
+        // Target elements by ID since we added them in index.html
+        const attackBtn = document.getElementById('btn-attack');
+        const skillBtn = document.getElementById('btn-skill');
+        const itemBtn = document.getElementById('btn-item');
+        const defendBtn = document.getElementById('btn-defend');
+        const fleeBtn = document.getElementById('btn-flee');
+
+        [attackBtn, skillBtn, itemBtn, defendBtn, fleeBtn].forEach(btn => {
+            if (btn) {
+                btn.disabled = !enabled;
+                btn.classList.toggle('disabled', !enabled);
+            }
         });
     }
 };

@@ -29,6 +29,7 @@ window.PathOfHeroes = class PathOfHeroes {
         this.showOptions = this.showOptions.bind(this);
         this.showStatsModal = this.showStatsModal.bind(this);
         this.hideStatsModal = this.hideStatsModal.bind(this);
+        this.updateGlobalHUD = this.updateGlobalHUD.bind(this); // Bind new method
     }
 
     async init() {
@@ -93,13 +94,36 @@ window.PathOfHeroes = class PathOfHeroes {
         }, 200);
     }
 
+    setScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(screen => {
+            screen.classList.add('hidden');
+        });
+        
+        const targetScreen = document.getElementById(screenId);
+        if (targetScreen) {
+            targetScreen.classList.remove('hidden');
+            this.state.current.currentScreen = screenId;
+        }
+
+        // Manage global HUD visibility based on screen
+        const globalHud = document.getElementById('global-hud');
+        if (globalHud) {
+            if (screenId === 'main-menu' || screenId === 'character-selection' || screenId === 'loading-screen') {
+                globalHud.classList.add('hidden');
+            } else {
+                globalHud.classList.remove('hidden');
+                this.updateGlobalHUD();
+            }
+        }
+    }
+
     showMainMenu() {
-        this.state.setScreen('main-menu');
+        this.setScreen('main-menu');
         this.updateLanguageDisplay();
     }
 
     showCharacterSelect() {
-        this.state.setScreen('character-selection');
+        this.setScreen('character-selection');
         this.updateLanguageDisplay();
     }
     
@@ -121,6 +145,7 @@ window.PathOfHeroes = class PathOfHeroes {
         if (this.state.current.currentScreen === 'inventory-screen') {
             this.inventory.updateDisplay();
         }
+        this.updateGlobalHUD(); // Ensure HUD updates on language change
     }
 
     toggleLanguage() {
@@ -233,6 +258,7 @@ window.PathOfHeroes = class PathOfHeroes {
         if (!this.state.current.selectedCharacter) return;
         try {
             this.state.newGame(this.state.current.selectedCharacter);
+            this.updateGlobalHUD(); // Show HUD and update initial values
             this.enterBattle();
         } catch (error) {
             console.error('Failed to start game:', error);
@@ -243,7 +269,7 @@ window.PathOfHeroes = class PathOfHeroes {
     enterBattle() {
         const enemies = this.generateEnemiesForFloor();
         this.state.startBattle(enemies);
-        this.state.setScreen('battle-screen');
+        this.setScreen('battle-screen'); // Use the new setScreen method
         this.combat.startBattle(enemies);
     }
     
@@ -262,14 +288,16 @@ window.PathOfHeroes = class PathOfHeroes {
         }
 
         const lang = this.localization.getCurrentLanguage();
+        const playerResourceName = player.resource ? player.resource.name[lang] : '';
+        const playerResourceBarClass = player.resource ? `${player.resource.type}-bar` : '';
 
-        const createBar = (label, value, max, barClass) => {
-            const percentage = max > 0 ? (Math.ceil(value) / max) * 100 : 0;
+        const createBarHtml = (label, current, max, barClass) => {
+            const percentage = max > 0 ? (Math.ceil(current) / max) * 100 : 0;
             return `
                 <div class="bar-container">
                     <div class="bar-label">
                         <span>${label}</span>
-                        <span>${Math.ceil(value)} / ${max}</span>
+                        <span>${Math.ceil(current)} / ${max}</span>
                     </div>
                     <div class="bar-bg">
                         <div class="bar-fill ${barClass}" style="width: ${percentage}%;"></div>
@@ -278,16 +306,27 @@ window.PathOfHeroes = class PathOfHeroes {
             `;
         };
         
-        const createInfoPanel = (character) => {
+        const createInfoPanelHtml = (character, isPlayer = false) => {
             if(!character) return '';
-            const resourceName = character.resource ? character.resource.name[lang] : '';
-            const resourceBarClass = character.resource ? `${character.resource.type}-bar` : '';
-            
+            const resourceSection = isPlayer && character.resource ? 
+                createBarHtml(playerResourceName, character.resource.current, character.resource.max, playerResourceBarClass) : '';
+
+            // Stats table generation
+            const statsHtml = `
+                <table class="stats-table">
+                    <tr><td>${this.localization.getText('stat.atk')}</td><td>${character.stats.attack}</td></tr>
+                    <tr><td>${this.localization.getText('stat.def')}</td><td>${character.stats.defense}</td></tr>
+                    <tr><td>${this.localization.getText('stat.spd')}</td><td>${character.stats.speed}</td></tr>
+                    <tr><td>${this.localization.getText('stat.crit')}</td><td>${character.stats.crit}%</td></tr>
+                </table>
+            `;
+
             return `
                 <div class="info-panel">
                     <div class="character-header">${this.localization.getCharacterName(character)}</div>
-                    ${createBar('HP', character.stats.hp, character.stats.maxHp, 'hp-bar')}
-                    ${character.resource ? createBar(resourceName, character.resource.current, character.resource.max, resourceBarClass) : ''}
+                    ${createBarHtml(this.localization.getText('stat.hp'), character.stats.hp, character.stats.maxHp, 'hp-bar')}
+                    ${resourceSection}
+                    ${statsHtml}
                 </div>
             `;
         };
@@ -298,21 +337,23 @@ window.PathOfHeroes = class PathOfHeroes {
                 <div class="combat-log"><span id="combat-log-text">Battle Begins!</span></div>
                 <div class="portraits-area">
                     <div class="portrait player-portrait">${player.sprite}</div>
-                    <div class="vs-text">VS</div>
+                    <div class="vs-text" data-i18n="ui.vs">VS</div>
                     <div class="portrait enemy-portrait">${enemy.sprite}</div>
                 </div>
                 <div class="info-panels-area">
-                    ${createInfoPanel(player)}
-                    ${createInfoPanel(enemy)}
+                    ${createInfoPanelHtml(player, true)}
+                    ${createInfoPanelHtml(enemy, false)}
                 </div>
             </div>
         `;
 
         dynamicContent.innerHTML = battleHTML;
-        this.localization.updateAllText();
+        this.localization.updateAllText(); // Ensure dynamic text is localized
     }
 
     updateBar(barId, current, max) {
+        // This function is currently not directly used by updateBattleDisplay,
+        // as bars are recreated with innerHTML. Keeping for potential future use.
         const bar = document.getElementById(barId);
         if (bar) {
             const percentage = (max > 0) ? (current / max) * 100 : 0;
@@ -326,29 +367,44 @@ window.PathOfHeroes = class PathOfHeroes {
             element.textContent = value;
         }
     }
+
+    updateGlobalHUD() {
+        const hudFloor = document.getElementById('hud-floor-value');
+        const hudGold = document.getElementById('hud-gold-value');
+        if (hudFloor) hudFloor.textContent = this.state.current.currentFloor;
+        if (hudGold) hudGold.textContent = this.state.current.gold;
+    }
     
     showInventory() {
         if (!this.state.current.gameStarted) {
             alert('Start a game first!');
             return;
         }
-        this.state.setScreen('inventory-screen');
+        this.setScreen('inventory-screen'); // Use the new setScreen method
         this.inventory.updateDisplay();
+        this.updateElement('inventory-gold-value', this.state.current.gold); // Update gold in inventory
     }
     
     closeInventory() {
         if (this.state.current.battleInProgress) {
-            this.state.setScreen('battle-screen');
+            this.setScreen('battle-screen'); // Use the new setScreen method
+            this.updateBattleDisplay(); // Re-render battle UI
         } else {
             // TODO: This should return to the previous non-inventory screen, not always main menu.
-            this.showMainMenu();
+            // For now, let's return to Main Menu if not in battle.
+            this.showMainMenu(); // Use the new setScreen method
         }
     }
 
     generateEnemiesForFloor() {
         const floor = this.state.current.currentFloor;
         const enemyTypes = Object.keys(window.GameConfig.ENEMIES);
-        const enemyType = enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
+        // Ensure there's at least one enemy, even if random pick fails somehow
+        const enemyType = enemyTypes.length > 0 ? enemyTypes[Math.floor(Math.random() * enemyTypes.length)] : null;
+        if (!enemyType) {
+            console.error("No enemy types defined in GameConfig.ENEMIES!");
+            return [];
+        }
         return [this.createEnemyFromTemplate(enemyType, floor)];
     }
 
@@ -390,7 +446,8 @@ window.PathOfHeroes = class PathOfHeroes {
         this.state.addExperience(totalXP);
         this.state.addGold(totalGold);
         this.state.endBattle(true);
-        
+        this.updateGlobalHUD(); // Update HUD after gaining gold/xp
+
         if (this.state.current.currentFloor >= window.GameConfig.MAX_FLOORS) {
             alert(`🎉 Congratulations! You've completed the demo!`);
             this.showMainMenu();

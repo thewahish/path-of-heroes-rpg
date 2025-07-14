@@ -41,8 +41,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Global Buttons ---
     safeAddListener('lang-toggle-btn', 'click', gameAction(game => game.toggleLanguage()));
-    safeAddListener('battle-inventory-btn', 'click', gameAction(game => game.showInventory()));
-    
+    safeAddListener('debug-open-btn', 'click', gameAction(game => window.debugger.toggleDebugPanel())); // Explicitly calling debugger's method
+    safeAddListener('hud-inventory-btn', 'click', gameAction(game => game.showInventory())); // Corrected ID
+
     // --- Main Menu ---
     safeAddListener('btn-new-game', 'click', gameAction(game => game.showCharacterSelect()));
     safeAddListener('btn-load-game', 'click', gameAction(game => game.showLoadGame()));
@@ -67,6 +68,5 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Inventory Screen ---
     safeAddListener('btn-inv-close', 'click', gameAction(game => game.closeInventory()));
     safeAddListener('btn-inv-sort', 'click', gameAction(game => game.inventory.sortItems()));
-    // FIX: The function is 'sellAllCommon' and takes no arguments.
     safeAddListener('btn-inv-sell-common', 'click', gameAction(game => game.inventory.sellAllCommon()));
 });
