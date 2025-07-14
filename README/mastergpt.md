@@ -11,7 +11,6 @@ You are taking over development of the mobile-only game "Path of Heroes" (HTML/C
 
 📌 When writing code:
 - Include file name at the top using `// filename.js`
-- Use Jump Codes (e.g., jump-V.36.6-1)
 - Simulate execution and debug before sending
 - Never replace README sections — always **append** updates to the changelog at the bottom
 
