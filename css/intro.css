@@ -1,1 +1,92 @@
- 
+/* filename: css/intro.css */
+
+/* Styles specific to the Intro Screen */
+#intro-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+    position: absolute; /* Position within screen-content */
+    top: 0;
+    left: 0;
+}
+
+.intro-title {
+    font-size: 3em;
+    color: var(--color-primary);
+    margin-bottom: 30px;
+    text-shadow: 0 0 15px rgba(212, 166, 86, 0.8);
+    letter-spacing: 2px;
+}
+
+.intro-button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 80%;
+    max-width: 300px;
+}
+
+.intro-button {
+    background: var(--color-primary);
+    color: var(--color-background-end);
+    border: none;
+    padding: 15px 25px;
+    border-radius: 10px;
+    font-size: 1.5em;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.intro-button:hover {
+    background-color: #e0b46a;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.5);
+}
+
+.intro-button:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Specific button styles */
+#play-game-button {
+    background: linear-gradient(to right, #27ae60, #2ecc71); /* Green gradient for Play */
+    color: white;
+}
+
+#play-game-button:hover {
+    background: linear-gradient(to right, #2ecc71, #34d883);
+}
+
+#options-button {
+    background: linear-gradient(to right, #3498db, #5dade2); /* Blue gradient for Options */
+    color: white;
+}
+
+#options-button:hover {
+    background: linear-gradient(to right, #5dade2, #85c1e9);
+}
+
+#credits-button {
+    background: linear-gradient(to right, #9b59b6, #af7ac5); /* Purple gradient for Credits */
+    color: white;
+}
+
+#credits-button:hover {
+    background: linear-gradient(to right, #af7ac5, #c39bd9);
+}
+
+/* RTL adjustments for Intro screen */
+[dir="rtl"] .intro-title {
+    /* No specific RTL adjustment needed for centered text */
+}
