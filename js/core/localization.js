@@ -58,6 +58,11 @@ export class Localization {
             critStat: "CRIT:",
             startGameButton: "Start Your Journey",
 
+            // Character Resource Names
+            vigorResource: "Vigor",
+            manaResource: "Mana",
+            energyResource: "Energy",
+
             // Character Descriptions (moved here for localization)
             warriorDesc: "A formidable warrior, Taha leads with unyielding defense and immense vitality. He excels in direct combat, soaking up damage while delivering powerful strikes.",
             sorceressDesc: "Mais commands elemental forces, unleashing devastating area-of-effect spells and freezing foes in their tracks. Though fragile, her magic can turn the tide of any battle.",
@@ -109,6 +114,11 @@ export class Localization {
             spdStat: "السرعة:",
             critStat: "الضرر الحرج:",
             startGameButton: "ابدأ رحلتك",
+
+            // Character Resource Names
+            vigorResource: "نشاط", // Arabic for Vigor
+            manaResource: "مانا",   // Arabic for Mana
+            energyResource: "طاقة",  // Arabic for Energy
 
             // Character Descriptions (moved here for localization)
             warriorDesc: "محارب هائل، يقود طه بدفاع لا يتزعزع وحيوية هائلة. إنه يتفوق في القتال المباشر، ويمتص الضرر بينما يوجه ضربات قوية.",
@@ -179,15 +189,9 @@ export class Localization {
         document.querySelectorAll('[data-localize]').forEach(element => {
             const key = element.getAttribute('data-localize');
             // Special handling for descriptions, as they are not simple text content
-            if (key === 'warriorDesc') {
-                document.getElementById('character-description').textContent = this.get('warriorDesc');
-            } else if (key === 'sorceressDesc') {
-                document.getElementById('character-description').textContent = this.get('sorceressDesc');
-            } else if (key === 'rogueDesc') {
-                document.getElementById('character-description').textContent = this.get('rogueDesc');
-            } else {
-                element.textContent = this.get(key);
-            }
+            // This logic is now handled in character-select.js's displayCharacter
+            // For general localization, just set textContent
+            element.textContent = this.get(key);
         });
         // Update language toggle button text based on current language
         const langToggleButton = document.getElementById('language-toggle');

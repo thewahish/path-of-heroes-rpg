@@ -142,14 +142,14 @@ body {
 /* Language Toggle Button */
 .language-toggle {
     position: fixed; /* Fixed position relative to viewport */
-    top: 20px;
-    right: 20px;
+    top: 15px; /* Adjusted top position */
+    right: 15px; /* Adjusted right position */
     background: var(--color-secondary);
     color: var(--color-text);
     border: 2px solid var(--color-primary);
-    padding: 10px 15px;
+    padding: 8px 12px; /* Adjusted padding */
     border-radius: 10px;
-    font-size: 1em;
+    font-size: 0.9em; /* Slightly reduced font size */
     font-weight: bold;
     cursor: pointer;
     z-index: 100; /* Above most elements */
@@ -316,11 +316,6 @@ body {
     transform: translateY(-2px);
 }
 
-.debug-copy-btn:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
 /* Utility classes */
 .hidden {
     display: none !important;
@@ -333,7 +328,7 @@ body {
 }
 
 [dir="rtl"] .language-toggle {
-    left: 20px;
+    left: 15px; /* Adjusted left position for RTL */
     right: auto;
 }
 

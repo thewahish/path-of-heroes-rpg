@@ -5,21 +5,22 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 15px; /* Reduced padding */
+    padding: 15px; /* Consistent padding */
     box-sizing: border-box;
     width: 100%;
     height: 100%;
     position: absolute; /* To position within screen-content */
     top: 0;
     left: 0;
-    justify-content: flex-start; /* Align content to the top */
+    justify-content: space-between; /* Distribute space vertically */
     overflow-y: hidden; /* Ensure no scrolling */
 }
 
 .screen-title {
-    font-size: 2em; /* Slightly reduced font size */
+    font-size: 2em;
     color: var(--color-primary);
-    margin-bottom: 15px; /* Reduced margin */
+    margin-bottom: 15px;
+    margin-top: 20px; /* Added top margin to prevent overlap with language toggle */
     text-shadow: 0 0 10px rgba(212, 166, 86, 0.7);
     text-align: center;
 }
@@ -28,8 +29,8 @@
     display: flex;
     justify-content: center;
     width: 100%;
-    max-width: 380px; /* Slightly reduced max-width */
-    margin-bottom: 15px; /* Reduced margin */
+    max-width: 380px;
+    margin-bottom: 15px;
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: 10px;
     padding: 5px;
@@ -41,9 +42,9 @@
     background-color: var(--color-secondary);
     color: var(--color-text);
     border: 1px solid var(--color-secondary);
-    padding: 10px 12px; /* Reduced padding */
+    padding: 10px 12px;
     border-radius: 8px;
-    font-size: 0.95em; /* Slightly reduced font size */
+    font-size: 0.95em;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.1s ease, border-color 0.2s ease;
@@ -80,22 +81,22 @@
     display: flex;
     flex-direction: column; /* Stack portrait and info vertically */
     align-items: center;
-    gap: 10px; /* Reduced gap */
+    gap: 8px; /* Reduced gap further */
     width: 100%;
-    max-width: 420px; /* Slightly reduced max-width */
+    max-width: 420px;
     background-color: rgba(0, 0, 0, 0.6);
     border-radius: 15px;
-    padding: 15px; /* Reduced padding */
+    padding: 15px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-    margin-bottom: 15px; /* Reduced margin */
+    margin-bottom: 10px; /* Reduced margin */
     border: 1px solid var(--color-secondary);
     flex-grow: 1; /* Allow it to grow and shrink */
     justify-content: center; /* Center content vertically within display */
 }
 
 .character-portrait-container {
-    width: 100px; /* Reduced size for portrait */
-    height: 100px;
+    width: 90px; /* Reduced size for portrait */
+    height: 90px;
     border-radius: 10px;
     border: 3px solid var(--color-primary);
     box-shadow: 0 0 10px rgba(212, 166, 86, 0.8);
@@ -121,36 +122,40 @@
     display: flex;
     flex-direction: column;
     justify-content: center; /* Center content vertically */
+    align-items: center; /* Center items within info block */
 }
 
 .character-info h2 {
-    font-size: 1.6em; /* Slightly reduced font size */
+    font-size: 1.5em; /* Slightly reduced font size */
     color: var(--color-primary);
     margin-top: 0;
-    margin-bottom: 8px; /* Reduced margin */
+    margin-bottom: 5px; /* Reduced margin */
     text-shadow: 0 0 5px rgba(212, 166, 86, 0.5);
+    text-align: center; /* Ensure character name is centered */
 }
 
 .character-info p {
-    font-size: 0.9em; /* Slightly reduced font size */
-    margin-bottom: 6px; /* Reduced margin */
-    line-height: 1.3; /* Adjusted line height */
+    font-size: 0.85em; /* Slightly reduced font size */
+    margin-bottom: 4px; /* Reduced margin */
+    line-height: 1.2; /* Adjusted line height */
+    max-width: 90%; /* Constrain width for descriptions */
 }
 
 .char-description-text {
-    max-height: 60px; /* Limit height for description */
+    max-height: 50px; /* Reduced height for description */
     overflow: hidden; /* Hide overflow */
     text-overflow: ellipsis; /* Add ellipsis for overflow */
     display: -webkit-box;
     -webkit-line-clamp: 3; /* Limit to 3 lines */
     -webkit-box-orient: vertical;
+    text-align: center; /* Ensure description is centered */
 }
 
 .character-info h3 {
-    font-size: 1.1em; /* Slightly reduced font size */
+    font-size: 1em; /* Slightly reduced font size */
     color: var(--color-uncommon);
-    margin-top: 10px; /* Reduced margin */
-    margin-bottom: 8px; /* Reduced margin */
+    margin-top: 8px; /* Reduced margin */
+    margin-bottom: 6px; /* Reduced margin */
     border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
     padding-bottom: 3px;
 }
@@ -163,8 +168,8 @@
     text-align: left; /* Align text within list items to the left */
     display: grid; /* Use grid for two columns */
     grid-template-columns: auto auto; /* Two columns */
-    gap: 3px 10px; /* Reduced gap */
-    font-size: 0.95em; /* Slightly reduced font size */
+    gap: 2px 8px; /* Reduced gap further */
+    font-size: 0.9em; /* Slightly reduced font size */
 }
 
 .character-stats li {
@@ -184,9 +189,9 @@
     background: linear-gradient(to right, #27ae60, #2ecc71); /* Green gradient for Start Game */
     color: white;
     border: none;
-    padding: 12px 25px; /* Reduced padding */
+    padding: 10px 20px; /* Reduced padding */
     border-radius: 10px;
-    font-size: 1.4em; /* Slightly reduced font size */
+    font-size: 1.3em; /* Slightly reduced font size */
     font-weight: bold;
     cursor: pointer;
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
@@ -194,8 +199,9 @@
     text-transform: uppercase;
     letter-spacing: 1px;
     width: 80%;
-    max-width: 280px; /* Slightly reduced max-width */
+    max-width: 280px;
     margin-top: 10px; /* Space from character info */
+    flex-shrink: 0; /* Prevent button from shrinking */
 }
 
 .action-button:hover {
@@ -236,4 +242,9 @@
     border-bottom-left-radius: 8px;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
+}
+
+/* Specific RTL for description text alignment */
+[dir="rtl"] .char-description-text {
+    text-align: right;
 }
