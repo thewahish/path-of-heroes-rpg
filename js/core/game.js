@@ -94,6 +94,8 @@ export class PathOfHeroes {
             this.#systems.localization.updateLocalizedElements(); // Apply initial localization
 
             // Placeholder for other systems to be initialized later
+            // IMPORTANT: These lines must remain commented out until their respective
+            // classes (GameState, CombatSystem, InventorySystem) are fully implemented.
             // this.#systems.gameState = new GameState();
             // console.log(this.#systems.localization.get('systemInitialized') + "GameState");
 
