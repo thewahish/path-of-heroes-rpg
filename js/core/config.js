@@ -21,7 +21,7 @@ export const GameConfig = {
      * @property {string} GAME_VERSION - The current version of the game.
      * Used for tracking and display purposes.
      */
-    GAME_VERSION: "V.37.11", // Updated version
+    GAME_VERSION: "V.37.13", // Updated version
 
     /**
      * @property {number} LOADING_DURATION_MS - Duration of the loading screen animation in milliseconds.
@@ -38,8 +38,11 @@ export const GameConfig = {
             html: 'screens/intro.html',
             js: 'js/screens/intro.js'
         },
+        'character-select': { // Added Character Select screen
+            html: 'screens/character-select.html',
+            js: 'js/screens/character-select.js'
+        }
         // Add other screens here as they are implemented
-        // 'character-select': { html: 'screens/character-select.html', js: 'js/screens/character-select.js' },
         // 'battle': { html: 'screens/battle.html', js: 'js/screens/battle.js' },
         // 'shop': { html: 'screens/shop.html', js: 'js/screens/shop.js' },
         // 'shrine': { html: 'screens/shrine.html', js: 'js/screens/shrine.js' },

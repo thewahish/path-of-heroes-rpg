@@ -41,6 +41,28 @@ export class Localization {
             optionsButton: "Options",
             creditsButton: "Credits",
 
+            // Character Select Screen
+            charSelectTitle: "Choose Your Hero",
+            warriorTab: "Warrior",
+            sorceressTab: "Sorceress",
+            rogueTab: "Rogue",
+            charDescription: "Description:",
+            charRole: "Role:",
+            charSpecialization: "Specialization:",
+            statsLabel: "Base Stats (Level 1):",
+            hpStat: "HP:",
+            resourceStat: "Resource:",
+            atkStat: "ATK:",
+            defStat: "DEF:",
+            spdStat: "SPD:",
+            critStat: "CRIT:",
+            startGameButton: "Start Your Journey",
+
+            // Character Descriptions (moved here for localization)
+            warriorDesc: "A formidable warrior, Taha leads with unyielding defense and immense vitality. He excels in direct combat, soaking up damage while delivering powerful strikes.",
+            sorceressDesc: "Mais commands elemental forces, unleashing devastating area-of-effect spells and freezing foes in their tracks. Though fragile, her magic can turn the tide of any battle.",
+            rogueDesc: "Swift and deadly, Ibrahim strikes from the shadows with unparalleled speed and precision. His critical hits can dispatch even the toughest enemies before they know what hit them.",
+
             // Debug messages
             debugInitialized: "Debugger initialized.",
             debugToggleOn: "Debugger panel opened.",
@@ -70,6 +92,28 @@ export class Localization {
             playButton: "ابدأ اللعبة",
             optionsButton: "الخيارات",
             creditsButton: "الاعتمادات",
+
+            // Character Select Screen
+            charSelectTitle: "اختر بطلك",
+            warriorTab: "محارب",
+            sorceressTab: "ساحرة",
+            rogueTab: "لص",
+            charDescription: "الوصف:",
+            charRole: "الدور:",
+            charSpecialization: "التخصص:",
+            statsLabel: "الإحصائيات الأساسية (المستوى 1):",
+            hpStat: "نقاط الحياة:",
+            resourceStat: "المورد:",
+            atkStat: "الهجوم:",
+            defStat: "الدفاع:",
+            spdStat: "السرعة:",
+            critStat: "الضرر الحرج:",
+            startGameButton: "ابدأ رحلتك",
+
+            // Character Descriptions (moved here for localization)
+            warriorDesc: "محارب هائل، يقود طه بدفاع لا يتزعزع وحيوية هائلة. إنه يتفوق في القتال المباشر، ويمتص الضرر بينما يوجه ضربات قوية.",
+            sorceressDesc: "ميس تتحكم بالقوى العنصرية، تطلق تعويذات منطقة واسعة مدمرة وتجمد الأعداء في مساراتهم. على الرغم من ضعفها، يمكن لسحرها تغيير مجرى أي معركة.",
+            rogueDesc: "سريع وقاتل، يضرب إبراهيم من الظلال بسرعة ودقة لا مثيل لهما. يمكن لضرباته الحاسمة القضاء على أصعب الأعداء قبل أن يدركوا ما أصابهم.",
 
             // Debug messages
             debugInitialized: "تم تهيئة المصحح.",
@@ -134,7 +178,16 @@ export class Localization {
     updateLocalizedElements() {
         document.querySelectorAll('[data-localize]').forEach(element => {
             const key = element.getAttribute('data-localize');
-            element.textContent = this.get(key);
+            // Special handling for descriptions, as they are not simple text content
+            if (key === 'warriorDesc') {
+                document.getElementById('character-description').textContent = this.get('warriorDesc');
+            } else if (key === 'sorceressDesc') {
+                document.getElementById('character-description').textContent = this.get('sorceressDesc');
+            } else if (key === 'rogueDesc') {
+                document.getElementById('character-description').textContent = this.get('rogueDesc');
+            } else {
+                element.textContent = this.get(key);
+            }
         });
         // Update language toggle button text based on current language
         const langToggleButton = document.getElementById('language-toggle');

@@ -44,10 +44,8 @@ export function init(gameInstance, localizationInstance) {
  * (Placeholder - will transition to Character Selection screen)
  */
 function handlePlayGame() {
-    console.log("Play Game button clicked!");
-    // Future: Transition to character selection screen
-    // _gameInstance.setScreen('character-select');
-    alert("Play Game clicked! Character selection coming soon."); // Using alert for temporary feedback
+    console.log("Play Game button clicked! Transitioning to Character Selection...");
+    _gameInstance.setScreen('character-select');
 }
 
 /**
@@ -68,4 +66,4 @@ function handleCredits() {
     console.log("Credits button clicked!");
     // Future: Open credits screen
     alert("Credits clicked! Functionality to be implemented."); // Using alert for temporary feedback
-} 
+}
