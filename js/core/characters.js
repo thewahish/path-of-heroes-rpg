@@ -17,6 +17,7 @@ export const Characters = {
      * @property {string} WARRIOR.name_ar - Character's display name in Arabic.
      * @property {string} WARRIOR.resource - Primary resource type.
      * @property {string} WARRIOR.role - Combat role.
+     * @property {string} WARRIOR.role_ar - Arabic translation of combat role.
      * @property {string} WARRIOR.specialization - Key specialization.
      * @property {Object} WARRIOR.baseStats - Initial stats at Level 1.
      * @property {number} WARRIOR.baseStats.hp - Hit Points.
@@ -32,9 +33,10 @@ export const Characters = {
         name_ar: 'طه',
         resource: 'Vigor',
         resourceIcon: '🟣',
-        role: 'Tank / Melee', // Used as hero title
-        specialization: '🛡️ High DEF, ❤️ High HP', // Used as specialization string
-        traits: ['highDefenseTrait', 'resoluteTrait', 'areaStrikesTrait'], // Specific localized trait keys
+        role: 'Tank / Melee',
+        role_ar: 'دبابة / قتال قريب', // Added Arabic translation for role
+        specialization: '🛡️ High DEF, ❤️ High HP',
+        traits: ['highDefenseTrait', 'resoluteTrait', 'areaStrikesTrait'],
         description_en: "A formidable warrior, Taha leads with unyielding defense and immense vitality. He excels in direct combat, soaking up damage while delivering powerful strikes.",
         description_ar: "محارب هائل، يقود طه بدفاع لا يتزعزع وحيوية هائلة. إنه يتفوق في القتال المباشر، ويمتص الضرر بينما يوجه ضربات قوية.",
         baseStats: {
@@ -58,6 +60,7 @@ export const Characters = {
         resource: 'Mana',
         resourceIcon: '🔵',
         role: 'Ranged Mage',
+        role_ar: 'ساحرة بعيدة المدى', // Added Arabic translation for role
         specialization: '🔮 AoE, ❄️ Crowd Control',
         traits: ['elementalMagicTrait', 'spellMasteryTrait', 'ancientKnowledgeTrait'],
         description_en: "Mais commands elemental forces, unleashing devastating area-of-effect spells and freezing foes in their tracks. Though fragile, her magic can turn the tide of any battle.",
@@ -83,6 +86,7 @@ export const Characters = {
         resource: 'Energy',
         resourceIcon: '🟢',
         role: 'Assassin',
+        role_ar: 'قاتل', // Added Arabic translation for role
         specialization: '⚡ High SPD, 💥 High Crit',
         traits: ['berserkerRageTrait', 'rawStrengthTrait', 'intimidatingTrait'],
         description_en: "Swift and deadly, Ibrahim strikes from the shadows with unparalleled speed and precision. His critical hits can dispatch even the toughest enemies before they know what hit them.",

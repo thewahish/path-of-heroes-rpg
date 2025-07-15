@@ -81,7 +81,6 @@ export class Localization {
             rawStrengthTrait: "Raw Strength",
             intimidatingTrait: "Intimidating",
 
-
             // Debug messages
             debugInitialized: "Debugger initialized.",
             debugToggleOn: "Debugger panel opened.",

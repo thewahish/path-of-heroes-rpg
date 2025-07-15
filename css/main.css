@@ -139,12 +139,11 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* Language Toggle Button - Now a Globe Icon, Top-Left */
+/* Language Toggle Button - Globe Icon, Top-Left, Stationary */
 .language-toggle {
     position: fixed; /* Stationary */
     top: 15px; /* Top position */
     left: 15px; /* Left position */
-    right: auto; /* Ensure it doesn't try to position from right */
     background: var(--color-secondary);
     color: var(--color-text);
     border: 2px solid var(--color-primary);
@@ -187,7 +186,7 @@ body {
     position: relative; /* For absolute positioning of screen elements */
 }
 
-/* Debugger Toggle Button */
+/* Debugger Toggle Button - Bottom-Left, Stationary */
 .debug-toggle-btn {
     position: fixed;
     bottom: 20px;
@@ -329,20 +328,10 @@ body {
     display: none !important;
 }
 
-/* RTL support for Arabic */
+/* RTL support for Arabic - Only apply text alignment, not positioning for global elements */
 [dir="rtl"] body {
     direction: rtl;
     text-align: right;
-}
-
-[dir="rtl"] .language-toggle {
-    left: auto; /* Reset left */
-    right: 15px; /* Move to right for RTL */
-}
-
-[dir="rtl"] .debug-toggle-btn {
-    left: auto;
-    right: 20px;
 }
 
 [dir="rtl"] .global-hud {
