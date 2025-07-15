@@ -7,7 +7,7 @@
 
     <!-- Hero showcase area - Blended design -->
     <div class="hero-showcase">
-        <div class="hero-portrait-container">
+        <div class="hero-portrait-container" id="hero-portrait-container">
             <!-- SVG will be injected here by character-select.js -->
         </div>
 
@@ -48,7 +48,7 @@
     <!-- Details modal (hidden by default) - Placeholder for now -->
     <div class="details-modal hidden" id="details-modal">
         <div class="modal-content">
-            <h3><span data-localize="charDescription">Hero Details</span></h3>
+            <h3 id="modal-hero-name">Hero Details</h3>
             <p id="modal-description"></p>
             <ul class="character-stats modal-stats">
                 <li><span data-localize="hpStat">HP:</span> <span id="modal-stat-hp"></span></li>

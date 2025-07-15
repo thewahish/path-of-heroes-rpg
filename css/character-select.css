@@ -9,10 +9,8 @@
     box-sizing: border-box;
     width: 100%;
     height: 100%;
-    position: absolute; /* To position within screen-content */
-    top: 0;
-    left: 0;
-    justify-content: space-between; /* Distribute space vertically */
+    position: relative; /* Relative to screen-content */
+    justify-content: space-between;
     overflow-y: hidden; /* Ensure no scrolling */
     font-family: var(--font-family); /* Use Path of Heroes font */
     color: var(--color-text); /* Use Path of Heroes text color */

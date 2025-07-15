@@ -63,10 +63,15 @@ function setupEventListeners() {
 
     // Add listener for language change to update character details
     // Note: Localization class handles global updates, but specific dynamic content needs re-render
-    document.getElementById('language-toggle').addEventListener('click', () => {
-        // After localization updates, re-display the currently selected character
-        displayCharacter(_selectedCharId);
-    });
+    // The language toggle is a global element in index.html, so we listen to it here.
+    const languageToggle = document.getElementById('language-toggle');
+    if (languageToggle) {
+        languageToggle.addEventListener('click', () => {
+            // After localization updates, re-display the currently selected character
+            displayCharacter(_selectedCharId);
+        });
+    }
+
 
     // Setup swipe functionality for character tiles
     setupSwipeEvents();
@@ -153,7 +158,7 @@ function displayCharacter(charId) {
     document.getElementById('hero-name').textContent = _localizationInstance.getCurrentLanguage() === 'ar' ? character.name_ar : character.name;
     document.getElementById('hero-title').textContent = _localizationInstance.getCurrentLanguage() === 'ar' ? character.role_ar || character.role : character.role; // Using role as title for now
 
-    const portraitContainer = document.querySelector('.hero-portrait-container');
+    const portraitContainer = document.getElementById('hero-portrait-container');
     if (portraitContainer) {
         portraitContainer.innerHTML = getCharacterPortraitSVG(charId);
     }
@@ -162,11 +167,8 @@ function displayCharacter(charId) {
     const traitsContainer = document.getElementById('hero-traits');
     traitsContainer.innerHTML = ''; // Clear previous traits
 
-    // Map character specialization to localized traits
-    // Ensure the trait keys match those in localization.js
-    const characterTraits = character.traits; // Use the 'traits' array from Characters.js
-
-    characterTraits.forEach(traitKey => {
+    // Use the 'traits' array from Characters.js and localize them
+    character.traits.forEach(traitKey => {
         const traitItem = document.createElement('div');
         traitItem.classList.add('trait-item');
         // Determine icon based on trait key or a general icon if not specific
@@ -193,20 +195,14 @@ function displayCharacter(charId) {
         const tileCharId = tile.dataset.charId;
         const tileIconContainer = tile.querySelector('.tile-icon');
         if (tileIconContainer) {
-            // For tile icons, we can use a very simplified version or just the character's initial
-            const tileChar = Characters[tileCharId.toUpperCase()];
-            if (tileChar) {
-                // Using a simplified SVG for tile icons for visual consistency with portraits
-                tileIconContainer.innerHTML = getCharacterPortraitSVG(tileCharId);
-            }
+            // Using a simplified SVG for tile icons for visual consistency with portraits
+            tileIconContainer.innerHTML = getCharacterPortraitSVG(tileCharId);
         }
     });
 
     // Update modal content (for details button)
-    const modalDescription = document.getElementById('modal-description');
-    if (modalDescription) {
-        modalDescription.textContent = _localizationInstance.getCurrentLanguage() === 'ar' ? character.description_ar : character.description_en;
-    }
+    document.getElementById('modal-hero-name').textContent = _localizationInstance.getCurrentLanguage() === 'ar' ? character.name_ar : character.name;
+    document.getElementById('modal-description').textContent = _localizationInstance.getCurrentLanguage() === 'ar' ? character.description_ar : character.description_en;
     document.getElementById('modal-stat-hp').textContent = character.baseStats.hp;
     document.getElementById('modal-stat-resource').textContent = `${character.baseStats.resource} ${character.resourceIcon} ${_localizationInstance.get(`${character.resource.toLowerCase()}Resource`)}`;
     document.getElementById('modal-stat-atk').textContent = character.baseStats.atk;
@@ -239,7 +235,7 @@ function closeDetailsModal() {
  */
 function handleStartGame() {
     console.log(`Starting game with selected character: ${_selectedCharId}`);
-    alert(`Game starting with ${_selectedCharId}! (Dungeon generation coming soon)`);
+    alert(`Game starting with ${Characters[_selectedCharId.toUpperCase()].name}!\n\n(Dungeon generation coming soon)`);
     // Future: Initialize game state with selected character and transition to first dungeon floor
     // _gameInstance.startGame(_selectedCharId);
 }
