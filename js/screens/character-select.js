@@ -1,4 +1,4 @@
- // filename: js/screens/character-select.js
+// filename: js/screens/character-select.js
 
 /**
  * @fileoverview JavaScript logic for the Character Selection screen.
@@ -85,6 +85,53 @@ function selectCharacter(charId) {
 }
 
 /**
+ * Generates an SVG string for a character portrait.
+ * @param {string} charId - The ID of the character (e.g., 'warrior', 'sorceress', 'rogue').
+ * @returns {string} The SVG string for the character's portrait.
+ */
+function getCharacterPortraitSVG(charId) {
+    // These are simple placeholder SVGs. In a real game, you'd have more detailed art.
+    switch (charId) {
+        case 'warrior':
+            return `
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="40" fill="#5c4423" stroke="#d4a656" stroke-width="3"/>
+                    <path d="M50 10 L65 40 L50 30 L35 40 Z" fill="#d4a656"/> <!-- Helmet crest -->
+                    <rect x="45" y="45" width="10" height="20" fill="#f8e4c0"/> <!-- Body -->
+                    <circle cx="50" cy="35" r="15" fill="#f8e4c0"/> <!-- Head -->
+                    <path d="M40 55 H60 V70 H40 Z" fill="#d4a656"/> <!-- Armor -->
+                    <path d="M40 70 L30 80 L70 80 L60 70 Z" fill="#5c4423"/> <!-- Legs -->
+                    <path d="M50 10 V0" stroke="#d4a656" stroke-width="2"/> <!-- Helmet spike -->
+                </svg>
+            `;
+        case 'sorceress':
+            return `
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="40" fill="#191970" stroke="#4169e1" stroke-width="3"/>
+                    <path d="M50 15 L70 40 L50 50 L30 40 Z" fill="#87ceeb"/> <!-- Hat -->
+                    <circle cx="50" cy="40" r="15" fill="#f8e4c0"/> <!-- Head -->
+                    <rect x="45" y="50" width="10" height="20" fill="#4169e1"/> <!-- Robe -->
+                    <circle cx="50" cy="75" r="5" fill="#f8e4c0"/> <!-- Magic orb -->
+                    <path d="M50 15 L50 0" stroke="#87ceeb" stroke-width="2"/> <!-- Hat tip -->
+                </svg>
+            `;
+        case 'rogue':
+            return `
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="40" fill="#27ae60" stroke="#9b59b6" stroke-width="3"/>
+                    <path d="M30 40 L50 20 L70 40 L50 60 Z" fill="#9b59b6"/> <!-- Hood -->
+                    <circle cx="50" cy="40" r="15" fill="#f8e4c0"/> <!-- Head -->
+                    <rect x="45" y="50" width="10" height="20" fill="#9b59b6"/> <!-- Tunic -->
+                    <path d="M30 60 L20 70 L80 70 L70 60 Z" fill="#27ae60"/> <!-- Cape -->
+                    <path d="M40 55 L35 60 L40 65" stroke="#f8e4c0" stroke-width="2"/> <!-- Dagger hint -->
+                </svg>
+            `;
+        default:
+            return '';
+    }
+}
+
+/**
  * Displays the details (name, description, stats, portrait) of the selected character.
  * @param {string} charId - The ID of the character to display.
  * @private
@@ -99,11 +146,10 @@ function displayCharacter(charId) {
     // Update character name
     document.getElementById('character-name').textContent = _localizationInstance.getCurrentLanguage() === 'ar' ? character.name_ar : character.name;
 
-    // Update portrait (placeholder for now)
-    const portraitImg = document.getElementById('char-portrait-img');
-    if (portraitImg) {
-        portraitImg.src = `assets/images/placeholder_${charId}.png`; // Example: assets/images/placeholder_warrior.png
-        portraitImg.alt = `${character.name} Portrait`;
+    // Update portrait using SVG
+    const portraitContainer = document.querySelector('.character-portrait-container');
+    if (portraitContainer) {
+        portraitContainer.innerHTML = getCharacterPortraitSVG(charId);
     }
 
     // Update character description, role, specialization
@@ -114,7 +160,7 @@ function displayCharacter(charId) {
 
     // Update stats
     document.getElementById('stat-hp').textContent = character.baseStats.hp;
-    document.getElementById('stat-resource').textContent = `${character.baseStats.resource} ${character.resourceIcon} ${character.resource}`; // e.g., "60 🟣 Vigor"
+    document.getElementById('stat-resource').textContent = `${character.baseStats.resource} ${character.resourceIcon} ${_localizationInstance.get(`${character.resource.toLowerCase()}Resource`)}`; // e.g., "60 🟣 Vigor"
     document.getElementById('stat-atk').textContent = character.baseStats.atk;
     document.getElementById('stat-def').textContent = character.baseStats.def;
     document.getElementById('stat-spd').textContent = character.baseStats.spd;

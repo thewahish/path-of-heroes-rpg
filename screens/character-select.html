@@ -1,3 +1,5 @@
+<!-- filename: screens/character-select.html -->
+
 <div id="character-select-screen" class="character-select-screen">
     <h1 class="screen-title" data-localize="charSelectTitle">Choose Your Hero</h1>
 
@@ -8,12 +10,12 @@
     </div>
 
     <div class="character-display">
-        <div class="character-portrait">
-            <img id="char-portrait-img" src="assets/images/placeholder_warrior.png" alt="Character Portrait">
+        <div class="character-portrait-container">
+            <!-- SVG will be injected here by character-select.js -->
         </div>
         <div class="character-info">
             <h2 id="character-name">Taha</h2>
-            <p><span data-localize="charDescription">Description:</span> <span id="character-description">A formidable warrior, Taha leads with unyielding defense and immense vitality.</span></p>
+            <p class="char-description-text"><span data-localize="charDescription">Description:</span> <span id="character-description">A formidable warrior, Taha leads with unyielding defense and immense vitality.</span></p>
             <p><span data-localize="charRole">Role:</span> <span id="character-role">Tank / Melee</span></p>
             <p><span data-localize="charSpecialization">Specialization:</span> <span id="character-specialization">🛡️ High DEF, ❤️ High HP</span></p>
 
@@ -30,4 +32,4 @@
     </div>
 
     <button id="start-game-button" class="action-button" data-localize="startGameButton">Start Your Journey</button>
-</div> 
+</div>
