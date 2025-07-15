@@ -41,11 +41,12 @@ export class Localization {
             optionsButton: "Options",
             creditsButton: "Credits",
 
-            // Character Select Screen
-            charSelectTitle: "Choose Your Hero",
-            warriorTab: "Warrior",
-            sorceressTab: "Sorceress",
-            rogueTab: "Rogue",
+            // Character Select Screen (Blended with "Courtyard of Fate" concepts)
+            charSelectTitle: "Choose Your Hero", // Keeping existing title
+            rosterTitle: "Choose Your Champion", // New title for character tiles section
+            warriorTab: "Warrior", // Used for tile name
+            sorceressTab: "Sorceress", // Used for tile name
+            rogueTab: "Rogue", // Used for tile name
             charDescription: "Description:",
             charRole: "Role:",
             charSpecialization: "Specialization:",
@@ -56,17 +57,30 @@ export class Localization {
             defStat: "DEF:",
             spdStat: "SPD:",
             critStat: "CRIT:",
-            startGameButton: "Start Your Journey",
+            startGameButton: "Start Your Journey", // Keeping existing button text
+            detailsButton: "Details", // New button text
 
             // Character Resource Names
             vigorResource: "Vigor",
             manaResource: "Mana",
             energyResource: "Energy",
 
-            // Character Descriptions (moved here for localization)
+            // Character Descriptions (from Characters.js, localized here)
             warriorDesc: "A formidable warrior, Taha leads with unyielding defense and immense vitality. He excels in direct combat, soaking up damage while delivering powerful strikes.",
             sorceressDesc: "Mais commands elemental forces, unleashing devastating area-of-effect spells and freezing foes in their tracks. Though fragile, her magic can turn the tide of any battle.",
             rogueDesc: "Swift and deadly, Ibrahim strikes from the shadows with unparalleled speed and precision. His critical hits can dispatch even the toughest enemies before they know what hit them.",
+
+            // Character specific traits (from Characters.js, localized here)
+            highDefenseTrait: "High Defense",
+            areaStrikesTrait: "Area Strikes",
+            resoluteTrait: "Resolute",
+            elementalMagicTrait: "Elemental Magic",
+            ancientKnowledgeTrait: "Ancient Knowledge",
+            spellMasteryTrait: "Spell Mastery",
+            berserkerRageTrait: "Berserker Rage",
+            rawStrengthTrait: "Raw Strength",
+            intimidatingTrait: "Intimidating",
+
 
             // Debug messages
             debugInitialized: "Debugger initialized.",
@@ -98,11 +112,12 @@ export class Localization {
             optionsButton: "الخيارات",
             creditsButton: "الاعتمادات",
 
-            // Character Select Screen
-            charSelectTitle: "اختر بطلك",
-            warriorTab: "محارب",
-            sorceressTab: "ساحرة",
-            rogueTab: "لص",
+            // Character Select Screen (Blended with "Courtyard of Fate" concepts)
+            charSelectTitle: "اختر بطلك", // Keeping existing title
+            rosterTitle: "اختر بطلك", // New title for character tiles section (same as main title for now)
+            warriorTab: "محارب", // Used for tile name
+            sorceressTab: "ساحرة", // Used for tile name
+            rogueTab: "لص", // Used for tile name
             charDescription: "الوصف:",
             charRole: "الدور:",
             charSpecialization: "التخصص:",
@@ -113,17 +128,29 @@ export class Localization {
             defStat: "الدفاع:",
             spdStat: "السرعة:",
             critStat: "الضرر الحرج:",
-            startGameButton: "ابدأ رحلتك",
+            startGameButton: "ابدأ رحلتك", // Keeping existing button text
+            detailsButton: "التفاصيل", // New button text
 
             // Character Resource Names
             vigorResource: "نشاط", // Arabic for Vigor
             manaResource: "مانا",   // Arabic for Mana
             energyResource: "طاقة",  // Arabic for Energy
 
-            // Character Descriptions (moved here for localization)
+            // Character Descriptions (from Characters.js, localized here)
             warriorDesc: "محارب هائل، يقود طه بدفاع لا يتزعزع وحيوية هائلة. إنه يتفوق في القتال المباشر، ويمتص الضرر بينما يوجه ضربات قوية.",
             sorceressDesc: "ميس تتحكم بالقوى العنصرية، تطلق تعويذات منطقة واسعة مدمرة وتجمد الأعداء في مساراتهم. على الرغم من ضعفها، يمكن لسحرها تغيير مجرى أي معركة.",
             rogueDesc: "سريع وقاتل، يضرب إبراهيم من الظلال بسرعة ودقة لا مثيل لهما. يمكن لضرباته الحاسمة القضاء على أصعب الأعداء قبل أن يدركوا ما أصابهم.",
+
+            // Character specific traits (from Characters.js, localized here)
+            highDefenseTrait: "دفاع عالٍ",
+            areaStrikesTrait: "ضربات منطقة",
+            resoluteTrait: "عزيمة",
+            elementalMagicTrait: "سحر عنصري",
+            ancientKnowledgeTrait: "معرفة قديمة",
+            spellMasteryTrait: "إتقان التعويذات",
+            berserkerRageTrait: "غضب البرسيركر",
+            rawStrengthTrait: "قوة خام",
+            intimidatingTrait: "مهيب",
 
             // Debug messages
             debugInitialized: "تم تهيئة المصحح.",
@@ -188,15 +215,12 @@ export class Localization {
     updateLocalizedElements() {
         document.querySelectorAll('[data-localize]').forEach(element => {
             const key = element.getAttribute('data-localize');
-            // Special handling for descriptions, as they are not simple text content
-            // This logic is now handled in character-select.js's displayCharacter
-            // For general localization, just set textContent
             element.textContent = this.get(key);
         });
-        // Update language toggle button text based on current language
+        // Remove text from language toggle button, as it's now an icon.
         const langToggleButton = document.getElementById('language-toggle');
         if (langToggleButton) {
-            langToggleButton.textContent = this.#currentLanguage === 'en' ? 'عربي' : 'English';
+            langToggleButton.textContent = ''; // Ensure no text, only icon
         }
     }
 }

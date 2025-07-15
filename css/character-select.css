@@ -1,11 +1,11 @@
 /* filename: css/character-select.css */
 
-/* Styles specific to the Character Selection Screen */
+/* Styles specific to the Character Selection Screen - Blended "Courtyard of Fate" with Path of Heroes aesthetic */
 #character-select-screen {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 15px; /* Consistent padding */
+    padding: 15px; /* Adjusted padding */
     box-sizing: border-box;
     width: 100%;
     height: 100%;
@@ -14,237 +14,433 @@
     left: 0;
     justify-content: space-between; /* Distribute space vertically */
     overflow-y: hidden; /* Ensure no scrolling */
+    font-family: var(--font-family); /* Use Path of Heroes font */
+    color: var(--color-text); /* Use Path of Heroes text color */
 }
 
 .screen-title {
-    font-size: 2em;
+    font-size: 2em; /* Adjusted font size */
     color: var(--color-primary);
     margin-bottom: 15px;
-    margin-top: 20px; /* Added top margin to prevent overlap with language toggle */
+    margin-top: 15px; /* Adjusted top margin for language toggle */
     text-shadow: 0 0 10px rgba(212, 166, 86, 0.7);
     text-align: center;
+    letter-spacing: 2px; /* Adopted from new design */
+    flex-shrink: 0;
 }
 
-.character-tabs {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    max-width: 380px;
-    margin-bottom: 15px;
-    background-color: rgba(0, 0, 0, 0.5);
-    border-radius: 10px;
-    padding: 5px;
-    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.7);
-}
-
-.char-tab {
-    flex: 1;
-    background-color: var(--color-secondary);
-    color: var(--color-text);
-    border: 1px solid var(--color-secondary);
-    padding: 10px 12px;
-    border-radius: 8px;
-    font-size: 0.95em;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.1s ease, border-color 0.2s ease;
+/* Hero showcase area */
+.hero-showcase {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(26, 16, 6, 0.8) 100%); /* Adjusted to Path of Heroes palette */
+    border: 2px solid var(--color-secondary); /* Path of Heroes border */
+    border-radius: 15px;
+    padding: 15px; /* Adjusted padding */
+    margin-bottom: 15px; /* Adjusted margin */
     text-align: center;
+    position: relative;
+    box-shadow:
+        inset 0 0 20px rgba(212, 166, 86, 0.1), /* Path of Heroes glow */
+        0 6px 20px rgba(0, 0, 0, 0.4);
+    flex-grow: 1; /* Allow it to take available space */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Center content vertically */
+    width: 100%;
+    max-width: 380px; /* Constrain width */
 }
 
-.char-tab:first-child {
-    border-top-left-radius: 8px;
-    border-bottom-left-radius: 8px;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
+/* Decorative corners (simplified for Path of Heroes aesthetic) */
+.hero-showcase::before,
+.hero-showcase::after {
+    content: '';
+    position: absolute;
+    width: 20px; /* Smaller */
+    height: 20px; /* Smaller */
+    border: 2px solid var(--color-primary); /* Path of Heroes color */
+    opacity: 0.6;
 }
 
-.char-tab:last-child {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
+.hero-showcase::before {
+    top: -2px;
+    left: -2px;
+    border-right: none;
+    border-bottom: none;
+    border-top-left-radius: 15px;
 }
 
-.char-tab.active {
-    background-color: var(--color-primary);
-    color: var(--color-background-end);
+.hero-showcase::after {
+    bottom: -2px;
+    right: -2px;
+    border-left: none;
+    border-top: none;
+    border-bottom-right-radius: 15px;
+}
+
+/* Hero portrait container (for SVG) */
+.hero-portrait-container {
+    width: 100px; /* Adjusted size */
+    height: 100px;
+    background: rgba(255, 255, 255, 0.05); /* Placeholder background */
+    border: 3px solid var(--color-primary);
+    border-radius: 50%; /* Round portrait */
+    margin: 0 auto 10px; /* Adjusted margin */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow:
+        inset 0 0 15px rgba(0, 0, 0, 0.5),
+        0 0 15px rgba(212, 166, 86, 0.2);
+    flex-shrink: 0;
+}
+
+.hero-portrait-container svg {
+    width: 90%; /* Ensure SVG fits */
+    height: 90%;
+    display: block;
+}
+
+.hero-name {
+    font-size: 1.6em; /* Adjusted font size */
+    color: var(--color-primary);
+    margin-bottom: 5px; /* Adjusted margin */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.hero-title {
+    font-size: 0.9em; /* Adjusted font size */
+    color: var(--color-text); /* Path of Heroes text color */
+    margin-bottom: 10px; /* Adjusted margin */
+    font-style: italic;
+    flex-shrink: 0;
+}
+
+/* Hero traits/stats */
+.hero-traits {
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Adjusted gap */
+    margin-top: 5px; /* Added margin */
+    flex-shrink: 0;
+}
+
+.trait-item {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center items */
+    gap: 5px; /* Adjusted gap */
+    font-size: 0.85em; /* Adjusted font size */
+    color: var(--color-text); /* Path of Heroes text color */
+}
+
+.trait-icon {
+    width: 18px; /* Adjusted size */
+    height: 18px;
+    color: var(--color-primary); /* Path of Heroes color */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Character roster */
+.character-roster {
+    margin-bottom: 15px; /* Adjusted margin */
+    width: 100%;
+    max-width: 380px; /* Constrain width */
+    flex-shrink: 0;
+}
+
+.roster-title {
+    font-size: 1.1em; /* Adjusted font size */
+    color: var(--color-uncommon); /* Path of Heroes color */
+    text-align: center;
+    margin-bottom: 10px; /* Adjusted margin */
+    font-weight: bold; /* Path of Heroes style */
+}
+
+.character-tiles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px; /* Adjusted gap */
+}
+
+.character-tile {
+    aspect-ratio: 1;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(26, 16, 6, 0.7) 100%); /* Path of Heroes palette */
+    border: 2px solid var(--color-secondary); /* Path of Heroes border */
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.character-tile:hover {
     border-color: var(--color-primary);
-    box-shadow: 0 0 10px rgba(212, 166, 86, 0.5);
+    box-shadow: 0 0 10px rgba(212, 166, 86, 0.4);
     transform: translateY(-2px);
 }
 
-.char-tab:hover:not(.active) {
-    background-color: #7a5f3e;
+.character-tile.active {
+    border-color: var(--color-primary);
+    background: linear-gradient(135deg, rgba(212, 166, 86, 0.2) 0%, rgba(0, 0, 0, 0.7) 100%); /* Path of Heroes active color */
+    box-shadow:
+        0 0 15px rgba(212, 166, 86, 0.6),
+        inset 0 0 10px rgba(212, 166, 86, 0.1);
 }
 
-.character-display {
+.tile-icon {
+    width: 40px; /* Adjusted size */
+    height: 40px;
+    background: var(--color-primary); /* Path of Heroes color */
+    border-radius: 50%;
+    margin-bottom: 5px;
     display: flex;
-    flex-direction: column; /* Stack portrait and info vertically */
     align-items: center;
-    gap: 8px; /* Reduced gap further */
-    width: 100%;
-    max-width: 420px;
-    background-color: rgba(0, 0, 0, 0.6);
-    border-radius: 15px;
-    padding: 15px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-    margin-bottom: 10px; /* Reduced margin */
-    border: 1px solid var(--color-secondary);
-    flex-grow: 1; /* Allow it to grow and shrink */
-    justify-content: center; /* Center content vertically within display */
-}
-
-.character-portrait-container {
-    width: 90px; /* Reduced size for portrait */
-    height: 90px;
-    border-radius: 10px;
-    border: 3px solid var(--color-primary);
-    box-shadow: 0 0 10px rgba(212, 166, 86, 0.8);
-    background-color: rgba(255, 255, 255, 0.05); /* Placeholder background */
-    display: flex; /* For centering SVG */
     justify-content: center;
-    align-items: center;
+    font-size: 0.9em; /* Adjusted font size */
+    color: var(--color-background-end); /* Path of Heroes text color */
+    font-weight: bold;
     overflow: hidden; /* Ensure SVG fits */
 }
 
-.character-portrait-container svg {
-    width: 90%; /* Make SVG fit within container */
-    height: 90%;
-    display: block; /* Remove extra space below SVG */
+.tile-icon svg {
+    width: 80%; /* Make SVG fit */
+    height: 80%;
+    display: block;
 }
 
-
-.character-info {
-    text-align: center; /* Center text within info block */
+.tile-name {
+    font-size: 0.8em; /* Adjusted font size */
     color: var(--color-text);
-    width: 100%;
-    flex-grow: 1; /* Allow info to grow */
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Action buttons */
+.action-buttons {
     display: flex;
-    flex-direction: column;
-    justify-content: center; /* Center content vertically */
-    align-items: center; /* Center items within info block */
+    gap: 10px; /* Adjusted gap */
+    margin-top: auto; /* Push to bottom */
+    width: 100%;
+    max-width: 380px; /* Constrain width */
+    flex-shrink: 0;
 }
 
-.character-info h2 {
-    font-size: 1.5em; /* Slightly reduced font size */
-    color: var(--color-primary);
-    margin-top: 0;
-    margin-bottom: 5px; /* Reduced margin */
-    text-shadow: 0 0 5px rgba(212, 166, 86, 0.5);
-    text-align: center; /* Ensure character name is centered */
-}
-
-.character-info p {
-    font-size: 0.85em; /* Slightly reduced font size */
-    margin-bottom: 4px; /* Reduced margin */
-    line-height: 1.2; /* Adjusted line height */
-    max-width: 90%; /* Constrain width for descriptions */
-}
-
-.char-description-text {
-    max-height: 50px; /* Reduced height for description */
-    overflow: hidden; /* Hide overflow */
-    text-overflow: ellipsis; /* Add ellipsis for overflow */
-    display: -webkit-box;
-    -webkit-line-clamp: 3; /* Limit to 3 lines */
-    -webkit-box-orient: vertical;
-    text-align: center; /* Ensure description is centered */
-}
-
-.character-info h3 {
-    font-size: 1em; /* Slightly reduced font size */
-    color: var(--color-uncommon);
-    margin-top: 8px; /* Reduced margin */
-    margin-bottom: 6px; /* Reduced margin */
-    border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
-    padding-bottom: 3px;
-}
-
-.character-stats {
-    list-style: none;
-    padding: 0;
-    margin: 0 auto; /* Center list */
-    width: fit-content; /* Make list only as wide as its content */
-    text-align: left; /* Align text within list items to the left */
-    display: grid; /* Use grid for two columns */
-    grid-template-columns: auto auto; /* Two columns */
-    gap: 2px 8px; /* Reduced gap further */
-    font-size: 0.9em; /* Slightly reduced font size */
-}
-
-.character-stats li {
-    padding: 1px 0;
-}
-
-.character-stats li span:first-child {
-    font-weight: bold;
-    color: var(--color-text);
-}
-
-.character-stats li span:last-child {
-    color: #aaddff; /* A slightly different color for stat values */
-}
-
-.action-button {
-    background: linear-gradient(to right, #27ae60, #2ecc71); /* Green gradient for Start Game */
-    color: white;
-    border: none;
-    padding: 10px 20px; /* Reduced padding */
-    border-radius: 10px;
-    font-size: 1.3em; /* Slightly reduced font size */
-    font-weight: bold;
+.action-btn {
+    flex: 1;
+    padding: 12px 15px; /* Adjusted padding */
+    background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-secondary) 100%); /* Path of Heroes palette */
+    border: 2px solid var(--color-primary); /* Path of Heroes border */
+    border-radius: 8px;
+    color: var(--color-primary); /* Path of Heroes text color */
+    font-family: var(--font-family);
+    font-size: 1em; /* Adjusted font size */
+    font-weight: bold; /* Path of Heroes style */
     cursor: pointer;
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
-    transition: background-color 0.2s ease, transform 0.1s ease;
+    transition: all 0.2s ease;
     text-transform: uppercase;
     letter-spacing: 1px;
-    width: 80%;
-    max-width: 280px;
-    margin-top: 10px; /* Space from character info */
-    flex-shrink: 0; /* Prevent button from shrinking */
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
 }
 
-.action-button:hover {
-    background: linear-gradient(to right, #2ecc71, #34d883);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.5);
+.action-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent); /* Path of Heroes glow */
+    transition: left 0.4s ease;
 }
 
-.action-button:active {
+.action-btn:hover::before {
+    left: 100%;
+}
+
+.action-btn:hover {
+    background: linear-gradient(135deg, #7a5f3e 0%, #5c4423 100%); /* Darker secondary on hover */
+    box-shadow: 0 0 15px rgba(212, 166, 86, 0.4);
+    transform: translateY(-2px);
+}
+
+.action-btn:active {
     transform: translateY(0);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Details modal (hidden by default) */
+.details-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9); /* Darker overlay */
+    display: flex; /* Changed to flex for centering */
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.details-modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, var(--color-background-mid) 0%, var(--color-background-end) 100%); /* Path of Heroes palette */
+    border: 3px solid var(--color-primary); /* Path of Heroes border */
+    border-radius: 15px;
+    padding: 20px; /* Adjusted padding */
+    max-width: 350px;
+    max-height: 85vh; /* Adjusted max height */
+    overflow-y: auto; /* Allow scrolling within modal */
+    position: relative;
+    color: var(--color-text);
+    box-shadow: 0 0 30px rgba(212, 166, 86, 0.5);
+}
+
+.modal-content h3 {
+    font-size: 1.5em;
+    color: var(--color-primary);
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.modal-content p {
+    font-size: 0.9em;
+    line-height: 1.4;
+    margin-bottom: 15px;
+    text-align: center; /* Center description in modal */
+}
+
+.modal-stats {
+    margin-top: 10px;
+    margin-bottom: 15px;
+    justify-content: center; /* Center stats list in modal */
+}
+
+.close-modal-btn {
+    background: linear-gradient(to right, #8b0000, #ff4500); /* Reddish gradient for close */
+    color: white;
+    margin-top: 15px;
+    padding: 8px 15px;
+    font-size: 0.9em;
+    display: block; /* Make it a block element to center with margin auto */
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 150px; /* Constrain width */
+}
+
+.close-modal-btn:hover {
+    background: linear-gradient(to right, #ff4500, #ff6347);
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 375px) {
+    .screen-title {
+        font-size: 1.7em;
+    }
+    .hero-showcase {
+        padding: 10px;
+    }
+    .hero-portrait-container {
+        width: 80px;
+        height: 80px;
+    }
+    .hero-name {
+        font-size: 1.4em;
+    }
+    .hero-title {
+        font-size: 0.85em;
+    }
+    .trait-item {
+        font-size: 0.8em;
+    }
+    .character-roster {
+        margin-bottom: 10px;
+    }
+    .roster-title {
+        font-size: 1em;
+    }
+    .character-tile {
+        border-radius: 8px;
+    }
+    .tile-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 0.8em;
+    }
+    .tile-name {
+        font-size: 0.75em;
+    }
+    .action-btn {
+        padding: 10px 12px;
+        font-size: 0.9em;
+    }
+    .details-modal .modal-content {
+        padding: 15px;
+        max-width: 300px;
+    }
 }
 
 /* RTL adjustments */
-[dir="rtl"] .character-info {
-    text-align: right;
+[dir="rtl"] #character-select-screen {
+    text-align: right; /* Default text alignment */
 }
 
-[dir="rtl"] .character-stats {
-    text-align: right; /* Align list items to the right in RTL */
-    grid-template-columns: auto auto; /* Keep two columns */
-    direction: rtl; /* Ensure text direction is right-to-left */
-}
-
-[dir="rtl"] .character-tabs {
-    flex-direction: row-reverse; /* Reverse tab order for RTL */
-}
-
-[dir="rtl"] .char-tab:first-child {
+[dir="rtl"] .hero-showcase::before {
+    left: auto;
+    right: -2px;
+    border-left: none;
+    border-bottom: none;
+    border-top-right-radius: 15px;
     border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
 }
 
-[dir="rtl"] .char-tab:last-child {
-    border-top-left-radius: 8px;
-    border-bottom-left-radius: 8px;
-    border-top-right-radius: 0;
+[dir="rtl"] .hero-showcase::after {
+    bottom: -2px;
+    left: -2px;
+    border-right: none;
+    border-top: none;
+    border-bottom-left-radius: 15px;
     border-bottom-right-radius: 0;
 }
 
-/* Specific RTL for description text alignment */
-[dir="rtl"] .char-description-text {
+[dir="rtl"] .character-tiles {
+    direction: rtl; /* Ensure grid items flow RTL */
+}
+
+[dir="rtl"] .character-tile .tile-name {
     text-align: right;
+}
+
+[dir="rtl"] .action-btn::before {
+    left: 100%; /* Start from right for RTL */
+    background: linear-gradient(270deg, transparent, rgba(212, 166, 86, 0.2), transparent); /* Reverse gradient direction */
+}
+
+[dir="rtl"] .action-btn:hover::before {
+    left: -100%; /* Swipe right to left */
+}
+
+[dir="rtl"] .modal-content p {
+    text-align: right;
+}
+
+[dir="rtl"] .modal-stats {
+    text-align: right;
+    margin-left: auto; /* Center list in RTL */
+    margin-right: 0;
 }
