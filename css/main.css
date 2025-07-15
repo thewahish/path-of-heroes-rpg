@@ -316,6 +316,11 @@ body {
     transform: translateY(-2px);
 }
 
+.debug-copy-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
 /* Utility classes */
 .hidden {
     display: none !important;

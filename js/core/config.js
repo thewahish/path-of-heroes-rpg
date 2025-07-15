@@ -21,7 +21,7 @@ export const GameConfig = {
      * @property {string} GAME_VERSION - The current version of the game.
      * Used for tracking and display purposes.
      */
-    GAME_VERSION: "V.37.7",
+    GAME_VERSION: "V.37.11", // Updated version
 
     /**
      * @property {number} LOADING_DURATION_MS - Duration of the loading screen animation in milliseconds.
