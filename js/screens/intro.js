@@ -59,6 +59,7 @@ function handleOptions() {
 }
 
 /**
+/**
  * Handles the click event for the "Credits" button.
  * (Placeholder - will open credits screen)
  */

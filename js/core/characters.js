@@ -32,10 +32,11 @@ export const Characters = {
         name_ar: 'طه',
         resource: 'Vigor',
         resourceIcon: '🟣',
-        role: 'Tank / Melee',
-        specialization: '🛡️ High DEF, ❤️ High HP',
-        description_en: 'A formidable warrior, Taha leads with unyielding defense and immense vitality. He excels in direct combat, soaking up damage while delivering powerful strikes.',
-        description_ar: 'محارب هائل، يقود طه بدفاع لا يتزعزع وحيوية هائلة. إنه يتفوق في القتال المباشر، ويمتص الضرر بينما يوجه ضربات قوية.',
+        role: 'Tank / Melee', // Used as hero title
+        specialization: '🛡️ High DEF, ❤️ High HP', // Used as specialization string
+        traits: ['highDefenseTrait', 'resoluteTrait', 'areaStrikesTrait'], // Specific localized trait keys
+        description_en: "A formidable warrior, Taha leads with unyielding defense and immense vitality. He excels in direct combat, soaking up damage while delivering powerful strikes.",
+        description_ar: "محارب هائل، يقود طه بدفاع لا يتزعزع وحيوية هائلة. إنه يتفوق في القتال المباشر، ويمتص الضرر بينما يوجه ضربات قوية.",
         baseStats: {
             hp: 120,
             resource: 60, // Vigor
@@ -58,8 +59,9 @@ export const Characters = {
         resourceIcon: '🔵',
         role: 'Ranged Mage',
         specialization: '🔮 AoE, ❄️ Crowd Control',
-        description_en: 'Mais commands elemental forces, unleashing devastating area-of-effect spells and freezing foes in their tracks. Though fragile, her magic can turn the tide of any battle.',
-        description_ar: 'ميس تتحكم بالقوى العنصرية، تطلق تعويذات منطقة واسعة مدمرة وتجمد الأعداء في مساراتهم. على الرغم من ضعفها، يمكن لسحرها تغيير مجرى أي معركة.',
+        traits: ['elementalMagicTrait', 'spellMasteryTrait', 'ancientKnowledgeTrait'],
+        description_en: "Mais commands elemental forces, unleashing devastating area-of-effect spells and freezing foes in their tracks. Though fragile, her magic can turn the tide of any battle.",
+        description_ar: "ميس تتحكم بالقوى العنصرية، تطلق تعويذات منطقة واسعة مدمرة وتجمد الأعداء في مساراتهم. على الرغم من ضعفها، يمكن لسحرها تغيير مجرى أي معركة.",
         baseStats: {
             hp: 80,
             resource: 100, // Mana
@@ -82,8 +84,9 @@ export const Characters = {
         resourceIcon: '🟢',
         role: 'Assassin',
         specialization: '⚡ High SPD, 💥 High Crit',
-        description_en: 'Swift and deadly, Ibrahim strikes from the shadows with unparalleled speed and precision. His critical hits can dispatch even the toughest enemies before they know what hit them.',
-        description_ar: 'سريع وقاتل، يضرب إبراهيم من الظلال بسرعة ودقة لا مثيل لهما. يمكن لضرباته الحاسمة القضاء على أصعب الأعداء قبل أن يدركوا ما أصابهم.',
+        traits: ['berserkerRageTrait', 'rawStrengthTrait', 'intimidatingTrait'],
+        description_en: "Swift and deadly, Ibrahim strikes from the shadows with unparalleled speed and precision. His critical hits can dispatch even the toughest enemies before they know what hit them.",
+        description_ar: "سريع وقاتل، يضرب إبراهيم من الظلال بسرعة ودقة لا مثيل لهما. يمكن لضرباته الحاسمة القضاء على أصعب الأعداء قبل أن يدركوا ما أصابهم.",
         baseStats: {
             hp: 100,
             resource: 80, // Energy

@@ -139,22 +139,30 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* Language Toggle Button */
+/* Language Toggle Button - Now a Globe Icon, Top-Left */
 .language-toggle {
-    position: fixed; /* Fixed position relative to viewport */
-    top: 15px; /* Adjusted top position */
-    right: 15px; /* Adjusted right position */
+    position: fixed; /* Stationary */
+    top: 15px; /* Top position */
+    left: 15px; /* Left position */
+    right: auto; /* Ensure it doesn't try to position from right */
     background: var(--color-secondary);
     color: var(--color-text);
     border: 2px solid var(--color-primary);
-    padding: 8px 12px; /* Adjusted padding */
-    border-radius: 10px;
-    font-size: 0.9em; /* Slightly reduced font size */
-    font-weight: bold;
+    width: 40px; /* Fixed width for icon */
+    height: 40px; /* Fixed height for icon */
+    border-radius: 50%; /* Make it round */
+    font-size: 1.2em; /* Icon size */
+    display: flex; /* For centering icon */
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
     z-index: 100; /* Above most elements */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
     transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.language-toggle i {
+    pointer-events: none; /* Prevent icon itself from blocking click on button */
 }
 
 .language-toggle:hover {
@@ -207,7 +215,7 @@ body {
 
 .debug-toggle-btn:active {
     transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* Debugger Panel */
@@ -328,8 +336,8 @@ body {
 }
 
 [dir="rtl"] .language-toggle {
-    left: 15px; /* Adjusted left position for RTL */
-    right: auto;
+    left: auto; /* Reset left */
+    right: 15px; /* Move to right for RTL */
 }
 
 [dir="rtl"] .debug-toggle-btn {

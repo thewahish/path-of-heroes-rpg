@@ -4,12 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Path of Heroes</title>
+    <!-- Main CSS for global styles and layout -->
     <link rel="stylesheet" href="css/main.css">
+    <!-- Specific CSS for the Intro screen -->
     <link rel="stylesheet" href="css/intro.css">
+    <!-- Specific CSS for the Character Select screen -->
     <link rel="stylesheet" href="css/character-select.css">
+    <!-- Font Awesome for icons (e.g., debugger icon) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    </head>
+    <!-- No favicon.ico link for now to avoid 404 -->
+</head>
 <body>
+    <!-- Loading Screen - Initially visible, hidden after game loads -->
     <div id="loading-screen" class="loading-screen">
         <div class="loading-bar-container">
             <div class="loading-bar" id="loading-bar"></div>
@@ -17,7 +23,9 @@
         <p class="loading-text" data-localize="loadingText">Loading Path of Heroes...</p>
     </div>
 
+    <!-- Main Game Container -->
     <div id="game-container" class="game-container hidden">
+        <!-- Global HUD (Hidden on Intro/Character Select, visible otherwise) -->
         <div id="global-hud" class="global-hud hidden">
             <div class="hud-element">
                 <span data-localize="floorLabel">Floor:</span> <span id="floor-number">1</span>
@@ -28,17 +36,22 @@
             <button id="inventory-button" class="hud-button" data-localize="inventoryButton">Inventory</button>
         </div>
 
+        <!-- Language Toggle - Fixed position, always visible, now a globe icon -->
         <button id="language-toggle" class="language-toggle">
             <i class="fas fa-globe"></i>
         </button>
 
+        <!-- Screen Content Area - Where different game screens will be loaded -->
         <div id="screen-content" class="screen-content">
-            </div>
+            <!-- Screen HTML will be injected here by game.js -->
+        </div>
 
+        <!-- Debugger Toggle Button -->
         <button id="debug-toggle-btn" class="debug-toggle-btn">
             <i class="fas fa-bug"></i>
         </button>
 
+        <!-- Debugger Panel -->
         <div id="debug-panel" class="debug-panel hidden">
             <div class="debug-header">
                 <h3 data-localize="debuggerTitle">Debugger</h3>
@@ -58,10 +71,12 @@
         </div>
     </div>
 
+    <!-- JavaScript files -->
     <script type="module" src="js/core/config.js"></script>
     <script type="module" src="js/core/localization.js"></script>
     <script type="module" src="js/core/game.js"></script>
     <script type="module" src="js/debug.js"></script>
     <script type="module" src="js/main.js"></script>
-    </body>
+    <!-- Screen-specific JS will be loaded dynamically by game.js -->
+</body>
 </html>

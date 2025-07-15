@@ -163,22 +163,24 @@ function displayCharacter(charId) {
     traitsContainer.innerHTML = ''; // Clear previous traits
 
     // Map character specialization to localized traits
-    const specializationKeys = {
-        '🛡️ High DEF, ❤️ High HP': ['highDefenseTrait', 'resoluteTrait'], // Example mapping for Warrior
-        '🔮 AoE, ❄️ Crowd Control': ['elementalMagicTrait', 'spellMasteryTrait'], // Example mapping for Sorceress
-        '⚡ High SPD, 💥 High Crit': ['berserkerRageTrait', 'rawStrengthTrait'] // Example mapping for Rogue
-    };
+    // Ensure the trait keys match those in localization.js
+    const characterTraits = character.traits; // Use the 'traits' array from Characters.js
 
-    const currentSpecialization = _localizationInstance.getCurrentLanguage() === 'ar' ? character.specialization_ar || character.specialization : character.specialization;
-    const traitsToDisplay = specializationKeys[currentSpecialization] || [currentSpecialization]; // Fallback to raw specialization if no mapping
-
-    traitsToDisplay.forEach(traitKey => {
+    characterTraits.forEach(traitKey => {
         const traitItem = document.createElement('div');
         traitItem.classList.add('trait-item');
-        // Use a simple icon or emoji for the trait, or the first character of the localized trait
-        const icon = character.specialization.includes('DEF') ? '🛡️' :
-                     character.specialization.includes('AoE') ? '🔮' :
-                     character.specialization.includes('SPD') ? '⚡' : '✨'; // Fallback icon
+        // Determine icon based on trait key or a general icon if not specific
+        let icon = '✨'; // Default icon
+        if (traitKey === 'highDefenseTrait') icon = '🛡️';
+        else if (traitKey === 'areaStrikesTrait') icon = '⚔️';
+        else if (traitKey === 'resoluteTrait') icon = '💎';
+        else if (traitKey === 'elementalMagicTrait') icon = '🔥';
+        else if (traitKey === 'ancientKnowledgeTrait') icon = '📚';
+        else if (traitKey === 'spellMasteryTrait') icon = '✨'; // Reusing for now
+        else if (traitKey === 'berserkerRageTrait') icon = '💢';
+        else if (traitKey === 'rawStrengthTrait') icon = '💪';
+        else if (traitKey === 'intimidatingTrait') icon = '🔥'; // Reusing for now
+
         traitItem.innerHTML = `
             <span class="trait-icon">${icon}</span>
             <span>${_localizationInstance.get(traitKey)}</span>
@@ -191,11 +193,11 @@ function displayCharacter(charId) {
         const tileCharId = tile.dataset.charId;
         const tileIconContainer = tile.querySelector('.tile-icon');
         if (tileIconContainer) {
-            // Use a simpler SVG or just the first letter of the localized name for tile icons
+            // For tile icons, we can use a very simplified version or just the character's initial
             const tileChar = Characters[tileCharId.toUpperCase()];
             if (tileChar) {
-                // For tile icons, we can use a very simplified version or just text
-                tileIconContainer.innerHTML = getCharacterPortraitSVG(tileCharId); // Reusing full portrait SVG for tile for consistency
+                // Using a simplified SVG for tile icons for visual consistency with portraits
+                tileIconContainer.innerHTML = getCharacterPortraitSVG(tileCharId);
             }
         }
     });
@@ -268,10 +270,21 @@ function setupSwipeEvents() {
             const tiles = Array.from(document.querySelectorAll('.character-tile'));
             let currentIndex = tiles.findIndex(tile => tile.classList.contains('active'));
 
-            if (diff > 0) { // Swiped left (show next character)
-                currentIndex = (currentIndex + 1) % tiles.length;
-            } else { // Swiped right (show previous character)
-                currentIndex = (currentIndex - 1 + tiles.length) % tiles.length;
+            if (_localizationInstance.getCurrentLanguage() === 'ar') {
+                // For RTL, swipe left means previous character (index decreases)
+                // Swipe right means next character (index increases)
+                if (diff > 0) { // Swiped left (next in LTR, but previous in RTL visual order)
+                    currentIndex = (currentIndex - 1 + tiles.length) % tiles.length;
+                } else { // Swiped right (previous in LTR, but next in RTL visual order)
+                    currentIndex = (currentIndex + 1) % tiles.length;
+                }
+            } else {
+                // LTR behavior (default)
+                if (diff > 0) { // Swiped left (next character)
+                    currentIndex = (currentIndex + 1) % tiles.length;
+                } else { // Swiped right (previous character)
+                    currentIndex = (currentIndex - 1 + tiles.length) % tiles.length;
+                }
             }
             tiles[currentIndex].click(); // Simulate click on the new active tile
         }

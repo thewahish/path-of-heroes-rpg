@@ -261,7 +261,7 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent); /* Path of Heroes glow */
+    background: linear-gradient(90deg, transparent, rgba(212, 166, 86, 0.2), transparent); /* Path of Heroes glow */
     transition: left 0.4s ease;
 }
 
@@ -277,6 +277,7 @@
 
 .action-btn:active {
     transform: translateY(0);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 /* Details modal (hidden by default) */
