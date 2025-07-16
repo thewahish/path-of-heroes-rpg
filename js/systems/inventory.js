@@ -1,6 +1,9 @@
-// js/systems/inventory.js
+// filename: js/systems/inventory.js
+
+import { GameConfig } from '../core/config.js';
+
 // Inventory System
-window.InventorySystem = class InventorySystem {
+export class InventorySystem {
     constructor(game) {
         this.game = game;
         this.tooltip = null;
@@ -19,7 +22,7 @@ window.InventorySystem = class InventorySystem {
     }
 
     generateItem(itemType, floor = 1, rarity = null) {
-        const itemTemplate = window.GameConfig.ITEM_TYPES[itemType];
+        const itemTemplate = GameConfig.ITEM_TYPES[itemType];
         if (!itemTemplate) {
             console.error('Unknown item type:', itemType);
             return null;
@@ -29,7 +32,7 @@ window.InventorySystem = class InventorySystem {
             rarity = this.rollRarity();
         }
 
-        const rarityData = window.GameConfig.RARITIES[rarity];
+        const rarityData = GameConfig.RARITIES[rarity];
         const id = `${itemType}_${Date.now()}_${Math.random()}`;
         
         const prefix = Math.random() < 0.4 ? this.getRandomAffix('ITEM_PREFIXES') : null;
@@ -79,7 +82,7 @@ window.InventorySystem = class InventorySystem {
         const roll = Math.random() * 100;
         let cumulative = 0;
         
-        for (const [rarity, data] of Object.entries(window.GameConfig.RARITIES)) {
+        for (const [rarity, data] of Object.entries(GameConfig.RARITIES)) {
             cumulative += data.chance;
             if (roll <= cumulative) {
                 return rarity;
@@ -89,16 +92,15 @@ window.InventorySystem = class InventorySystem {
     }
 
     getRandomAffix(affixType) {
-        const affixes = window.GameConfig[affixType];
+        const affixes = GameConfig[affixType];
         return affixes[Math.floor(Math.random() * affixes.length)];
     }
     
     generateLootDrop(enemy, floor) {
-        const itemTypes = Object.keys(window.GameConfig.ITEM_TYPES);
-        const lootableItems = itemTypes.filter(type => window.GameConfig.ITEM_TYPES[type].slot !== null || window.GameConfig.ITEM_TYPES[type].consumable);
+        const itemTypes = Object.keys(GameConfig.ITEM_TYPES);
+        const lootableItems = itemTypes.filter(type => GameConfig.ITEM_TYPES[type].slot !== null || GameConfig.ITEM_TYPES[type].consumable);
         const itemType = lootableItems[Math.floor(Math.random() * lootableItems.length)];
         
-        // FIX: The variable was 'randomItemType' which is not defined. It should be 'itemType'.
         return this.generateItem(itemType, floor);
     }
 
@@ -229,7 +231,7 @@ window.InventorySystem = class InventorySystem {
         
         grid.innerHTML = '';
         
-        Object.entries(window.GameConfig.EQUIPMENT_SLOTS).forEach(([slot, slotData]) => {
+        Object.entries(GameConfig.EQUIPMENT_SLOTS).forEach(([slot, slotData]) => {
             const slotElement = document.createElement('div');
             slotElement.className = 'equipment-slot';
             slotElement.dataset.slot = slot;
@@ -254,7 +256,7 @@ window.InventorySystem = class InventorySystem {
         
         grid.innerHTML = '';
         
-        const maxSlots = window.GameConfig.INVENTORY.maxSlots;
+        const maxSlots = GameConfig.INVENTORY.maxSlots;
         const inventory = this.game.state.current.inventory;
         
         for (let i = 0; i < maxSlots; i++) {
@@ -316,13 +318,13 @@ window.InventorySystem = class InventorySystem {
         if (!this.tooltip || !item) return;
         
         const lang = this.game.localization.getCurrentLanguage();
-        const rarityData = window.GameConfig.RARITIES[item.rarity];
+        const rarityData = GameConfig.RARITIES[item.rarity];
         
         this.tooltip.innerHTML = `
             <div class="tooltip-content">
                 <div class="tooltip-header">
                     <div class="tooltip-name" style="color: ${rarityData.color};">${item.name}</div>
-                    <div class="tooltip-type">${window.GameConfig.EQUIPMENT_SLOTS[item.slot]?.name[lang] || ''} • ${rarityData.name[lang]}</div>
+                    <div class="tooltip-type">${GameConfig.EQUIPMENT_SLOTS[item.slot]?.name[lang] || ''} • ${rarityData.name[lang]}</div>
                 </div>
                 <hr class="divider">
                 <div class="tooltip-stats">

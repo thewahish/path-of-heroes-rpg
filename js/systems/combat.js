@@ -1,5 +1,9 @@
+// filename: js/systems/combat.js
+
+import { GameConfig } from '../core/config.js';
+
 // Combat System
-window.CombatSystem = class CombatSystem {
+export class CombatSystem {
     constructor(game) {
         this.game = game;
         this.currentBattle = null;
@@ -110,7 +114,7 @@ window.CombatSystem = class CombatSystem {
             return;
         }
 
-        const abilityData = window.GameConfig.ABILITIES[abilityId];
+        const abilityData = GameConfig.ABILITIES[abilityId];
         if (!abilityData) return;
 
         if (player.resource.current < abilityData.cost) {
@@ -154,7 +158,7 @@ window.CombatSystem = class CombatSystem {
     }
 
     playerFlee() {
-        const fleeChance = window.GameConfig.COMBAT.fleeChance;
+        const fleeChance = GameConfig.COMBAT.fleeChance;
         
         if (Math.random() < fleeChance) {
             this.game.updateElement('combat-log-text', 'Successfully fled from battle!');
@@ -213,10 +217,10 @@ window.CombatSystem = class CombatSystem {
         let finalDamage = Math.max(1, baseAttack - (defense * 0.5)) * multiplier;
         
         if (isCritical) {
-            finalDamage = Math.floor(finalDamage * window.GameConfig.COMBAT.baseCritMultiplier);
+            finalDamage = Math.floor(finalDamage * GameConfig.COMBAT.baseCritMultiplier);
         }
         
-        const difficulty = window.GameConfig.DIFFICULTIES[this.game.state.current.difficulty];
+        const difficulty = GameConfig.DIFFICULTIES[this.game.state.current.difficulty];
         const damageMultiplier = attacker.id === 'player' ? difficulty.playerDmgMult : difficulty.enemyDmgMult;
         finalDamage *= damageMultiplier;
             
@@ -344,7 +348,4 @@ window.CombatSystem = class CombatSystem {
             this.game.showMainMenu();
         }
     }
-
-    // enablePlayerActions is now handled by js/screens/battle.js
-    // Removed from here to decouple combat logic from direct UI manipulation.
 };

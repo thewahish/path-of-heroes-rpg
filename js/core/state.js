@@ -1,6 +1,9 @@
-// Game State Management State.js
+// filename: js/core/state.js
+
+import { GameConfig } from './config.js';
+
 // This module manages the game state, including player data, inventory, and game progress.
-window.GameState = {
+export const GameState = {
     current: {
         gameStarted: false,
         currentScreen: 'loading',
@@ -29,7 +32,7 @@ window.GameState = {
             player: null,
             selectedCharacter: null,
             currentFloor: 1,
-            gold: window.GameConfig.INVENTORY.startingGold,
+            gold: GameConfig.INVENTORY.startingGold,
             experience: 0,
             level: 1,
             inventory: [],
@@ -50,7 +53,7 @@ window.GameState = {
         this.current.selectedCharacter = characterId;
         this.current.difficulty = difficulty;
         
-        const characterData = window.GameConfig.CHARACTERS[characterId];
+        const characterData = GameConfig.CHARACTERS[characterId];
         if (!characterData) {
             throw new Error(`Invalid character: ${characterId}`);
         }
@@ -77,7 +80,9 @@ window.GameState = {
     },
 
     initializeStartingGear() {
-        const startingWeapon = window.game.inventory.generateItem('sword', 1, 'common');
+        // REFACTOR NOTE: This creates a problematic dependency on a global `game` instance.
+        // This should be refactored later to remove the tight coupling.
+        const startingWeapon = game.inventory.generateItem('sword', 1, 'common');
         this.current.inventory.push(startingWeapon);
         this.equipItem(startingWeapon);
     },
@@ -104,7 +109,7 @@ window.GameState = {
         const item = this.current.equipped[slot];
         if (!item) return false;
         
-        if (this.current.inventory.length < window.GameConfig.INVENTORY.maxSlots) {
+        if (this.current.inventory.length < GameConfig.INVENTORY.maxSlots) {
             this.current.inventory.push(item);
             delete this.current.equipped[slot];
             this.updatePlayerStats();
@@ -118,7 +123,7 @@ window.GameState = {
     updatePlayerStats() {
         if (!this.current.player) return;
         
-        const characterData = window.GameConfig.CHARACTERS[this.current.selectedCharacter];
+        const characterData = GameConfig.CHARACTERS[this.current.selectedCharacter];
         const baseStats = { ...characterData.stats };
         
         const growth = characterData.growthRates;
@@ -157,7 +162,7 @@ window.GameState = {
         this.current.player.experience += amount;
         
         const requiredXP = this.getRequiredExperience(this.current.level);
-        if (this.current.experience >= requiredXP && this.current.level < window.GameConfig.XP_CURVE.maxLevel) {
+        if (this.current.experience >= requiredXP && this.current.level < GameConfig.XP_CURVE.maxLevel) {
             this.levelUp();
         }
         
@@ -165,7 +170,7 @@ window.GameState = {
     },
 
     getRequiredExperience(level) {
-        const config = window.GameConfig.XP_CURVE;
+        const config = GameConfig.XP_CURVE;
         if (level === 0) return 0;
         return config.baseXP + (level - 1) * config.increment;
     },
@@ -179,7 +184,7 @@ window.GameState = {
         this.current.player.stats.hp = this.current.player.stats.maxHp;
         this.current.player.resource.current = this.current.player.resource.max;
         
-        const character = window.GameConfig.CHARACTERS[this.current.selectedCharacter];
+        const character = GameConfig.CHARACTERS[this.current.selectedCharacter];
         const growth = character.growthRates;
         
         alert(`🎉 LEVEL UP! 🎉\n\nYou are now Level ${this.current.level}!\n\nStat increases:\n• Health: +${growth.hp}\n• Attack: +${growth.attack}\n• Defense: +${growth.defense}\n• Speed: +${growth.speed}\n• Critical: +${growth.crit}%\n\nHealth and resources fully restored!`);
@@ -199,7 +204,7 @@ window.GameState = {
     },
 
     addItemToInventory(item) {
-        if (this.current.inventory.length < window.GameConfig.INVENTORY.maxSlots) {
+        if (this.current.inventory.length < GameConfig.INVENTORY.maxSlots) {
             this.current.inventory.push(item);
             return true;
         } else {

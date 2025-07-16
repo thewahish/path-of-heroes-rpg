@@ -8,9 +8,9 @@
 
 import { GameConfig } from './config.js';
 import { Localization } from './localization.js';
-// import { GameState } from './state.js'; // Will be implemented later
-// import { CombatSystem } from '../systems/combat.js'; // Will be implemented later
-// import { InventorySystem } from '../systems/inventory.js'; // Will be implemented later
+import { GameState } from './state.js';
+import { CombatSystem } from '../systems/combat.js';
+import { InventorySystem } from '../systems/inventory.js';
 
 /**
  * The main game class for Path of Heroes.
@@ -93,17 +93,17 @@ export class PathOfHeroes {
             console.log(this.#systems.localization.get('systemInitialized') + "Localization");
             this.#systems.localization.updateLocalizedElements(); // Apply initial localization
 
-            // Placeholder for other systems to be initialized later
-            // IMPORTANT: These lines must remain commented out until their respective
-            // classes (GameState, CombatSystem, InventorySystem) are fully implemented.
-            // this.#systems.gameState = new GameState();
-            // console.log(this.#systems.localization.get('systemInitialized') + "GameState");
+            // Initialize GameState, which is an exported object, not a class
+            this.#systems.gameState = GameState;
+            console.log(this.#systems.localization.get('systemInitialized') + "GameState");
 
-            // this.#systems.combatSystem = new CombatSystem(this.#systems.gameState);
-            // console.log(this.#systems.localization.get('systemInitialized') + "CombatSystem");
+            // Initialize CombatSystem, passing the main game instance to its constructor
+            this.#systems.combatSystem = new CombatSystem(this);
+            console.log(this.#systems.localization.get('systemInitialized') + "CombatSystem");
 
-            // this.#systems.inventorySystem = new InventorySystem(this.#systems.gameState);
-            // console.log(this.#systems.localization.get('systemInitialized') + "InventorySystem");
+            // Initialize InventorySystem, passing the main game instance to its constructor
+            this.#systems.inventorySystem = new InventorySystem(this);
+            console.log(this.#systems.localization.get('systemInitialized') + "InventorySystem");
 
         } catch (error) {
             console.error(this.#systems.localization?.get('errorInitializingSystem') + error.message);
@@ -214,9 +214,6 @@ export class PathOfHeroes {
             this.#screenContentArea.innerHTML = htmlContent;
 
             // Load screen-specific JavaScript module
-            // We need to dynamically import the module and then call its init function if it exists.
-            // To prevent multiple loads/issues, we'll manage loaded screen modules.
-            // For now, a simple import and call is sufficient.
             const module = await import(`../../${screenInfo.js}`);
             if (module.init) {
                 // Pass game instance and localization to the screen's init function
