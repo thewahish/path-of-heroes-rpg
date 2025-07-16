@@ -15,14 +15,25 @@ let _selectedCharId = Characters.WARRIOR.id;
  */
 export function init(gameInstance) {
     _gameInstance = gameInstance;
-    console.log("Character Selection screen initialized.");
+    console.log("Character Selection screen script loaded.");
 
-    // FIX: Wrap setup in a timeout to ensure DOM elements are ready.
-    setTimeout(() => {
+    // FIX: Use a more robust method to ensure the DOM is ready.
+    // The 'DOMContentLoaded' event fires when the initial HTML document has been completely loaded and parsed.
+    // We add the listener to the document to ensure it catches the event.
+    const setup = () => {
+        console.log("DOM is ready. Setting up listeners and UI for Character Select.");
         setupEventListeners();
         displayCharacter(_selectedCharId);
         _gameInstance.getSystem('localization').updateLocalizedElements();
-    }, 0);
+    };
+    
+    // In a dynamic loading context, the DOM might already be ready.
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setup);
+    } else {
+        // DOM is already ready, execute immediately.
+        setup();
+    }
 }
 
 /**
@@ -51,7 +62,10 @@ function setupEventListeners() {
  * @private
  */
 function selectCharacter(charId) {
+    // ADDED: Diagnostic log to confirm the click is registered.
+    console.log(`selectCharacter called with ID: ${charId}`);
     if (!charId) return;
+    
     _selectedCharId = charId;
     document.querySelectorAll('.character-tile').forEach(tile => {
         tile.classList.remove('active');
@@ -104,20 +118,11 @@ function displayCharacter(charId) {
     }
 }
 
-/**
- * Handles the "Start Game" button click.
- * @private
- */
 function handleStartGame() {
     console.log(`Starting game with selected character: ${_selectedCharId}`);
     _gameInstance.startGame(_selectedCharId);
 }
 
-/**
- * RESTORED: Generates an SVG string for a character portrait.
- * @param {string} charId
- * @returns {string}
- */
 function getCharacterPortraitSVG(charId) {
     switch (charId) {
         case 'warrior':
@@ -139,10 +144,6 @@ function closeDetailsModal() {
     document.getElementById('details-modal')?.classList.add('hidden');
 }
 
-/**
- * RESTORED: Sets up swipe functionality for character tiles on mobile.
- * @private
- */
 function setupSwipeEvents() {
     let startX = 0;
     const characterTilesContainer = document.getElementById('character-tiles');
