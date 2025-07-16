@@ -11,7 +11,7 @@ export class CombatSystem {
 
     startBattle(enemies) {
         this.currentBattle = {
-            player: this.game.state.current.player,
+            player: this.game.getSystem('gameState').current.player,
             enemies: enemies,
             turnOrder: [],
             currentTurnIndex: 0,
@@ -19,7 +19,7 @@ export class CombatSystem {
         };
 
         this.calculateTurnOrder();
-        this.game.updateBattleDisplay(); // Tell the UI to render the initial state
+        this.game.getSystem('battleUI').updateBattleDisplay(); // Tell the UI to render the initial state
         this.startNextTurn();
     }
 
@@ -56,7 +56,7 @@ export class CombatSystem {
             return;
         }
 
-        this.game.updateBattleDisplay(); // Tell the UI to update for the new turn
+        this.game.getSystem('battleUI').updateBattleDisplay(); // Tell the UI to update for the new turn
 
         if (currentActor.type === 'player') {
             this.startPlayerTurn();
@@ -66,23 +66,21 @@ export class CombatSystem {
     }
 
     startPlayerTurn() {
-        // Delegate UI button enabling/disabling to the BattleScreen module
-        if (this.game.activeScreenModule && typeof this.game.activeScreenModule.enablePlayerActions === 'function') {
-            this.game.activeScreenModule.enablePlayerActions(true);
-        } else {
-            console.warn("CombatSystem: BattleScreen module not active or missing enablePlayerActions.");
+        const battleUI = this.game.getSystem('battleUI');
+        if (battleUI && typeof battleUI.enablePlayerActions === 'function') {
+            battleUI.enablePlayerActions(true);
         }
         this.regenerateResource(this.currentBattle.player);
-        this.game.updateBattleDisplay(); // Re-render to show resource regen
-        this.game.updateElement('combat-log-text', this.game.localization.getText('battle.your_turn'));
+        this.game.getSystem('battleUI').updateBattleDisplay();
+        this.game.updateElement('combat-log-text', this.game.getSystem('localization').get('battle.your_turn'));
     }
 
     startEnemyTurn(enemy) {
-        // Delegate UI button enabling/disabling to the BattleScreen module
-        if (this.game.activeScreenModule && typeof this.game.activeScreenModule.enablePlayerActions === 'function') {
-            this.game.activeScreenModule.enablePlayerActions(false);
+        const battleUI = this.game.getSystem('battleUI');
+        if (battleUI && typeof battleUI.enablePlayerActions === 'function') {
+            battleUI.enablePlayerActions(false);
         }
-        this.game.updateElement('combat-log-text', `${this.game.localization.getText('battle.enemy_turn')}: ${this.game.localization.getCharacterName(enemy)}`);
+        this.game.updateElement('combat-log-text', `${this.game.getSystem('localization').get('battle.enemy_turn')}: ${enemy.name}`);
         
         setTimeout(() => {
             this.executeEnemyAction(enemy);
@@ -118,7 +116,7 @@ export class CombatSystem {
         if (!abilityData) return;
 
         if (player.resource.current < abilityData.cost) {
-            this.game.updateElement('combat-log-text', `Not enough ${player.resource.name[this.game.localization.getCurrentLanguage()]}!`);
+            this.game.updateElement('combat-log-text', `Not enough ${player.resource.name}!`);
             return;
         }
         
@@ -130,7 +128,7 @@ export class CombatSystem {
         const currentActor = this.getCurrentActor();
         if (!currentActor || currentActor.type !== 'player') return;
 
-        const inventory = this.game.state.current.inventory;
+        const inventory = this.game.getSystem('gameState').current.inventory;
         const potion = inventory.find(item => item.consumable && item.effect === 'heal_hp');
 
         if (!potion) {
@@ -138,7 +136,7 @@ export class CombatSystem {
             return; 
         }
 
-        const wasUsed = this.game.inventory.useItem(potion);
+        const wasUsed = this.game.getSystem('inventorySystem').useItem(potion);
 
         if (wasUsed) {
             this.endPlayerTurn();
@@ -153,7 +151,7 @@ export class CombatSystem {
 
         const player = this.currentBattle.player;
         player.defendingThisTurn = true;
-        this.game.updateElement('combat-log-text', `${this.game.localization.getCharacterName(player)} is defending.`);
+        this.game.updateElement('combat-log-text', `${player.name} is defending.`);
         this.endPlayerTurn();
     }
 
@@ -176,15 +174,12 @@ export class CombatSystem {
         const damage = this.calculateDamage(attacker, target, damageMultiplier, isCritical);
 
         target.stats.hp = Math.max(0, target.stats.hp - damage);
-
-        const attackerName = this.game.localization.getCharacterName(attacker);
-        const targetName = this.game.localization.getCharacterName(target);
         
-        let message = `${attackerName} attacks ${targetName} for ${damage} damage.`;
+        let message = `${attacker.name} attacks ${target.name} for ${damage} damage.`;
         if (isCritical) message += ' (Critical Hit!)';
         this.game.updateElement('combat-log-text', message);
         
-        this.game.updateBattleDisplay(); // Tell the UI to update after damage calculation
+        this.game.getSystem('battleUI').updateBattleDisplay();
 
         if (target.stats.hp <= 0) {
             this.handleActorDeath({ entity: target, type: attacker.id === 'player' ? 'enemy' : 'player' });
@@ -195,11 +190,10 @@ export class CombatSystem {
         if (!caster || !abilityData) return;
         
         caster.resource.current = Math.max(0, caster.resource.current - abilityData.cost);
-        this.game.updateBattleDisplay(); // Tell the UI to update to show resource cost
+        this.game.getSystem('battleUI').updateBattleDisplay();
 
-        const casterName = this.game.localization.getCharacterName(caster);
-        const abilityName = abilityData.name[this.game.localization.getCurrentLanguage()];
-        this.game.updateElement('combat-log-text', `${casterName} uses ${abilityName}!`);
+        const abilityName = this.game.getSystem('localization').getCurrentLanguage() === 'ar' ? abilityData.name.ar : abilityData.name.en;
+        this.game.updateElement('combat-log-text', `${caster.name} uses ${abilityName}!`);
 
         if (abilityData.type === 'attack') {
             const target = this.currentBattle.enemies[0];
@@ -211,8 +205,8 @@ export class CombatSystem {
     }
 
     calculateDamage(attacker, defender, multiplier, isCritical) {
-        const baseAttack = attacker.stats.attack;
-        const defense = defender.stats.defense;
+        const baseAttack = attacker.stats.atk;
+        const defense = defender.stats.def;
         
         let finalDamage = Math.max(1, baseAttack - (defense * 0.5)) * multiplier;
         
@@ -220,8 +214,8 @@ export class CombatSystem {
             finalDamage = Math.floor(finalDamage * GameConfig.COMBAT.baseCritMultiplier);
         }
         
-        const difficulty = GameConfig.DIFFICULTIES[this.game.state.current.difficulty];
-        const damageMultiplier = attacker.id === 'player' ? difficulty.playerDmgMult : difficulty.enemyDmgMult;
+        const difficulty = GameConfig.DIFFICULTIES[this.game.getSystem('gameState').current.difficulty];
+        const damageMultiplier = attacker.id === 'player' ? (difficulty.playerDmgMult || 1.0) : (difficulty.enemyDmgMult || 1.0);
         finalDamage *= damageMultiplier;
             
         if (defender.defendingThisTurn) {
@@ -259,9 +253,9 @@ export class CombatSystem {
     }
 
     endPlayerTurn() {
-        // Delegate UI button disabling to the BattleScreen module
-        if (this.game.activeScreenModule && typeof this.game.activeScreenModule.enablePlayerActions === 'function') {
-            this.game.activeScreenModule.enablePlayerActions(false);
+        const battleUI = this.game.getSystem('battleUI');
+        if (battleUI && typeof battleUI.enablePlayerActions === 'function') {
+            battleUI.enablePlayerActions(false);
         }
         setTimeout(() => {
             if (this.currentBattle) {
@@ -305,16 +299,15 @@ export class CombatSystem {
     }
 
     handleActorDeath(actor) {
-        const actorName = this.game.localization.getCharacterName(actor.entity);
-        this.game.updateElement('combat-log-text', `${actorName} has been defeated!`);
+        this.game.updateElement('combat-log-text', `${actor.entity.name} has been defeated!`);
 
         setTimeout(() => {
             if (actor.type === 'player') {
                 this.endBattle(false);
             } else {
-                const loot = this.game.inventory.generateLootDrop(actor.entity, this.game.state.current.currentFloor);
+                const loot = this.game.getSystem('inventorySystem').generateLootDrop(actor.entity, this.game.getSystem('gameState').current.currentFloor);
                 if (loot) {
-                    if (!this.game.state.addItemToInventory(loot)) {
+                    if (!this.game.getSystem('gameState').addItemToInventory(loot)) {
                         this.game.updateElement('combat-log-text', `Found: ${loot.name}!\nBut your inventory is full!`);
                     } else {
                         this.game.updateElement('combat-log-text', `Found: ${loot.name}!`);
@@ -322,7 +315,7 @@ export class CombatSystem {
                 }
                 
                 this.currentBattle.enemies = this.currentBattle.enemies.filter(e => e.id !== actor.entity.id);
-                this.game.state.current.enemiesDefeated++;
+                this.game.getSystem('gameState').current.enemiesDefeated++;
                 
                 if (this.currentBattle.enemies.length === 0) {
                     this.endBattle(true);
@@ -334,9 +327,9 @@ export class CombatSystem {
     }
 
     endBattle(victory, fled = false) {
-        // Delegate UI button disabling to the BattleScreen module
-        if (this.game.activeScreenModule && typeof this.game.activeScreenModule.enablePlayerActions === 'function') {
-            this.game.activeScreenModule.enablePlayerActions(false);
+        const battleUI = this.game.getSystem('battleUI');
+        if (battleUI && typeof battleUI.enablePlayerActions === 'function') {
+            battleUI.enablePlayerActions(false);
         }
         this.currentBattle = null;
         

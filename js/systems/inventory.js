@@ -57,7 +57,8 @@ export class InventorySystem {
             });
         }
 
-        const lang = this.game.localization.getCurrentLanguage();
+        const localization = this.game.getSystem('localization'); // FIXED
+        const lang = localization.getCurrentLanguage();
         let itemName = itemTemplate.name[lang] || itemTemplate.name.en;
         if (prefix) itemName = `${prefix.name[lang] || prefix.name.en} ${itemName}`;
         if (suffix) itemName = `${itemName} ${suffix.name[lang] || suffix.name.en}`;
@@ -110,7 +111,8 @@ export class InventorySystem {
             return false;
         }
 
-        const player = this.game.state.current.player;
+        const gameState = this.game.getSystem('gameState');
+        const player = gameState.current.player;
         let effectApplied = false;
 
         switch(item.effect) {
@@ -118,7 +120,7 @@ export class InventorySystem {
                 if (player.stats.hp < player.stats.maxHp) {
                     const healAmount = item.value || 25;
                     player.stats.hp = Math.min(player.stats.maxHp, player.stats.hp + healAmount);
-                    this.game.updateElement('combat-log-text', `${this.game.localization.getCharacterName(player)} uses a ${item.name} and recovers ${healAmount} HP.`);
+                    this.game.updateElement('combat-log-text', `${player.name} uses a ${item.name} and recovers ${healAmount} HP.`);
                     effectApplied = true;
                 } else {
                     alert("Health is already full!");
@@ -130,8 +132,8 @@ export class InventorySystem {
         }
 
         if (effectApplied) {
-            this.game.state.removeItemFromInventory(item);
-            this.game.updateBattleDisplay();
+            gameState.removeItemFromInventory(item);
+            this.game.getSystem('battleUI').updateBattleDisplay();
         }
         
         return effectApplied;
@@ -140,22 +142,22 @@ export class InventorySystem {
     equipItem(item) {
         if (!item || !item.slot) return false;
         
-        const result = this.game.state.equipItem(item);
+        const result = this.game.getSystem('gameState').equipItem(item);
         if (result) {
             this.updateDisplay();
-            if (this.game.state.current.battleInProgress) {
-                this.game.updateBattleDisplay();
+            if (this.game.getSystem('gameState').current.battleInProgress) {
+                this.game.getSystem('battleUI').updateBattleDisplay();
             }
         }
         return result;
     }
 
     unequipItem(slot) {
-        const result = this.game.state.unequipItem(slot);
+        const result = this.game.getSystem('gameState').unequipItem(slot);
         if (result) {
             this.updateDisplay();
-            if (this.game.state.current.battleInProgress) {
-                this.game.updateBattleDisplay();
+            if (this.game.getSystem('gameState').current.battleInProgress) {
+                this.game.getSystem('battleUI').updateBattleDisplay();
             }
         }
         return result;
@@ -166,30 +168,31 @@ export class InventorySystem {
         
         if (!confirm(`Sell ${item.name} for ${item.sellPrice} gold?`)) return false;
         
-        const wasEquipped = Object.values(this.game.state.current.equipped).some(equipped => equipped && equipped.id === item.id);
+        const gameState = this.game.getSystem('gameState');
+        const wasEquipped = Object.values(gameState.current.equipped).some(equipped => equipped && equipped.id === item.id);
         
         if (wasEquipped) {
-            for (const [slot, equippedItem] of Object.entries(this.game.state.current.equipped)) {
+            for (const [slot, equippedItem] of Object.entries(gameState.current.equipped)) {
                 if (equippedItem && equippedItem.id === item.id) {
-                    delete this.game.state.current.equipped[slot];
+                    delete gameState.current.equipped[slot];
                     break;
                 }
             }
         } else {
-            this.game.state.removeItemFromInventory(item);
+            gameState.removeItemFromInventory(item);
         }
         
-        this.game.state.addGold(item.sellPrice);
-        this.game.state.updatePlayerStats();
+        gameState.addGold(item.sellPrice);
+        gameState.updatePlayerStats();
         this.updateDisplay();
-        if (this.game.state.current.battleInProgress) {
-            this.game.updateBattleDisplay();
+        if (gameState.current.battleInProgress) {
+            this.game.getSystem('battleUI').updateBattleDisplay();
         }
         return true;
     }
 
     sortItems() {
-        this.game.state.current.inventory.sort((a, b) => {
+        this.game.getSystem('gameState').current.inventory.sort((a, b) => {
             const rarityOrder = ['legendary', 'mythic', 'epic', 'rare', 'uncommon', 'common'];
             const aRarityIndex = rarityOrder.indexOf(a.rarity);
             const bRarityIndex = rarityOrder.indexOf(b.rarity);
@@ -205,7 +208,8 @@ export class InventorySystem {
     }
 
     sellAllCommon() {
-        const commonItems = this.game.state.current.inventory.filter(item => item.rarity === 'common');
+        const gameState = this.game.getSystem('gameState');
+        const commonItems = gameState.current.inventory.filter(item => item.rarity === 'common');
         if (commonItems.length === 0) {
             alert('No common items to sell!');
             return;
@@ -213,8 +217,8 @@ export class InventorySystem {
         
         const totalValue = commonItems.reduce((sum, item) => sum + item.sellPrice, 0);
         if (confirm(`Sell ${commonItems.length} common items for ${totalValue} gold?`)) {
-            commonItems.forEach(item => this.game.state.removeItemFromInventory(item));
-            this.game.state.addGold(totalValue);
+            commonItems.forEach(item => gameState.removeItemFromInventory(item));
+            gameState.addGold(totalValue);
             this.updateDisplay();
         }
     }
@@ -236,7 +240,7 @@ export class InventorySystem {
             slotElement.className = 'equipment-slot';
             slotElement.dataset.slot = slot;
             
-            const equippedItem = this.game.state.current.equipped[slot];
+            const equippedItem = this.game.getSystem('gameState').current.equipped[slot];
             
             if (equippedItem) {
                 slotElement.classList.add('occupied', `rarity-${equippedItem.rarity}`);
@@ -257,7 +261,7 @@ export class InventorySystem {
         grid.innerHTML = '';
         
         const maxSlots = GameConfig.INVENTORY.maxSlots;
-        const inventory = this.game.state.current.inventory;
+        const inventory = this.game.getSystem('gameState').current.inventory;
         
         for (let i = 0; i < maxSlots; i++) {
             const slotElement = document.createElement('div');
@@ -279,29 +283,30 @@ export class InventorySystem {
         const statsTable = document.getElementById('inventory-stats-table');
         if (!statsTable) return;
         
-        const player = this.game.state.current.player;
+        const player = this.game.getSystem('gameState').current.player;
         if (!player) return;
         
-        const lang = this.game.localization.getCurrentLanguage();
+        const localization = this.game.getSystem('localization'); // FIXED
+        const lang = localization.getCurrentLanguage();
         const stats = [
             { key: 'hp', value: `${player.stats.hp}/${player.stats.maxHp}` },
-            { key: 'attack', value: player.stats.attack },
-            { key: 'defense', value: player.stats.defense },
-            { key: 'speed', value: player.stats.speed },
+            { key: 'attack', value: player.stats.atk },
+            { key: 'defense', value: player.stats.def },
+            { key: 'speed', value: player.stats.spd },
             { key: 'crit', value: `${player.stats.crit}%` },
-            { key: 'resource', label: player.resource.name[lang], value: `${player.resource.current}/${player.resource.max}` }
+            { key: 'resource', label: player.resource.name, value: `${player.resource.current}/${player.resource.max}` }
         ];
         
         statsTable.innerHTML = stats.map(statInfo => {
             const locKeyMap = { 'attack': 'atk', 'defense': 'def', 'speed': 'spd' };
             const locKey = `stat.${locKeyMap[statInfo.key] || statInfo.key}`;
-            const label = statInfo.label || this.game.localization.getText(locKey);
+            const label = statInfo.label || localization.get(locKey); // FIXED
             return `<tr><td>${label}</td><td>${statInfo.value}</td></tr>`;
         }).join('');
 
         const title = document.getElementById('inventory-stats-title');
         if(title) {
-            title.textContent = this.game.localization.getText('inventory.stats');
+            title.textContent = localization.get('inventory.stats'); // FIXED
         }
     }
 
@@ -317,14 +322,15 @@ export class InventorySystem {
     showTooltip(event, item) {
         if (!this.tooltip || !item) return;
         
-        const lang = this.game.localization.getCurrentLanguage();
+        const lang = this.game.getSystem('localization').getCurrentLanguage(); // FIXED
         const rarityData = GameConfig.RARITIES[item.rarity];
+        const slotData = GameConfig.EQUIPMENT_SLOTS[item.slot];
         
         this.tooltip.innerHTML = `
             <div class="tooltip-content">
                 <div class="tooltip-header">
                     <div class="tooltip-name" style="color: ${rarityData.color};">${item.name}</div>
-                    <div class="tooltip-type">${GameConfig.EQUIPMENT_SLOTS[item.slot]?.name[lang] || ''} • ${rarityData.name[lang]}</div>
+                    <div class="tooltip-type">${(slotData ? slotData.name[lang] : '') || ''} • ${rarityData.name[lang]}</div>
                 </div>
                 <hr class="divider">
                 <div class="tooltip-stats">
