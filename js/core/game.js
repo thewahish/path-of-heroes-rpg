@@ -222,21 +222,32 @@ export class PathOfHeroes {
      * @param {string} characterId - The ID of the selected character.
      */
     startGame(characterId) {
-        console.log(`Starting new game with character: ${characterId}`);
+        console.log(`--- Starting new game with character: ${characterId} ---`);
         const gameState = this.getSystem('gameState');
         const inventorySystem = this.getSystem('inventorySystem');
 
         // 1. Initialize the game state for a new run
+        console.log("DEBUG: Calling gameState.newGame...");
         gameState.newGame(characterId);
+        console.log("DEBUG: gameState.newGame() completed. Player object:", gameState.current.player);
         
         // 2. Add starting items (logic moved from state.js)
+        console.log("DEBUG: Generating starting weapon...");
         const startingWeapon = inventorySystem.generateItem('sword', 1, 'common');
+        console.log("DEBUG: Generated weapon:", startingWeapon);
+
         if (startingWeapon) {
+            console.log("DEBUG: Adding weapon to inventory...");
             gameState.addItemToInventory(startingWeapon);
+            console.log("DEBUG: Equipping weapon...");
             gameState.equipItem(startingWeapon);
+            console.log("DEBUG: Weapon equipped.");
+        } else {
+            console.warn("DEBUG: Starting weapon could not be generated.");
         }
 
         // 3. Transition to the first screen of the dungeon (Battle Screen for now)
+        console.log("DEBUG: Preparing to set screen to 'battle'...");
         this.setScreen('battle');
     }
 
@@ -251,7 +262,7 @@ export class PathOfHeroes {
         } else {
             this.#globalHud.classList.remove('hidden');
             this.updateElement('floor-number', '1');
-            this.updateElement('gold-count', '0');
+            this.updateElement('gold-count', '0'); // This should be updated from gameState
         }
     }
 
