@@ -1,54 +1,40 @@
-<!-- filename: screens/character-select.html -->
-<!-- This console log helps verify if this HTML file is being loaded -->
-<script>console.log("Character Select HTML loaded successfully!");</script>
-
 <div id="character-select-screen" class="character-select-screen">
     <h1 class="screen-title" data-localize="charSelectTitle">Choose Your Hero</h1>
 
-    <!-- Hero showcase area - Blended design -->
     <div class="hero-showcase">
-        <div class="hero-portrait-container" id="hero-portrait-container">
-            <!-- SVG will be injected here by character-select.js -->
-        </div>
-
+        <div class="hero-portrait-container" id="hero-portrait-container"></div>
         <h2 class="hero-name" id="hero-name"></h2>
         <p class="hero-title" id="hero-title"></p>
-
-        <div class="hero-traits" id="hero-traits">
-            <!-- Traits will be injected here dynamically -->
-        </div>
+        <div class="hero-traits" id="hero-traits"></div>
     </div>
 
-    <!-- Character roster - Blended design -->
     <div class="character-roster">
         <h3 class="roster-title" data-localize="rosterTitle">Choose Your Champion</h3>
         <div class="character-tiles" id="character-tiles">
-            <!-- Character tiles will be dynamically generated here -->
             <div class="character-tile active" data-char-id="warrior">
-                <div class="tile-icon"></div> <!-- SVG icon will be injected -->
+                <div class="tile-icon"></div>
                 <div class="tile-name" data-localize="warriorTab">Warrior</div>
             </div>
             <div class="character-tile" data-char-id="sorceress">
-                <div class="tile-icon"></div> <!-- SVG icon will be injected -->
+                <div class="tile-icon"></div>
                 <div class="tile-name" data-localize="sorceressTab">Sorceress</div>
             </div>
             <div class="character-tile" data-char-id="rogue">
-                <div class="tile-icon"></div> <!-- SVG icon will be injected -->
+                <div class="tile-icon"></div>
                 <div class="tile-name" data-localize="rogueTab">Rogue</div>
             </div>
         </div>
     </div>
 
-    <!-- Action buttons - Blended design -->
     <div class="action-buttons">
         <button class="action-btn" id="details-btn" data-localize="detailsButton">Details</button>
         <button class="action-btn" id="select-btn" data-localize="startGameButton">Start Your Journey</button>
     </div>
 
-    <!-- Details modal (hidden by default) - Placeholder for now -->
     <div class="details-modal hidden" id="details-modal">
         <div class="modal-content">
-            <h3 id="modal-hero-name">Hero Details</h3>
+            <span class="close-modal-btn" id="close-details-modal">&times;</span>
+            <h3 id="modal-hero-name"></h3>
             <p id="modal-description"></p>
             <ul class="character-stats modal-stats">
                 <li><span data-localize="hpStat">HP:</span> <span id="modal-stat-hp"></span></li>
@@ -58,7 +44,6 @@
                 <li><span data-localize="spdStat">SPD:</span> <span id="modal-stat-spd"></span></li>
                 <li><span data-localize="critStat">CRIT:</span> <span id="modal-stat-crit"></span></li>
             </ul>
-            <button class="action-btn close-modal-btn" id="close-details-modal">Close</button>
         </div>
     </div>
 </div>

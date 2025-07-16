@@ -1,420 +1,128 @@
 /* filename: css/character-select.css */
-
-/* Styles specific to the Character Selection Screen - Blended "Courtyard of Fate" with Path of Heroes aesthetic */
 #character-select-screen {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 10px; /* Further reduced padding */
+    padding: 10px;
     box-sizing: border-box;
     width: 100%;
     height: 100%;
-    position: relative; /* Relative to screen-content */
+    position: relative;
     justify-content: space-between;
-    overflow-y: hidden; /* Ensure no scrolling */
-    font-family: var(--font-family); /* Use Path of Heroes font */
-    color: var(--color-text); /* Use Path of Heroes text color */
+    overflow-y: hidden;
 }
 
 .screen-title {
-    font-size: 1.8em; /* Adjusted font size */
+    font-size: 1.8em;
     color: var(--color-primary);
-    margin-bottom: 10px; /* Further reduced margin */
-    margin-top: 10px; /* Adjusted top margin to give space for global toggle */
+    margin-bottom: 10px;
+    margin-top: 10px;
     text-shadow: 0 0 10px rgba(212, 166, 86, 0.7);
     text-align: center;
-    letter-spacing: 2px; /* Adopted from new design */
     flex-shrink: 0;
 }
 
-/* Hero showcase area */
 .hero-showcase {
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(26, 16, 6, 0.8) 100%); /* Adjusted to Path of Heroes palette */
-    border: 2px solid var(--color-secondary); /* Path of Heroes border */
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(26, 16, 6, 0.4));
+    border: 1px solid var(--color-border);
     border-radius: 15px;
-    padding: 8px; /* Further reduced padding */
-    margin-bottom: 8px; /* Further reduced margin */
+    padding: 8px;
+    margin-bottom: 8px;
     text-align: center;
-    position: relative;
-    box-shadow:
-        inset 0 0 20px rgba(212, 166, 86, 0.1), /* Path of Heroes glow */
-        0 6px 20px rgba(0, 0, 0, 0.4);
-    flex-grow: 1; /* Allow it to take available space */
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center; /* Center content vertically */
+    justify-content: center;
     width: 100%;
-    max-width: 380px; /* Constrain width */
-    min-height: 180px; /* Adjusted minimum height */
+    max-width: 380px;
+    min-height: 200px;
 }
 
-/* Decorative corners (simplified for Path of Heroes aesthetic) */
-.hero-showcase::before,
-.hero-showcase::after {
-    content: '';
-    position: absolute;
-    width: 15px; /* Even smaller */
-    height: 15px; /* Even smaller */
-    border: 2px solid var(--color-primary); /* Path of Heroes color */
-    opacity: 0.6;
-}
-
-.hero-showcase::before {
-    top: -2px;
-    left: -2px;
-    border-right: none;
-    border-bottom: none;
-    border-top-left-radius: 15px;
-}
-
-.hero-showcase::after {
-    bottom: -2px;
-    right: -2px;
-    border-left: none;
-    border-top: none;
-    border-bottom-right-radius: 15px;
-}
-
-/* Hero portrait container (for SVG) */
 .hero-portrait-container {
-    width: 80px; /* Adjusted size */
-    height: 80px;
-    background: rgba(255, 255, 255, 0.05); /* Placeholder background */
-    border: 3px solid var(--color-primary);
-    border-radius: 50%; /* Round portrait */
-    margin: 0 auto 6px; /* Adjusted margin */
+    width: 90px;
+    height: 90px;
+    margin: 0 auto 6px;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    box-shadow:
-        inset 0 0 15px rgba(0, 0, 0, 0.5),
-        0 0 15px rgba(212, 166, 86, 0.2);
-    flex-shrink: 0;
 }
 
-.hero-portrait-container svg {
-    width: 90%; /* Ensure SVG fits */
-    height: 90%;
-    display: block;
-}
+.hero-portrait-container svg { width: 100%; height: 100%; display: block; }
+.hero-name { font-size: 1.6em; color: var(--color-primary); margin-bottom: 3px; }
+.hero-title { font-size: 0.9em; margin-bottom: 8px; font-style: italic; }
+.hero-traits { display: flex; flex-direction: column; gap: 4px; }
+.trait-item { display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 0.85em; }
+.trait-icon { font-size: 1em; }
 
-.hero-name {
-    font-size: 1.4em; /* Adjusted font size */
-    color: var(--color-primary);
-    margin-bottom: 3px; /* Adjusted margin */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-    text-align: center;
-    flex-shrink: 0;
-}
+.character-roster { margin-bottom: 8px; width: 100%; max-width: 380px; flex-shrink: 0; }
+.roster-title { font-size: 1em; color: var(--color-secondary); text-align: center; margin-bottom: 6px; }
 
-.hero-title {
-    font-size: 0.8em; /* Adjusted font size */
-    color: var(--color-text); /* Path of Heroes text color */
-    margin-bottom: 6px; /* Adjusted margin */
-    font-style: italic;
-    flex-shrink: 0;
-}
-
-/* Hero traits/stats */
-.hero-traits {
-    display: flex;
-    flex-direction: column;
-    gap: 3px; /* Further reduced gap */
-    margin-top: 3px; /* Further reduced margin */
-    flex-shrink: 0;
-}
-
-.trait-item {
-    display: flex;
-    align-items: center;
-    justify-content: center; /* Center items */
-    gap: 3px; /* Further reduced gap */
-    font-size: 0.75em; /* Further reduced font size */
-    color: var(--color-text); /* Path of Heroes text color */
-}
-
-.trait-icon {
-    width: 14px; /* Adjusted size */
-    height: 14px;
-    color: var(--color-primary); /* Path of Heroes color */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Character roster */
-.character-roster {
-    margin-bottom: 8px; /* Further reduced margin */
-    width: 100%;
-    max-width: 380px; /* Constrain width */
-    flex-shrink: 0;
-}
-
-.roster-title {
-    font-size: 0.95em; /* Adjusted font size */
-    color: var(--color-uncommon); /* Path of Heroes color */
-    text-align: center;
-    margin-bottom: 6px; /* Further reduced margin */
-    font-weight: bold; /* Path of Heroes style */
-}
-
-.character-tiles {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 6px; /* Further reduced gap */
-}
+.character-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 
 .character-tile {
     aspect-ratio: 1;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(26, 16, 6, 0.7) 100%); /* Path of Heroes palette */
-    border: 2px solid var(--color-secondary); /* Path of Heroes border */
+    background: linear-gradient(135deg, rgba(0,0,0,0.2), rgba(26,16,6,0.3));
+    border: 2px solid var(--color-border);
     border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    padding: 5px;
 }
-
-.character-tile:hover {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 10px rgba(212, 166, 86, 0.4);
-    transform: translateY(-2px);
-}
-
+.character-tile:hover { border-color: var(--color-primary); transform: translateY(-2px); }
 .character-tile.active {
     border-color: var(--color-primary);
-    background: linear-gradient(135deg, rgba(212, 166, 86, 0.2) 0%, rgba(0, 0, 0, 0.7) 100%); /* Path of Heroes active color */
-    box-shadow:
-        0 0 15px rgba(212, 166, 86, 0.6),
-        inset 0 0 10px rgba(212, 166, 86, 0.1);
+    background: linear-gradient(135deg, rgba(212, 166, 86, 0.1), rgba(0,0,0,0.3));
+    box-shadow: 0 0 15px rgba(212, 166, 86, 0.3);
 }
 
-.tile-icon {
-    width: 30px; /* Adjusted size */
-    height: 30px;
-    background: var(--color-primary); /* Path of Heroes color */
-    border-radius: 50%;
-    margin-bottom: 3px; /* Further reduced margin */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.7em; /* Adjusted font size */
-    color: var(--color-background-end); /* Path of Heroes text color */
-    font-weight: bold;
-    overflow: hidden; /* Ensure SVG fits */
-}
+.tile-icon { width: 40px; height: 40px; margin-bottom: 4px; }
+.tile-icon svg { width: 100%; height: 100%; }
+.tile-name { font-size: 0.8em; text-align: center; font-weight: bold; }
 
-.tile-icon svg {
-    width: 80%; /* Make SVG fit */
-    height: 80%;
-    display: block;
-}
-
-.tile-name {
-    font-size: 0.7em; /* Adjusted font size */
-    color: var(--color-text);
-    text-align: center;
-    font-weight: bold;
-}
-
-/* Action buttons */
-.action-buttons {
-    display: flex;
-    gap: 6px; /* Further reduced gap */
-    margin-top: auto; /* Push to bottom */
-    width: 100%;
-    max-width: 380px; /* Constrain width */
-    flex-shrink: 0;
-}
+.action-buttons { display: flex; gap: 8px; width: 100%; max-width: 380px; flex-shrink: 0; }
 
 .action-btn {
     flex: 1;
-    padding: 8px 10px; /* Further reduced padding */
-    background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-secondary) 100%); /* Path of Heroes palette */
-    border: 2px solid var(--color-primary); /* Path of Heroes border */
+    padding: 12px 10px;
+    background: var(--color-secondary);
+    border: 1px solid var(--color-border);
     border-radius: 8px;
-    color: var(--color-primary); /* Path of Heroes text color */
-    font-family: var(--font-family);
-    font-size: 0.9em; /* Adjusted font size */
-    font-weight: bold; /* Path of Heroes style */
+    color: var(--color-text);
+    font-family: 'Cinzel', serif;
+    font-size: 1em;
+    font-weight: bold;
     cursor: pointer;
     transition: all 0.2s ease;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
 }
+.action-btn:hover { background-color: var(--color-primary); color: #1a1208; }
 
-.action-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(212, 166, 86, 0.2), transparent); /* Path of Heroes glow */
-    transition: left 0.4s ease;
-}
-
-.action-btn:hover::before {
-    left: 100%;
-}
-
-.action-btn:hover {
-    background: linear-gradient(135deg, #7a5f3e 0%, #5c4423 100%); /* Darker secondary on hover */
-    box-shadow: 0 0 15px rgba(212, 166, 86, 0.4);
-    transform: translateY(-2px);
-}
-
-.action-btn:active {
-    transform: translateY(0);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-}
-
-/* Details modal (hidden by default) */
 .details-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.9); /* Darker overlay */
-    display: flex; /* Changed to flex for centering */
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 1000;
 }
-
-.details-modal.hidden {
-    display: none;
-}
+.details-modal.hidden { display: none; }
 
 .modal-content {
-    background: linear-gradient(135deg, var(--color-background-mid) 0%, var(--color-background-end) 100%); /* Path of Heroes palette */
-    border: 3px solid var(--color-primary); /* Path of Heroes border */
-    border-radius: 15px;
-    padding: 12px; /* Further reduced padding */
-    max-width: 300px; /* Further reduced max-width */
-    max-height: 75vh; /* Adjusted max height */
-    overflow-y: auto; /* Allow scrolling within modal */
-    position: relative;
-    color: var(--color-text);
-    box-shadow: 0 0 30px rgba(212, 166, 86, 0.5);
+    background: linear-gradient(180deg, #1a1208, #2d1e0f);
+    border: 2px solid var(--color-primary);
+    border-radius: 15px; padding: 20px; max-width: 320px;
+    position: relative; color: var(--color-text);
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
 }
-
-.modal-content h3 {
-    font-size: 1.3em; /* Adjusted font size */
-    color: var(--color-primary);
-    margin-bottom: 6px; /* Adjusted margin */
-    text-align: center;
-}
-
-.modal-content p {
-    font-size: 0.8em; /* Adjusted font size */
-    line-height: 1.2;
-    margin-bottom: 8px; /* Adjusted margin */
-    text-align: center; /* Center description in modal */
-}
-
-.modal-stats {
-    margin-top: 6px; /* Adjusted margin */
-    margin-bottom: 8px; /* Adjusted margin */
-    justify-content: center; /* Center stats list in modal */
-    font-size: 0.75em; /* Adjusted font size */
-}
-
 .close-modal-btn {
-    background: linear-gradient(to right, #8b0000, #ff4500); /* Reddish gradient for close */
-    color: white;
-    margin-top: 8px; /* Adjusted margin */
-    padding: 6px 12px;
-    font-size: 0.8em;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 120px; /* Constrain width */
+    position: absolute; top: 10px; right: 15px;
+    font-size: 1.5rem; color: var(--color-secondary); cursor: pointer;
 }
-
-.close-modal-btn:hover {
-    background: linear-gradient(to right, #ff4500, #ff6347);
-}
-
-
-/* Responsive adjustments */
-@media (max-width: 375px) {
-    .screen-title { font-size: 1.5em; }
-    .hero-showcase { padding: 6px; min-height: 160px; }
-    .hero-portrait-container { width: 60px; height: 60px; margin-bottom: 5px; }
-    .hero-name { font-size: 1.2em; margin-bottom: 2px; }
-    .hero-title { font-size: 0.75em; margin-bottom: 5px; }
-    .trait-item { font-size: 0.7em; gap: 2px; }
-    .character-roster { margin-bottom: 6px; }
-    .roster-title { font-size: 0.9em; margin-bottom: 5px; }
-    .character-tiles { gap: 5px; }
-    .tile-icon { width: 28px; height: 28px; font-size: 0.65em; margin-bottom: 2px; }
-    .tile-name { font-size: 0.65em; }
-    .action-btn { padding: 7px 9px; font-size: 0.8em; }
-    .details-modal .modal-content { padding: 10px; max-width: 260px; }
-    .modal-content h3 { font-size: 1.2em; }
-    .modal-content p { font-size: 0.75em; }
-    .modal-stats { font-size: 0.7em; }
-    .close-modal-btn { padding: 5px 10px; font-size: 0.75em; }
-}
-
-/* RTL adjustments */
-[dir="rtl"] #character-select-screen {
-    text-align: right; /* Default text alignment */
-}
-
-[dir="rtl"] .hero-showcase::before {
-    left: auto;
-    right: -2px;
-    border-left: none;
-    border-bottom: none;
-    border-top-right-radius: 15px;
-    border-top-left-radius: 0;
-}
-
-[dir="rtl"] .hero-showcase::after {
-    bottom: -2px;
-    left: -2px;
-    border-right: none;
-    border-top: none;
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 0;
-}
-
-[dir="rtl"] .character-tiles {
-    direction: rtl; /* Ensure grid items flow RTL */
-}
-
-[dir="rtl"] .character-tile .tile-name {
-    text-align: right;
-}
-
-[dir="rtl"] .action-btn::before {
-    left: 100%; /* Start from right for RTL */
-    background: linear-gradient(270deg, transparent, rgba(212, 166, 86, 0.2), transparent); /* Reverse gradient direction */
-}
-
-[dir="rtl"] .action-btn:hover::before {
-    left: -100%; /* Swipe right to left */
-}
-
-[dir="rtl"] .modal-content p {
-    text-align: right;
-}
-
-[dir="rtl"] .modal-stats {
-    text-align: right;
-    margin-left: auto; /* Center list in RTL */
-    margin-right: 0;
-}
+.close-modal-btn:hover { color: var(--color-primary); }
+.modal-content h3 { text-align: center; color: var(--color-primary); margin-bottom: 10px; }
+.modal-content p { font-size: 0.9em; line-height: 1.5; margin-bottom: 15px; text-align: center; }
+.modal-stats { list-style: none; padding: 0; }
+.modal-stats li { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--color-border); }
+.modal-stats li:last-child { border-bottom: none; }
