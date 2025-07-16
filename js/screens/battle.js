@@ -9,12 +9,15 @@ export function init(gameInstance) {
     _gameState = _game.getSystem('gameState');
     _combatSystem = _game.getSystem('combatSystem');
     
-    console.log("Battle screen module initialized.");
-    setupEventListeners();
-    updateBattleUI();
-    
-    // Start the first turn
-    _combatSystem.startNextTurn();
+    const setup = () => {
+        console.log("Battle screen setup running.");
+        setupEventListeners();
+        updateBattleUI();
+        _combatSystem.startNextTurn();
+    };
+
+    // FIX: Use requestAnimationFrame to ensure the DOM is ready for event binding.
+    requestAnimationFrame(setup);
 }
 
 function setupEventListeners() {
@@ -22,7 +25,6 @@ function setupEventListeners() {
     document.getElementById('skill-btn')?.addEventListener('click', () => _combatSystem.playerSkill());
     document.getElementById('defend-btn')?.addEventListener('click', () => _combatSystem.playerDefend());
     document.getElementById('flee-btn')?.addEventListener('click', () => _combatSystem.playerFlee());
-    // Potions and Inventory buttons are for show in this version
 }
 
 export function updateBattleUI() {
@@ -66,7 +68,6 @@ export function showFloatingText(text, type, isCritical = false) {
     const span = document.createElement('span');
     span.className = `floating-text ${type} ${isCritical ? 'critical' : ''}`;
     span.innerText = text;
-    // Position over enemy by default, over hero for 'heal'
     span.style.left = (type === 'heal') ? '25%' : '75%';
     
     zone.appendChild(span);
