@@ -1,4 +1,5 @@
 // filename: js/screens/character-select.js
+
 import { Characters } from '../core/characters.js';
 
 let _gameInstance;
@@ -6,12 +7,16 @@ let _selectedCharId = Characters.WARRIOR.id;
 
 export function init(gameInstance) {
     _gameInstance = gameInstance;
+    
     const setup = () => {
+        console.log("Character Select setup running.");
         setupEventListeners();
         displayCharacter(_selectedCharId);
         _gameInstance.getSystem('localization').updateLocalizedElements();
     };
-    requestAnimationFrame(setup);
+
+    // Use a classic setTimeout to ensure the DOM is fully interactive.
+    setTimeout(setup, 0);
 }
 
 function setupEventListeners() {
@@ -21,28 +26,39 @@ function setupEventListeners() {
             selectCharacter(tile.dataset.charId);
         });
     });
+
     document.getElementById('details-btn')?.addEventListener('click', () => {
         console.log("Event: Click detected on Details button.");
         showDetailsModal();
     });
+
     document.getElementById('select-btn')?.addEventListener('click', () => {
         console.log("Event: Click detected on Start button.");
         handleStartGame();
     });
+
     document.getElementById('close-details-modal')?.addEventListener('click', () => {
         console.log("Event: Click detected on Modal Close button.");
         closeDetailsModal();
     });
+
     document.getElementById('language-toggle')?.addEventListener('click', () => {
+        // A brief timeout is still needed here because the language toggle is global
+        // and needs to wait for the localization system to update all text first.
         setTimeout(() => displayCharacter(_selectedCharId), 0);
     });
+
     setupSwipeEvents();
 }
 
 function selectCharacter(charId) {
     if (!charId) return;
+    console.log(`selectCharacter called with ID: ${charId}`);
+    
     _selectedCharId = charId;
-    document.querySelectorAll('.character-tile').forEach(tile => tile.classList.remove('active'));
+    document.querySelectorAll('.character-tile').forEach(tile => {
+        tile.classList.remove('active');
+    });
     document.querySelector(`.character-tile[data-char-id="${charId}"]`)?.classList.add('active');
     displayCharacter(charId);
 }
@@ -63,7 +79,9 @@ function displayCharacter(charId) {
         character.traits.forEach(key => {
             const el = document.createElement('div');
             el.className = 'trait-item';
-            el.innerHTML = `<span class="trait-icon">✨</span><span>${loc.get(key)}</span>`;
+            let icon = '✨';
+            if (key === 'highDefenseTrait') icon = '🛡️';
+            el.innerHTML = `<span class="trait-icon">${icon}</span><span>${loc.get(key)}</span>`;
             traitsContainer.appendChild(el);
         });
     }
@@ -111,8 +129,8 @@ function setupSwipeEvents() {
         if (Math.abs(startX - e.changedTouches[0].clientX) > 50) {
             const tiles = Array.from(document.querySelectorAll('.character-tile'));
             let currentIndex = tiles.findIndex(tile => tile.classList.contains('active'));
-            const lang = _gameInstance.getSystem('localization').getCurrentLanguage();
             let direction = (startX - e.changedTouches[0].clientX > 0) ? 1 : -1;
+            const lang = _gameInstance.getSystem('localization').getCurrentLanguage();
             if (lang === 'ar') direction *= -1;
             currentIndex = (currentIndex + direction + tiles.length) % tiles.length;
             tiles[currentIndex].click();
