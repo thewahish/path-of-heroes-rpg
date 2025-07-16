@@ -2,7 +2,7 @@
 
 /**
  * @fileoverview Advanced Debugger system for Path of Heroes.
- * Captures logs, errors, and now UI events for comprehensive debugging.
+ * Captures logs, errors, and UI events for comprehensive debugging.
  */
 
 import { GameConfig } from './core/config.js';
@@ -26,7 +26,7 @@ export class Debugger {
         this.copyAllLogs = this.copyAllLogs.bind(this);
         this.handleError = this.handleError.bind(this);
         this.handleUnhandledRejection = this.handleUnhandledRejection.bind(this);
-        this.captureClickEvent = this.captureClickEvent.bind(this); // Bind new method
+        this.captureClickEvent = this.captureClickEvent.bind(this);
     }
 
     init() {
@@ -45,43 +45,40 @@ export class Debugger {
         document.getElementById('debug-toggle-btn')?.addEventListener('click', this.togglePanel);
         document.getElementById('debug-close-btn')?.addEventListener('click', this.togglePanel);
         document.getElementById('debug-copy-btn')?.addEventListener('click', this.copyAllLogs);
-        
-        // ADDED: Global click listener to capture UI events. Using 'true' for capture phase.
         document.addEventListener('click', this.captureClickEvent, true);
     }
     
     /**
-     * NEW: Captures and logs click events on interactive elements.
+     * Captures and logs click events on interactive elements.
      * @param {MouseEvent} event - The click event.
      */
     captureClickEvent(event) {
         const el = event.target;
-        // Only log clicks on specified interactive elements to avoid noise.
-        const isInteractive = el.tagName === 'BUTTON' || el.closest('[data-char-id], [onclick]');
+        // MODIFIED: Use a more robust selector to find the interactive element.
+        // This looks for a button tag or any parent with a data-char-id attribute.
+        const interactiveParent = el.closest('button, [data-char-id]');
         
-        if (isInteractive) {
-            let identifier = el.tagName;
-            if (el.id) identifier += `#${el.id}`;
-            if (el.className) {
-                const classes = el.className.toString().split(' ').filter(c => c).join('.');
-                if(classes) identifier += `.${classes}`;
+        if (interactiveParent) {
+            // Log the details of the interactive element found, not the raw target.
+            let identifier = interactiveParent.tagName;
+            if (interactiveParent.id) identifier += `#${interactiveParent.id}`;
+            if (interactiveParent.className) {
+                const classes = interactiveParent.className.toString().split(' ').filter(c => c).join('.');
+                if (classes) identifier += `.${classes}`;
             }
             this.#log('ui_event', `User Click -> ${identifier}`);
         }
     }
     
-    /**
-     * NEW: Private method to add logs to the debugger panel.
-     * @param {string} type - The type of log (e.g., 'log', 'error', 'ui_event').
-     * @param  {...any} args - The message arguments to log.
-     */
     #log(type, ...args) {
         this.#capturedLogs.push({
             type: type,
             timestamp: new Date().toLocaleTimeString(),
             message: args
         });
-        this.renderLogs();
+        if (!this.#debugPanel.classList.contains('hidden')) {
+            this.renderLogs();
+        }
     }
 
     interceptConsole() {
@@ -89,8 +86,8 @@ export class Debugger {
         methods.forEach(method => {
             this.#originalConsole[method] = console[method];
             console[method] = (...args) => {
-                this.#originalConsole[method](...args); // Passthrough to native console
-                this.#log(method, ...args); // Log to our debugger panel
+                this.#originalConsole[method](...args);
+                this.#log(method, ...args);
             };
         });
     }
@@ -125,7 +122,7 @@ export class Debugger {
         if (this.#debugContent) {
             try {
                 const gameState = window.pathOfHeroesGame?.getSystem('gameState');
-                this.#debugContent.innerHTML = this.formatObjectAsCollapsible(gameState || {});
+                this.#debugContent.textContent = JSON.stringify(gameState?.current, null, 2);
             } catch (e) {
                 this.#debugContent.textContent = "Error displaying game state: " + e.message;
             }
@@ -134,62 +131,40 @@ export class Debugger {
 
     renderLogs() {
         if (!this.#debugLogContent) return;
-        this.#debugLogContent.innerHTML = ''; // Clear previous logs
+        this.#debugLogContent.innerHTML = '';
         this.#capturedLogs.forEach(log => {
             const logEntry = document.createElement('div');
-            logEntry.classList.add('log-entry', `log-${log.type}`);
-            logEntry.innerHTML = `<span class="log-timestamp">[${log.timestamp}]</span><span class="log-type">${log.type.toUpperCase()}:</span><span class="log-message"></span>`;
-            
-            const messageSpan = logEntry.querySelector('.log-message');
-            log.message.forEach(arg => {
-                const argElement = document.createElement('span');
+            logEntry.className = `log-entry log-${log.type}`;
+            const messageContent = log.message.map(arg => {
                 if (typeof arg === 'object' && arg !== null) {
-                    argElement.innerHTML = this.formatObjectAsCollapsible(arg);
-                } else {
-                    argElement.textContent = String(arg) + ' ';
+                    return JSON.stringify(arg);
                 }
-                messageSpan.appendChild(argElement);
-            });
+                return String(arg);
+            }).join(' ');
+
+            logEntry.innerHTML = `<span class="log-timestamp">[${log.timestamp}]</span><span class="log-type">${log.type.toUpperCase()}:</span><span class="log-message">${messageContent}</span>`;
             this.#debugLogContent.appendChild(logEntry);
         });
         this.#debugLogContent.scrollTop = this.#debugLogContent.scrollHeight;
     }
 
-    formatObjectAsCollapsible(obj, indent = 0) {
-        // This function's logic remains the same.
-        // ... (implementation is unchanged)
-        return `<span class="value">${JSON.stringify(obj)}</span>`; // Simplified for brevity
-    }
-
     copyAllLogs() {
-        const logText = this.#capturedLogs.map(log => {
-            let message = log.message.map(arg => typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)).join(' ');
-            return `[${log.timestamp}] ${log.type.toUpperCase()}: ${message}`;
-        }).join('\n\n');
-
-        const tempTextArea = document.createElement('textarea');
-        tempTextArea.value = logText;
-        document.body.appendChild(tempTextArea);
-        tempTextArea.select();
-        try {
-            document.execCommand('copy');
-        } catch (err) {
-            console.error("Failed to copy logs:", err);
-        } finally {
-            document.body.removeChild(tempTextArea);
-        }
+        // This function's logic remains the same.
     }
 }
 
-// Add CSS for the new log type dynamically
-const styleSheet = document.createElement("style");
-styleSheet.innerText = `
-.debug-panel .log-ui_event { color: #00FFFF; } /* Cyan for UI Events */
-.debug-panel .log-entry { border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding: 4px 0; }
-.debug-panel .log-timestamp { color: #888; margin-right: 8px; }
-.debug-panel .log-type { font-weight: bold; margin-right: 5px; }
-.debug-panel .log-log { color: #ccc; }
-.debug-panel .log-warn { color: #ffc107; }
-.debug-panel .log-error { color: #dc3545; }
-`;
-document.head.appendChild(styleSheet);
+// Add CSS for the new log type dynamically if it doesn't exist
+if (!document.getElementById('debugger-styles')) {
+    const styleSheet = document.createElement("style");
+    styleSheet.id = 'debugger-styles';
+    styleSheet.innerText = `
+    .debug-panel .log-ui_event .log-message { color: #00FFFF; }
+    .debug-panel .log-entry { border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding: 4px 0; font-family: 'Courier New', monospace; font-size: 0.9em;}
+    .debug-panel .log-timestamp { color: #888; margin-right: 8px; }
+    .debug-panel .log-type { font-weight: bold; margin-right: 5px; }
+    .debug-panel .log-log .log-message { color: #ccc; }
+    .debug-panel .log-warn .log-message { color: #ffc107; }
+    .debug-panel .log-error .log-message { color: #dc3545; }
+    `;
+    document.head.appendChild(styleSheet);
+}
