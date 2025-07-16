@@ -56,7 +56,7 @@ export class PathOfHeroes {
     bindMethods() {
         this.handleLanguageToggle = this.handleLanguageToggle.bind(this);
         this.handleInventoryButtonClick = this.handleInventoryButtonClick.bind(this);
-        // Add other methods that need binding here
+        this.startGame = this.startGame.bind(this);
     }
 
     /**
@@ -65,8 +65,6 @@ export class PathOfHeroes {
      */
     async init() {
         try {
-            console.log(this.#systems.localization?.get('gameInitialized') || "Game initialized.");
-
             await this.initializeSystems();
             this.setupEventListeners();
             await this.startLoadingSequence();
@@ -90,23 +88,23 @@ export class PathOfHeroes {
         try {
             // Initialize Localization first, as it's needed for other system messages
             this.#systems.localization = new Localization(GameConfig.DEFAULT_LANGUAGE);
-            console.log(this.#systems.localization.get('systemInitialized') + "Localization");
+            console.log("System initialized: Localization");
             this.#systems.localization.updateLocalizedElements(); // Apply initial localization
 
             // Initialize GameState, which is an exported object, not a class
             this.#systems.gameState = GameState;
-            console.log(this.#systems.localization.get('systemInitialized') + "GameState");
+            console.log("System initialized: GameState");
 
             // Initialize CombatSystem, passing the main game instance to its constructor
             this.#systems.combatSystem = new CombatSystem(this);
-            console.log(this.#systems.localization.get('systemInitialized') + "CombatSystem");
+            console.log("System initialized: CombatSystem");
 
             // Initialize InventorySystem, passing the main game instance to its constructor
             this.#systems.inventorySystem = new InventorySystem(this);
-            console.log(this.#systems.localization.get('systemInitialized') + "InventorySystem");
+            console.log("System initialized: InventorySystem");
 
         } catch (error) {
-            console.error(this.#systems.localization?.get('errorInitializingSystem') + error.message);
+            console.error("Error initializing system: " + error.message);
             throw error; // Re-throw to halt init()
         }
     }
@@ -127,13 +125,10 @@ export class PathOfHeroes {
         if (inventoryButton) {
             inventoryButton.addEventListener('click', this.handleInventoryButtonClick);
         }
-
-        // Debugger toggle button listener is set up in debug.js
     }
 
     /**
      * Handles the click event for the language toggle button.
-     * Switches between English and Arabic.
      * @private
      */
     handleLanguageToggle() {
@@ -144,20 +139,19 @@ export class PathOfHeroes {
 
     /**
      * Handles the click event for the inventory button.
-     * (Placeholder for future inventory screen logic)
      * @private
      */
     handleInventoryButtonClick() {
         console.log("Inventory button clicked! (Functionality to be implemented)");
-        // Future: Open/close inventory screen
     }
 
     /**
      * Simulates a loading sequence with a progress bar.
      * @private
-     * @returns {Promise<void>} A promise that resolves when the loading sequence is complete.
+     * @returns {Promise<void>}
      */
     startLoadingSequence() {
+        console.log("Game initialized.");
         return new Promise(resolve => {
             const loadingScreen = document.getElementById('loading-screen');
             const loadingBar = document.getElementById('loading-bar');
@@ -171,7 +165,7 @@ export class PathOfHeroes {
             }
 
             let width = 0;
-            const intervalTime = 50; // Update every 50ms
+            const intervalTime = 50;
             const totalSteps = GameConfig.LOADING_DURATION_MS / intervalTime;
             const increment = 100 / totalSteps;
 
@@ -191,9 +185,8 @@ export class PathOfHeroes {
 
     /**
      * Loads and displays a specified game screen.
-     * This involves fetching HTML, injecting it, and loading screen-specific JavaScript.
-     * @param {string} screenId - The ID of the screen to load (e.g., 'intro', 'battle').
-     * @returns {Promise<void>} A promise that resolves when the screen is loaded and initialized.
+     * @param {string} screenId
+     * @returns {Promise<void>}
      */
     async setScreen(screenId) {
         const screenInfo = GameConfig.SCREENS[screenId];
@@ -203,59 +196,70 @@ export class PathOfHeroes {
         }
 
         try {
-            // Fetch HTML for the new screen
             const response = await fetch(screenInfo.html);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const htmlContent = await response.text();
-
-            // Clear current screen content and inject new HTML
             this.#screenContentArea.innerHTML = htmlContent;
 
-            // Load screen-specific JavaScript module
             const module = await import(`../../${screenInfo.js}`);
             if (module.init) {
-                // Pass game instance and localization to the screen's init function
                 module.init(this, this.#systems.localization);
             }
 
-            // Update global HUD visibility based on screen
             this.updateGlobalHUDVisibility(screenId);
-
-            // Re-apply localization after new screen content is loaded
             this.#systems.localization.updateLocalizedElements();
-
-            console.log(this.#systems.localization.get('screenLoaded') + screenId);
+            console.log(`Screen loaded: ${screenId}`);
 
         } catch (error) {
-            console.error(this.#systems.localization.get('errorLoadingScreen') + screenId, error);
+            console.error(`Error loading screen: ${screenId}`, error);
         }
+    }
+    
+    /**
+     * Starts a new game run.
+     * @param {string} characterId - The ID of the selected character.
+     */
+    startGame(characterId) {
+        console.log(`Starting new game with character: ${characterId}`);
+        const gameState = this.getSystem('gameState');
+        const inventorySystem = this.getSystem('inventorySystem');
+
+        // 1. Initialize the game state for a new run
+        gameState.newGame(characterId);
+        
+        // 2. Add starting items (logic moved from state.js)
+        const startingWeapon = inventorySystem.generateItem('sword', 1, 'common');
+        if (startingWeapon) {
+            gameState.addItemToInventory(startingWeapon);
+            gameState.equipItem(startingWeapon);
+        }
+
+        // 3. Transition to the first screen of the dungeon (Battle Screen for now)
+        this.setScreen('battle');
     }
 
     /**
      * Updates the visibility of the global HUD based on the current screen.
-     * @param {string} currentScreenId - The ID of the currently active screen.
+     * @param {string} currentScreenId
      * @private
      */
     updateGlobalHUDVisibility(currentScreenId) {
-        // Global elements appear only after Character Selection
-        // and are hidden on Main Menu and Character Selection screens.
         if (currentScreenId === 'intro' || currentScreenId === 'character-select') {
             this.#globalHud.classList.add('hidden');
         } else {
             this.#globalHud.classList.remove('hidden');
-            // Placeholder: update actual floor/gold numbers
             this.updateElement('floor-number', '1');
             this.updateElement('gold-count', '0');
         }
     }
 
     /**
-     * Updates the visual fill percentage of a progress bar (e.g., HP, Mana).
-     * @param {string} barId - The ID of the bar element (e.g., 'player-hp-bar', 'enemy-mana-bar').
-     * @param {number} current - The current value of the bar.
-     * @param {number} max - The maximum possible value of the bar.
+     * Updates the visual fill percentage of a progress bar.
+     * @param {string} barId
+     * @param {number} current
+     * @param {number} max
      */
     updateBar(barId, current, max) {
         const barElement = document.getElementById(barId);
@@ -269,8 +273,8 @@ export class PathOfHeroes {
 
     /**
      * Updates the text content of a specific HTML element by ID.
-     * @param {string} id - The ID of the HTML element to update.
-     * @param {string|number} value - The new text content for the element.
+     * @param {string} id
+     * @param {string|number} value
      */
     updateElement(id, value) {
         const element = document.getElementById(id);
@@ -283,8 +287,8 @@ export class PathOfHeroes {
 
     /**
      * Provides access to initialized game systems.
-     * @param {string} systemName - The name of the system to retrieve (e.g., 'localization').
-     * @returns {any} The requested system instance, or undefined if not found.
+     * @param {string} systemName
+     * @returns {any}
      */
     getSystem(systemName) {
         return this.#systems[systemName];
