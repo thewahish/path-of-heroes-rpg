@@ -1,9 +1,7 @@
 // filename: js/screens/intro.js
-
 /**
  * @fileoverview JavaScript logic for the Intro (Main Menu) screen.
  */
-
 let _gameInstance;
 
 /**
@@ -12,16 +10,13 @@ let _gameInstance;
  */
 export function init(gameInstance) {
     _gameInstance = gameInstance;
-
-    function setup() {
+    const setup = () => {
         console.log("Intro screen setup running.");
         document.getElementById('play-game-button')?.addEventListener('click', handlePlayGame);
         document.getElementById('options-button')?.addEventListener('click', handleOptions);
         document.getElementById('credits-button')?.addEventListener('click', handleCredits);
         _gameInstance.getSystem('localization').updateLocalizedElements();
-    }
-    
-    // FIX: Use requestAnimationFrame to ensure the DOM is ready for event binding.
+    };
     requestAnimationFrame(setup);
 }
 
@@ -31,9 +26,11 @@ function handlePlayGame() {
 }
 
 function handleOptions() {
+    console.log("Options button clicked!");
     alert("Options functionality to be implemented.");
 }
 
 function handleCredits() {
+    console.log("Credits button clicked!");
     alert("Credits functionality to be implemented.");
 }

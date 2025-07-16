@@ -1,5 +1,4 @@
 // filename: js/screens/battle.js
-
 let _game;
 let _gameState;
 let _combatSystem;
@@ -10,13 +9,10 @@ export function init(gameInstance) {
     _combatSystem = _game.getSystem('combatSystem');
     
     const setup = () => {
-        console.log("Battle screen setup running.");
         setupEventListeners();
         updateBattleUI();
         _combatSystem.startNextTurn();
     };
-
-    // FIX: Use requestAnimationFrame to ensure the DOM is ready for event binding.
     requestAnimationFrame(setup);
 }
 
@@ -25,15 +21,16 @@ function setupEventListeners() {
     document.getElementById('skill-btn')?.addEventListener('click', () => _combatSystem.playerSkill());
     document.getElementById('defend-btn')?.addEventListener('click', () => _combatSystem.playerDefend());
     document.getElementById('flee-btn')?.addEventListener('click', () => _combatSystem.playerFlee());
+    document.getElementById('potion-btn')?.addEventListener('click', () => console.log("Potion button clicked"));
+    document.getElementById('inventory-btn')?.addEventListener('click', () => console.log("Inventory button clicked"));
 }
 
 export function updateBattleUI() {
-    if (!_gameState || !_gameState.current.gameStarted) return;
-    
+    if (!_gameState?.current.gameStarted) return;
     const player = _gameState.current.player;
     const enemy = _gameState.current.enemies[0];
 
-    // Update Player
+    // Update Player UI
     document.getElementById('player-name').textContent = player.name;
     document.getElementById('player-hp-text').textContent = `${player.stats.hp}/${player.stats.maxHp}`;
     document.getElementById('player-hp-bar').style.width = `${(player.stats.hp / player.stats.maxHp) * 100}%`;
@@ -42,17 +39,19 @@ export function updateBattleUI() {
     resourceBar.style.width = `${(player.resource.current / player.resource.max) * 100}%`;
     resourceBar.className = `bar-fill ${player.resource.name.toLowerCase()}-bar`;
 
-    // Update Enemy
+    // Update Enemy UI
     if (enemy) {
         document.getElementById('enemy-name').textContent = enemy.name;
         document.getElementById('enemy-hp-text').textContent = `${enemy.stats.hp}/${enemy.stats.maxHp}`;
         document.getElementById('enemy-hp-bar').style.width = `${(enemy.stats.hp / enemy.stats.maxHp) * 100}%`;
     }
+    
+    document.getElementById('floor-number').textContent = _gameState.current.currentFloor;
+    document.getElementById('gold-count').textContent = _gameState.current.gold;
 }
 
 export function enablePlayerActions(isEnabled) {
-    const buttons = document.querySelectorAll('.action-button');
-    buttons.forEach(button => button.disabled = !isEnabled);
+    document.querySelectorAll('.action-button').forEach(button => button.disabled = !isEnabled);
 }
 
 export function animateCharacter(characterBoxId, animationType) {

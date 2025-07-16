@@ -1,5 +1,4 @@
 // filename: js/screens/character-select.js
-
 import { Characters } from '../core/characters.js';
 
 let _gameInstance;
@@ -7,16 +6,12 @@ let _selectedCharId = Characters.WARRIOR.id;
 
 export function init(gameInstance) {
     _gameInstance = gameInstance;
-    
     const setup = () => {
-        console.log("Character Select setup running.");
         setupEventListeners();
         displayCharacter(_selectedCharId);
         _gameInstance.getSystem('localization').updateLocalizedElements();
     };
-
-    // Use a classic setTimeout to ensure the DOM is fully interactive.
-    setTimeout(setup, 0);
+    requestAnimationFrame(setup);
 }
 
 function setupEventListeners() {
@@ -26,39 +21,28 @@ function setupEventListeners() {
             selectCharacter(tile.dataset.charId);
         });
     });
-
     document.getElementById('details-btn')?.addEventListener('click', () => {
         console.log("Event: Click detected on Details button.");
         showDetailsModal();
     });
-
     document.getElementById('select-btn')?.addEventListener('click', () => {
         console.log("Event: Click detected on Start button.");
         handleStartGame();
     });
-
     document.getElementById('close-details-modal')?.addEventListener('click', () => {
         console.log("Event: Click detected on Modal Close button.");
         closeDetailsModal();
     });
-
     document.getElementById('language-toggle')?.addEventListener('click', () => {
-        // A brief timeout is still needed here because the language toggle is global
-        // and needs to wait for the localization system to update all text first.
         setTimeout(() => displayCharacter(_selectedCharId), 0);
     });
-
     setupSwipeEvents();
 }
 
 function selectCharacter(charId) {
-    if (!charId) return;
-    console.log(`selectCharacter called with ID: ${charId}`);
-    
+    if (!charId || _selectedCharId === charId) return;
     _selectedCharId = charId;
-    document.querySelectorAll('.character-tile').forEach(tile => {
-        tile.classList.remove('active');
-    });
+    document.querySelectorAll('.character-tile').forEach(t => t.classList.remove('active'));
     document.querySelector(`.character-tile[data-char-id="${charId}"]`)?.classList.add('active');
     displayCharacter(charId);
 }
