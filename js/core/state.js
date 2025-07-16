@@ -1,6 +1,7 @@
 // filename: js/core/state.js
 
 import { GameConfig } from './config.js';
+import { Characters } from './characters.js'; // Added import for Characters data
 
 // This module manages the game state, including player data, inventory, and game progress.
 export const GameState = {
@@ -11,7 +12,7 @@ export const GameState = {
         player: null,
         selectedCharacter: null,
         currentFloor: 1,
-        gold: 50,
+        gold: 0, // Will be set by newGame
         experience: 0,
         level: 1,
         inventory: [],
@@ -53,13 +54,14 @@ export const GameState = {
         this.current.selectedCharacter = characterId;
         this.current.difficulty = difficulty;
         
-        const characterData = GameConfig.CHARACTERS[characterId];
+        // FIXED: Use imported Characters object, not GameConfig
+        const characterData = Characters[characterId.toUpperCase()];
         if (!characterData) {
             throw new Error(`Invalid character: ${characterId}`);
         }
         
         this.current.player = this.createPlayerFromCharacter(characterData);
-        this.initializeStartingGear();
+        // REMOVED: Starting gear is now handled by game.js to avoid circular dependencies
         return true;
     },
 
@@ -67,24 +69,20 @@ export const GameState = {
         return {
             id: characterData.id,
             name: characterData.name,
-            title: characterData.title,
-            sprite: characterData.sprite,
-            stats: { ...characterData.stats },
-            maxStats: { ...characterData.stats },
-            resource: { ...characterData.resource },
-            abilities: [...characterData.abilities],
+            title: characterData.role, // Using role as title
+            sprite: '...', // Placeholder
+            stats: { ...characterData.baseStats },
+            maxStats: { ...characterData.baseStats },
+            resource: { 
+                name: characterData.resource,
+                current: characterData.baseStats.resource,
+                max: characterData.baseStats.resource,
+             },
+            abilities: ['power_strike'], // Placeholder
             level: 1,
             experience: 0,
             statusEffects: []
         };
-    },
-
-    initializeStartingGear() {
-        // REFACTOR NOTE: This creates a problematic dependency on a global `game` instance.
-        // This should be refactored later to remove the tight coupling.
-        const startingWeapon = game.inventory.generateItem('sword', 1, 'common');
-        this.current.inventory.push(startingWeapon);
-        this.equipItem(startingWeapon);
     },
 
     equipItem(item) {
@@ -123,17 +121,17 @@ export const GameState = {
     updatePlayerStats() {
         if (!this.current.player) return;
         
-        const characterData = GameConfig.CHARACTERS[this.current.selectedCharacter];
-        const baseStats = { ...characterData.stats };
+        const characterData = Characters[this.current.selectedCharacter.toUpperCase()];
+        const baseStats = { ...characterData.baseStats };
         
         const growth = characterData.growthRates;
         const levelBonus = this.current.level - 1;
         
         baseStats.hp = Math.floor(baseStats.hp + (growth.hp * levelBonus));
         baseStats.maxHp = baseStats.hp;
-        baseStats.attack = Math.floor(baseStats.attack + (growth.attack * levelBonus));
-        baseStats.defense = Math.floor(baseStats.defense + (growth.defense * levelBonus));
-        baseStats.speed = Math.floor(baseStats.speed + (growth.speed * levelBonus));
+        baseStats.atk = Math.floor(baseStats.atk + (growth.atk * levelBonus));
+        baseStats.def = Math.floor(baseStats.def + (growth.def * levelBonus));
+        baseStats.spd = Math.floor(baseStats.spd + (growth.spd * levelBonus));
         baseStats.crit = parseFloat((baseStats.crit + (growth.crit * levelBonus)).toFixed(2));
         
         Object.values(this.current.equipped).forEach(item => {
@@ -162,7 +160,7 @@ export const GameState = {
         this.current.player.experience += amount;
         
         const requiredXP = this.getRequiredExperience(this.current.level);
-        if (this.current.experience >= requiredXP && this.current.level < GameConfig.XP_CURVE.maxLevel) {
+        if (this.current.experience >= requiredXP && this.current.level < (GameConfig.XP_CURVE?.maxLevel || 60)) {
             this.levelUp();
         }
         
@@ -170,7 +168,7 @@ export const GameState = {
     },
 
     getRequiredExperience(level) {
-        const config = GameConfig.XP_CURVE;
+        const config = GameConfig.XP_CURVE || { baseXP: 100, increment: 50 }; // Fallback
         if (level === 0) return 0;
         return config.baseXP + (level - 1) * config.increment;
     },
@@ -184,10 +182,10 @@ export const GameState = {
         this.current.player.stats.hp = this.current.player.stats.maxHp;
         this.current.player.resource.current = this.current.player.resource.max;
         
-        const character = GameConfig.CHARACTERS[this.current.selectedCharacter];
+        const character = Characters[this.current.selectedCharacter.toUpperCase()];
         const growth = character.growthRates;
         
-        alert(`🎉 LEVEL UP! 🎉\n\nYou are now Level ${this.current.level}!\n\nStat increases:\n• Health: +${growth.hp}\n• Attack: +${growth.attack}\n• Defense: +${growth.defense}\n• Speed: +${growth.speed}\n• Critical: +${growth.crit}%\n\nHealth and resources fully restored!`);
+        alert(`🎉 LEVEL UP! 🎉\n\nYou are now Level ${this.current.level}!\n\nStat increases:\n• Health: +${growth.hp}\n• Attack: +${growth.atk}\n• Defense: +${growth.def}\n• Speed: +${growth.spd}\n• Critical: +${growth.crit}%\n\nHealth and resources fully restored!`);
     },
 
     addGold(amount) {

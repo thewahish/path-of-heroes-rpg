@@ -12,20 +12,6 @@
 export const Characters = {
     /**
      * Base stats for the Warrior class (Taha).
-     * @property {Object} WARRIOR
-     * @property {string} WARRIOR.name - Character's display name.
-     * @property {string} WARRIOR.name_ar - Character's display name in Arabic.
-     * @property {string} WARRIOR.resource - Primary resource type.
-     * @property {string} WARRIOR.role - Combat role.
-     * @property {string} WARRIOR.role_ar - Arabic translation of combat role.
-     * @property {string} WARRIOR.specialization - Key specialization.
-     * @property {Object} WARRIOR.baseStats - Initial stats at Level 1.
-     * @property {number} WARRIOR.baseStats.hp - Hit Points.
-     * @property {number} WARRIOR.baseStats.resource - Resource points.
-     * @property {number} WARRIOR.baseStats.atk - Attack power.
-     * @property {number} WARRIOR.baseStats.def - Defense.
-     * @property {number} WARRIOR.baseStats.spd - Speed (determines initiative).
-     * @property {number} WARRIOR.baseStats.crit - Critical hit chance (%).
      */
     WARRIOR: {
         id: 'warrior',
@@ -34,7 +20,7 @@ export const Characters = {
         resource: 'Vigor',
         resourceIcon: '🟣',
         role: 'Tank / Melee',
-        role_ar: 'دبابة / قتال قريب', // Added Arabic translation for role
+        role_ar: 'دبابة / قتال قريب',
         specialization: '🛡️ High DEF, ❤️ High HP',
         traits: ['highDefenseTrait', 'resoluteTrait', 'areaStrikesTrait'],
         description_en: "A formidable warrior, Taha leads with unyielding defense and immense vitality. He excels in direct combat, soaking up damage while delivering powerful strikes.",
@@ -46,12 +32,18 @@ export const Characters = {
             def: 12,
             spd: 8,
             crit: 10
+        },
+        growthRates: { // Added
+            hp: 10,
+            atk: 2,
+            def: 3,
+            spd: 0.5,
+            crit: 0.2
         }
     },
 
     /**
      * Base stats for the Sorceress class (Mais).
-     * @property {Object} SORCERESS
      */
     SORCERESS: {
         id: 'sorceress',
@@ -60,7 +52,7 @@ export const Characters = {
         resource: 'Mana',
         resourceIcon: '🔵',
         role: 'Ranged Mage',
-        role_ar: 'ساحرة بعيدة المدى', // Added Arabic translation for role
+        role_ar: 'ساحرة بعيدة المدى',
         specialization: '🔮 AoE, ❄️ Crowd Control',
         traits: ['elementalMagicTrait', 'spellMasteryTrait', 'ancientKnowledgeTrait'],
         description_en: "Mais commands elemental forces, unleashing devastating area-of-effect spells and freezing foes in their tracks. Though fragile, her magic can turn the tide of any battle.",
@@ -72,12 +64,18 @@ export const Characters = {
             def: 6,
             spd: 10,
             crit: 12
+        },
+        growthRates: { // Added
+            hp: 6,
+            atk: 3,
+            def: 1,
+            spd: 1,
+            crit: 0.5
         }
     },
 
     /**
      * Base stats for the Rogue class (Ibrahim).
-     * @property {Object} ROGUE
      */
     ROGUE: {
         id: 'rogue',
@@ -86,7 +84,7 @@ export const Characters = {
         resource: 'Energy',
         resourceIcon: '🟢',
         role: 'Assassin',
-        role_ar: 'قاتل', // Added Arabic translation for role
+        role_ar: 'قاتل',
         specialization: '⚡ High SPD, 💥 High Crit',
         traits: ['berserkerRageTrait', 'rawStrengthTrait', 'intimidatingTrait'],
         description_en: "Swift and deadly, Ibrahim strikes from the shadows with unparalleled speed and precision. His critical hits can dispatch even the toughest enemies before they know what hit them.",
@@ -98,6 +96,13 @@ export const Characters = {
             def: 8,
             spd: 15,
             crit: 20
+        },
+        growthRates: { // Added
+            hp: 8,
+            atk: 2.5,
+            def: 2,
+            spd: 1.5,
+            crit: 1
         }
     }
 };
