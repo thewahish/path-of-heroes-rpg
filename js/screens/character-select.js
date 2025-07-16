@@ -23,7 +23,6 @@ export function init(gameInstance) {
         _gameInstance.getSystem('localization').updateLocalizedElements();
     };
     
-    // FIX: Use requestAnimationFrame to ensure the DOM is ready for event binding.
     requestAnimationFrame(setup);
 }
 
@@ -44,8 +43,8 @@ function setupEventListeners() {
 }
 
 function selectCharacter(charId) {
-    console.log(`selectCharacter called with ID: ${charId}`);
     if (!charId) return;
+    console.log(`selectCharacter called with ID: ${charId}`);
     
     _selectedCharId = charId;
     document.querySelectorAll('.character-tile').forEach(tile => {
@@ -77,6 +76,18 @@ function displayCharacter(charId) {
             traitsContainer.appendChild(traitItem);
         });
     }
+
+    const modal = document.getElementById('details-modal');
+    if (modal) {
+        modal.querySelector('#modal-hero-name').textContent = lang === 'ar' ? character.name_ar : character.name;
+        modal.querySelector('#modal-description').textContent = lang === 'ar' ? character.description_ar : character.description_en;
+        modal.querySelector('#modal-stat-hp').textContent = character.baseStats.hp;
+        modal.querySelector('#modal-stat-resource').textContent = `${character.baseStats.resource} ${character.resourceIcon} ${localization.get(`${character.resource.toLowerCase()}Resource`)}`;
+        modal.querySelector('#modal-stat-atk').textContent = character.baseStats.atk;
+        modal.querySelector('#modal-stat-def').textContent = character.baseStats.def;
+        modal.querySelector('#modal-stat-spd').textContent = character.baseStats.spd;
+        modal.querySelector('#modal-stat-crit').textContent = `${character.baseStats.crit}%`;
+    }
 }
 
 function handleStartGame() {
@@ -94,6 +105,42 @@ function getCharacterPortraitSVG(charId) {
         default: return '';
     }
 }
-function showDetailsModal() { /* Not implemented yet */ }
-function closeDetailsModal() { /* Not implemented yet */ }
-function setupSwipeEvents() { /* Not implemented yet */ }
+
+// RESTORED: Shows the character details modal.
+function showDetailsModal() {
+    const modal = document.getElementById('details-modal');
+    if (modal) modal.classList.remove('hidden');
+}
+
+// RESTORED: Closes the character details modal.
+function closeDetailsModal() {
+    const modal = document.getElementById('details-modal');
+    if (modal) modal.classList.add('hidden');
+}
+
+// RESTORED: Sets up swipe functionality.
+function setupSwipeEvents() {
+    let startX = 0;
+    const characterTilesContainer = document.getElementById('character-tiles');
+    if (!characterTilesContainer) return;
+
+    characterTilesContainer.addEventListener('touchstart', e => {
+        startX = e.touches[0].clientX;
+    }, { passive: true });
+
+    characterTilesContainer.addEventListener('touchend', e => {
+        const endX = e.changedTouches[0].clientX;
+        const diff = startX - endX;
+        if (Math.abs(diff) > 50) {
+            const tiles = Array.from(document.querySelectorAll('.character-tile'));
+            let currentIndex = tiles.findIndex(tile => tile.classList.contains('active'));
+            const lang = _gameInstance.getSystem('localization').getCurrentLanguage();
+            if ((lang === 'ar' && diff < 0) || (lang !== 'ar' && diff > 0)) {
+                currentIndex = (currentIndex + 1) % tiles.length;
+            } else {
+                currentIndex = (currentIndex - 1 + tiles.length) % tiles.length;
+            }
+            tiles[currentIndex].click();
+        }
+    }, { passive: true });
+}
