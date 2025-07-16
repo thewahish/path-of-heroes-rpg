@@ -1,6 +1,6 @@
-Path of Heroes – Master README (v37.25)
+Path of Heroes – Master README (v37.26)
 Last Updated: July 15, 2025
-GitHub Repository: https://github.com/thewahish/path-of-heroes-rpg
+GitHub Repository: [https://github.com/thewahish/path-of-heroes-rpg](https://github.com/thewahish/path-of-heroes-rpg)
 Current Status: In progress (~75% complete). The game engine loads with console warnings handled via safe listeners (e.g., missing IDs warn but don't crash). Debugger is active with real-time state and console capture. Battle screen UI and functionality are under active refactor. Inventory is functional (equip/use/sort/sell). Character selection updated to v3 layout. Priorities: Complete battle UI refactor, implement random events loop, integrate shrines/shops/campfire. All code adheres to overrides (10-floor demo, random events, no map).
 📘 Project Purpose & Master Record
 This document serves as the authoritative Master Game Guide / Project Bible for Path of Heroes. It consolidates all design decisions, feature breakdowns, development notes, and critical updates. All changes must be logged here via versioned commits to maintain continuity. It acts as a comprehensive master game plan for backups and resuming work. The README.md file must always include all changes and original file excerpts (e.g., code snippets for context) to ensure portability across AI sessions or human collaborators. New features or versions must append changes to the changelog without overwriting existing content, ensuring project tracking across sessions.
@@ -20,11 +20,11 @@ Technical Overview
 Design Recovery & Progress Tracking
 Development & Version Control
 Log of Major Historical Updates
-Track Changes (from v37.24 to v37.25)
+Track Changes (from v37.25 to v37.26)
 Jump Code Index
 
 🎮 Game Overview
-Title: Path of Heroes / طريق الأبطالGenre: 2D top-down, turn-based roguelike dungeon crawler (inspired by Hades, Dead Cells, Slay the Spire, Diablo).Platform: Mobile-only web game (HTML/CSS/JS), PWA-ready for Android/iOS.Orientation: Strictly portrait mode on all screens (fits tablets with centered content; no black bars unless necessary and without offsetting the design).Technology: Multi-file, component-based structure with index.html as the entry point; modular JS/CSS in subfolders; screen HTML loaded dynamically in screens/; mockups in designs/ for testing without breaking the main codebase.Languages: Fully bilingual (English/Arabic) with dynamic RTL switching for in-game text. Documentation is English-only.Visual Style: Dark fantasy with Arabic/English fusion, high contrast, low saturation, glowing effects for rare items.Input: Touch-only with on-screen buttons and gestures.Scope: The demo covers 10 floors in the "Ancient Ruins" biome with one boss. The full game spans 60 levels across 6 biomes:
+Title: Path of Heroes / طريق الأبطالGenre: 2D top-down, turn-based roguelike dungeon crawler (inspired by Hades, Dead Cells, Slay the Spire, Diablo).Platform: Mobile-only web game (HTML/CSS/JS-based). **No <canvas> elements are to be used.** PWA-ready for Android/iOS.Orientation: Strictly portrait mode on all screens (fits tablets with centered content; no black bars unless necessary and without offsetting the design).Technology: Multi-file, component-based structure with index.html as the entry point; modular JS/CSS in subfolders; screen HTML loaded dynamically in screens/; mockups in designs/ for testing without breaking the main codebase.Languages: Fully bilingual (English/Arabic) with dynamic RTL switching for in-game text. Documentation is English-only.Visual Style: Dark fantasy with Arabic/English fusion, high contrast, low saturation, glowing effects for rare items.Input: Touch-only with on-screen buttons and gestures.Scope: The demo covers 10 floors in the "Ancient Ruins" biome with one boss. The full game spans 60 levels across 6 biomes:
 
 
 
@@ -192,7 +192,7 @@ Rewards: Gain XP, Gold, and Items after clearing events.
 Save/Load & Options: Not implemented in the demo for faster MVP release.
 Checkpoints: Autosave every 5 floors (Floors 1, 5 for demo), preserving XP, level, and equipped gear.
 Death & Encouragement: On HP=0, the Game Over screen shows run stats (Floor Reached, XP Earned, Gold Lost) with options to "Retry from Checkpoint" or return to "Main Menu." Players lose 90% of gold and all unequipped items, respawning at the nearest checkpoint (Floors 1, 5, 10, etc.). One of 20 bilingual encouragement messages is displayed.
-Demo Completion: After defeating the Floor 10 boss, a modal displays: “You have beaten the demo! Please purchase the full game at https://pathofheroes.com/buy.”
+Demo Completion: After defeating the Floor 10 boss, a modal displays: “You have beaten the demo! Please purchase the full game at [https://pathofheroes.com/buy](https://pathofheroes.com/buy).”
 
 🐛 Debugger System
 
@@ -508,13 +508,21 @@ docs(readme): Update Font Awesome CDN to stable version.
 v37.25 – July 15, 2025:
 docs(readme): Documented severe code truncation limitation and its implications.
 
-🔄 Track Changes (from v37.24 to v37.25)
+🔄 Track Changes (from v37.25 to v37.26)
 
-Version Number Update: Updated from v37.24 to v37.25.
-Development & Version Control - Code Generation & Debugging Protocol:
-Previous: "Output Format: Provide all code within standard Markdown code blocks (```language ... ```) for all future code generation. The use of `<immersive type="code">` tags for code is permanently discontinued."
-Change: "Output Format: Due to a severe and persistent technical limitation in the AI's code generation output, large code blocks (especially those with complex inline data like SVG paths, or lengthy JavaScript/CSS files) may be truncated. This results in incomplete and broken code. As a workaround: (1) Complex inline SVGs for icons will be removed and replaced with very simple, fundamental shapes or text placeholders, or the user will need to manually integrate external Font Awesome SVGs. (2) Users are advised that generated code may be incomplete, and if truncation occurs, they may need to request smaller, segmented code blocks or communicate the exact missing parts. This limitation directly impacts the reliability of comprehensive code delivery."
-Reason: Critical and recurring issue where generated code (particularly large blocks like SVGs or extensive JS/CSS) is truncated, preventing the delivery of functional code. This update acknowledges the systemic problem and advises on workarounds.
+Version Number Update: Updated from v37.25 to v37.26.
+Platform/Tech Stack:
+Previous: "Platform: Mobile-only web game (HTML/CSS/JS), PWA-ready for Android/iOS."
+Change: "Platform: Mobile-only web game (HTML/CSS/JS-based). **No <canvas> elements are to be used.** PWA-ready for Android/iOS."
+Reason: Explicit user directive to prohibit the use of <canvas> elements in game development.
+
+Code Generation & Debugging Protocol:
+Previous: "Output Format: Due to a severe and persistent technical limitation in the AI's code generation output, large code blocks (especially those with complex inline data like SVG paths, or lengthy JavaScript/CSS files) may be truncated. This results in incomplete and broken code. As a workaround: (1) Complex inline SVGs for icons will be removed and replaced with very simple, fundamental shapes or text placeholders, or the user will need to manually integrate external Font Awesome SVGs. (2) Users are advised that generated code may be incomplete, and if truncation occurs, they may need to request smaller, segmented code blocks or communicate the exact missing parts. This limitation directly impacts the reliability of comprehensive code delivery."
+Change:
+"Output Format: Provide all code within standard Markdown code blocks (```language ... ```). The use of `<immersive type="code">` tags for code is permanently discontinued.
+HTML Generation Constraint: When providing new/changed HTML, ensure only the formatting portion is considered, not any programming logic. All JavaScript must reside in external `.js` files within the `js/` directory structure.
+Pre-delivery Debugging: I will perform a static code audit (syntax, logical consistency, adherence to project rules and design principles) to deliver robust code. I acknowledge that I cannot perform live runtime execution or visual testing within a browser environment. Therefore, real-world browser testing remains a crucial step for the user."
+Reason: User directive to permanently use standard Markdown code blocks, explicitly prohibit <canvas>, enforce all JS in external files, and clarify the nature of internal code auditing vs. live testing. This update streamlines the development protocol based on observed limitations and user preferences.
 
 🗂️ Jump Code Index
 
