@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>Path of Heroes - Battle Screen Test (v3)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Cinzel', serif;
+            background: linear-gradient(180deg, #0a0806 0%, #1a1208 30%, #2d1e0f 100%);
+            color: #e9d8b4;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .background-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(207, 169, 110, 0.3);
+            border-radius: 50%;
+            animation: float 8s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); opacity: 0.3; }
+            50% { transform: translateY(-30px); opacity: 0.8; }
+        }
+
+        .battle-container {
+            height: 100vh;
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 0.5rem;
+            padding-top: 3.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1rem;
+            color: #cfa96e;
+            padding: 0.5rem 1rem;
+            background: rgba(30, 22, 16, 0.7);
+            border-radius: 12px;
+            border: 1px solid rgba(162, 123, 88, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .top-bar .floor { font-weight: 600; }
+        .top-bar .gold { font-weight: 600; }
+
+        .combat-zone {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+        
+        .floating-text-zone {
+            position: absolute;
+            top: 10%;
+            width: 100%;
+            height: 80px;
+            text-align: center;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .floating-text {
+            position: absolute;
+            font-weight: bold;
+            font-size: 1.5rem;
+            text-shadow: 0 0 10px currentColor;
+            animation: floatUp 1.5s ease-out forwards;
+        }
+
+        .damage { color: #ff4c4c; text-shadow: 0 0 15px #ff4c4c; }
+        .heal { color: #8df58d; text-shadow: 0 0 15px #8df58d; }
+        .critical { color: #ffaa00; font-size: 2rem; font-weight: 700; text-shadow: 0 0 20px #ffaa00; }
+
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) translateX(-50%) scale(1); }
+            100% { opacity: 0; transform: translateY(-80px) translateX(-50%) scale(0.8); }
+        }
+
+        .characters-row {
+            display: flex;
+            justify-content: space-between; /* MODIFIED: Ensures perfect side-by-side symmetry */
+            align-items: flex-end;
+            width: 100%;
+        }
+
+        .character-box {
+            width: 42%; /* MODIFIED: Slightly reduced width for better spacing */
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .character-box.attacking { animation: attackShake 0.4s ease-in-out; }
+        .character-box.taking-damage { animation: damageShake 0.4s ease-in-out; }
+
+        @keyframes attackShake {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes damageShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .character-portrait { font-size: 5rem; line-height: 1; margin-bottom: 0.5rem; }
+        .character-name { font-size: 1.2rem; font-weight: 600; color: #f2e5ca; }
+        .stats { font-size: 0.8rem; margin-top: 0.5rem; }
+        .bar-container {
+            width: 90%;
+            max-width: 120px;
+            height: 12px;
+            background: rgba(10, 8, 6, 0.8);
+            border: 1px solid #5c3d2a;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 4px auto;
+            position: relative;
+        }
+        /* ADDED: Style for placeholder bar */
+        .bar-container.placeholder {
+            visibility: hidden;
+        }
+        .bar-fill { height: 100%; border-radius: 8px; transition: width 0.5s ease; position: relative; }
+        .bar-fill::after {
+            content: ''; position: absolute; top: 0; left: 0; right: 0;
+            height: 40%; background: linear-gradient(to bottom, rgba(255,255,255,0.3), transparent);
+        }
+
+        .hp { background: linear-gradient(90deg, #bb4444 0%, #dd6666 100%); }
+        .mana { background: linear-gradient(90deg, #4466cc 0%, #6688ee 100%); }
+        
+        .vs-badge { font-size: 1.5rem; font-weight: bold; color: #d0b180; margin: 0 0.5rem; animation: pulse 2s infinite ease-in-out; }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+        
+        .bottom-panel {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            background: rgba(30, 22, 16, 0.8);
+            padding: 0.75rem;
+            border-top: 2px solid #6c4e38;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .action-button {
+            background: linear-gradient(135deg, #3a2a1e 0%, #4a3426 100%);
+            color: #f2e5ca; padding: 0.5rem; border: 2px solid #a27b58;
+            border-radius: 12px; text-align: center; font-size: 0.8rem;
+            font-weight: bold; cursor: pointer; transition: all 0.2s ease;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 60px;
+        }
+        .action-button:hover { transform: translateY(-3px); border-color: #cfa96e; }
+        .action-button .icon { font-size: 1.5rem; line-height: 1; }
+    </style>
+</head>
+<body>
+    <div class="background-particles"></div>
+
+    <div class="battle-container">
+        <div class="top-bar">
+            <div class="floor">⚔️ Floor 1</div>
+            <div class="gold">🪙 50</div>
+        </div>
+
+        <div class="combat-zone">
+            <div class="floating-text-zone" id="floating-text-zone"></div>
+            <div class="characters-row">
+                <div class="character-box" id="hero-box">
+                    <div class="character-portrait">🦸</div>
+                    <div class="character-name" id="hero-name">Taha</div>
+                    <div class="stats">
+                        <div id="hero-hp-text">120/120</div>
+                        <div class="bar-container"><div class="bar-fill hp" id="hero-hp-bar" style="width: 100%;"></div></div>
+                        <div id="hero-resource-text">60/60</div>
+                        <div class="bar-container"><div class="bar-fill mana" id="hero-resource-bar" style="width: 100%;"></div></div>
+                    </div>
+                </div>
+
+                <div class="vs-badge">VS</div>
+
+                <div class="character-box" id="enemy-box">
+                    <div class="character-portrait">💀</div>
+                    <div class="character-name" id="enemy-name">Skeleton</div>
+                    <div class="stats">
+                        <div id="enemy-hp-text">30/30</div>
+                        <div class="bar-container"><div class="bar-fill hp" id="enemy-hp-bar" style="width: 100%;"></div></div>
+                        <div class="bar-container placeholder"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-panel">
+            <button class="action-button" id="attack-btn"><span class="icon">⚔️</span> Attack</button>
+            <button class="action-button" id="skill-btn"><span class="icon">✨</span> Skill</button>
+            <button class="action-button" id="potion-btn"><span class="icon">🧪</span> Potions</button>
+            <button class="action-button" id="inventory-btn"><span class="icon">🎒</span> Inventory</button>
+            <button class="action-button" id="defend-btn"><span class="icon">🛡️</span> Defend</button>
+            <button class="action-button" id="flee-btn"><span class="icon">🏃</span> Flee</button>
+        </div>
+    </div>
+
+    <script>
+        // --- Particle Background ---
+        function createParticles() {
+            const container = document.querySelector('.background-particles');
+            if (!container) return;
+            for (let i = 0; i < 20; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.top = Math.random() * 100 + '%';
+                p.style.animationDelay = Math.random() * 8 + 's';
+                container.appendChild(p);
+            }
+        }
+
+        // --- UI Functions ---
+        function showFloatingText(text, type, isCritical = false) {
+            const zone = document.getElementById('floating-text-zone');
+            if (!zone) return;
+            const span = document.createElement('span');
+            span.className = `floating-text ${type} ${isCritical ? 'critical' : ''}`;
+            span.innerText = text;
+            span.style.left = '75%';
+            if (type === 'heal') span.style.left = '25%';
+            
+            zone.appendChild(span);
+            setTimeout(() => span.remove(), 1400);
+        }
+
+        function animateCharacter(characterBoxId, animationType) {
+            const character = document.getElementById(characterBoxId);
+            if (!character) return;
+            character.classList.add(animationType);
+            setTimeout(() => character.classList.remove(animationType), 400);
+        }
+        
+        // --- Event Listeners ---
+        document.getElementById('attack-btn')?.addEventListener('click', () => {
+            animateCharacter('hero-box', 'attacking');
+            setTimeout(() => {
+                const isCrit = Math.random() < 0.2;
+                const damage = isCrit ? 25 : 15;
+                showFloatingText(`-${damage}`, 'damage', isCrit);
+                animateCharacter('enemy-box', 'taking-damage');
+            }, 200);
+        });
+
+        document.getElementById('skill-btn')?.addEventListener('click', () => {
+            showFloatingText('Power Strike!', 'heal');
+            animateCharacter('hero-box', 'attacking');
+             setTimeout(() => {
+                showFloatingText('-30', 'damage', true);
+                animateCharacter('enemy-box', 'taking-damage');
+            }, 300);
+        });
+        
+        document.getElementById('defend-btn')?.addEventListener('click', () => {
+             showFloatingText('Shield Up!', 'heal');
+             animateCharacter('hero-box', 'taking-damage');
+        });
+
+        document.getElementById('flee-btn')?.addEventListener('click', () => {
+             if (Math.random() < 0.5) {
+                 showFloatingText('Fled!', 'heal');
+             } else {
+                 showFloatingText('Failed!', 'damage');
+             }
+        });
+
+        document.getElementById('potion-btn')?.addEventListener('click', () => {
+            showFloatingText('+50 HP', 'heal');
+            animateCharacter('hero-box', 'taking-damage');
+        });
+
+        document.getElementById('inventory-btn')?.addEventListener('click', () => {
+            alert("Inventory screen would open here!");
+        });
+
+        // --- Initialization ---
+        createParticles();
+    </script>
+</body>
+</html>

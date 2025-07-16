@@ -1,84 +1,49 @@
 <div id="battle-screen">
-    <div class="battle-background"></div>
-    <div class="battle-ui-grid">
-        <div class="combat-log">
-            <span id="combat-log-text" data-localize="battleLogStart">The battle begins!</span>
-        </div>
+    <div class="background-particles"></div>
 
-        <div class="portraits-area">
-            <div id="player-portrait" class="portrait">🦸</div>
-            <div id="enemy-portrait" class="portrait">💀</div>
+    <div class="top-bar">
+        <div class="floor">
+            <span data-localize="floorLabel">Floor</span>: <span id="floor-number">1</span>
         </div>
+        <div class="gold">
+            <span data-localize="goldLabel">Gold</span>: <span id="gold-count">50</span>
+        </div>
+    </div>
 
-        <div class="info-panels-area">
-            <div id="player-info-panel" class="info-panel">
-                <div class="character-header" id="player-name">-</div>
-                <div class="bar-container">
-                    <div class="bar-label">
-                        <span data-localize="hpStatShort">HP</span>
-                        <span id="player-hp-value">-/-</span>
-                    </div>
-                    <div class="bar-bg">
-                        <div id="player-hp-bar" class="bar-fill hp-bar"></div>
-                    </div>
+    <div class="combat-zone">
+        <div class="floating-text-zone" id="floating-text-zone"></div>
+        <div class="characters-row">
+            <div class="character-box" id="hero-box">
+                <div class="character-portrait" id="player-portrait">🦸</div>
+                <div class="character-name" id="player-name">-</div>
+                <div class="stats">
+                    <div id="player-hp-text">-/-</div>
+                    <div class="bar-container"><div class="bar-fill hp-bar" id="player-hp-bar"></div></div>
+                    <div id="player-resource-text">-/-</div>
+                    <div class="bar-container"><div class="bar-fill" id="player-resource-bar"></div></div>
                 </div>
-                <div class="bar-container">
-                    <div class="bar-label">
-                        <span id="player-resource-name" data-localize="resource">Resource</span>
-                        <span id="player-resource-value">-/-</span>
-                    </div>
-                    <div class="bar-bg">
-                        <div id="player-resource-bar" class="bar-fill"></div> </div>
-                </div>
-                <table class="stats-table">
-                    <tr>
-                        <td data-localize="atkStatShort">ATK</td><td id="player-stat-atk">-</td>
-                        <td data-localize="defStatShort">DEF</td><td id="player-stat-def">-</td>
-                        <td data-localize="spdStatShort">SPD</td><td id="player-stat-spd">-</td>
-                    </tr>
-                </table>
-                <div id="player-status-effects" class="status-effects"></div>
             </div>
 
-            <div id="enemy-info-panel" class="info-panel">
-                <div class="character-header" id="enemy-name">-</div>
-                <div class="bar-container">
-                    <div class="bar-label">
-                        <span data-localize="hpStatShort">HP</span>
-                        <span id="enemy-hp-value">-/-</span>
-                    </div>
-                    <div class="bar-bg">
-                        <div id="enemy-hp-bar" class="bar-fill hp-bar"></div>
-                    </div>
+            <div class="vs-badge">VS</div>
+
+            <div class="character-box" id="enemy-box">
+                <div class="character-portrait" id="enemy-portrait">💀</div>
+                <div class="character-name" id="enemy-name">-</div>
+                <div class="stats">
+                    <div id="enemy-hp-text">-/-</div>
+                    <div class="bar-container"><div class="bar-fill hp-bar" id="enemy-hp-bar"></div></div>
+                    <div class="bar-container placeholder"></div>
                 </div>
-                 <table class="stats-table">
-                    <tr>
-                        <td data-localize="atkStatShort">ATK</td><td id="enemy-stat-atk">-</td>
-                        <td data-localize="defStatShort">DEF</td><td id="enemy-stat-def">-</td>
-                        <td data-localize="spdStatShort">SPD</td><td id="enemy-stat-spd">-</td>
-                    </tr>
-                </table>
-                <div id="enemy-status-effects" class="status-effects"></div>
             </div>
         </div>
+    </div>
 
-        <div class="action-buttons-bar">
-            <button id="attack-btn" class="b-action-btn">
-                <span class="action-icon">⚔️</span>
-                <span class="action-text" data-localize="attackButton">Attack</span>
-            </button>
-            <button id="skill-btn" class="b-action-btn">
-                <span class="action-icon">✨</span>
-                <span class="action-text" data-localize="skillButton">Skill</span>
-            </button>
-            <button id="defend-btn" class="b-action-btn">
-                <span class="action-icon">🛡️</span>
-                <span class="action-text" data-localize="defendButton">Defend</span>
-            </button>
-            <button id="flee-btn" class="b-action-btn">
-                <span class="action-icon">🏃</span>
-                <span class="action-text" data-localize="fleeButton">Flee</span>
-            </button>
-        </div>
+    <div class="bottom-panel">
+        <button class="action-button" id="attack-btn"><span class="icon">⚔️</span><span data-localize="attackButton">Attack</span></button>
+        <button class="action-button" id="skill-btn"><span class="icon">✨</span><span data-localize="skillButton">Skill</span></button>
+        <button class="action-button" id="potion-btn"><span class="icon">🧪</span><span data-localize="potionButton">Potions</span></button>
+        <button class="action-button" id="inventory-btn"><span class="icon">🎒</span><span data-localize="inventoryButton">Inventory</span></button>
+        <button class="action-button" id="defend-btn"><span class="icon">🛡️</span><span data-localize="defendButton">Defend</span></button>
+        <button class="action-button" id="flee-btn"><span class="icon">🏃</span><span data-localize="fleeButton">Flee</span></button>
     </div>
 </div>

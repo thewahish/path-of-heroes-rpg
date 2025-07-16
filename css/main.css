@@ -1,59 +1,52 @@
 /* filename: css/main.css */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap');
 
 /* Global styles for the entire game */
 :root {
-    /* Dark RPG Palette */
-    --color-background-start: #1a0f0a;
-    --color-background-mid: #0d0604;
-    --color-background-end: #000000;
-    --color-primary: #d4a656; /* Gold/Orange */
-    --color-secondary: #5c4423; /* Dark Brown */
-    --color-text: #f8e4c0; /* Light Cream */
+    /* NEW: Enhanced Palette from new design */
+    --color-background-start: #2d1e0f;
+    --color-background-mid: #1a1208;
+    --color-background-end: #0a0806;
+    --color-primary: #cfa96e; /* Muted Gold */
+    --color-secondary: #a27b58; /* Brownish Gold */
+    --color-text: #e9d8b4; /* Light Cream */
+    --color-border: #6c4e38;
 
-    /* Rarity Colors */
-    --color-common: #95a5a6; /* Gray */
-    --color-uncommon: #27ae60; /* Green */
-    --color-rare: #3498db; /* Blue */
-    --color-epic: #9b59b6; /* Purple */
-    --color-mythic: #e67e22; /* Orange */
-    --color-legendary: #f1c40f; /* Gold */
-
-    /* Health/Mana Gradients (for bars) */
-    --gradient-health: linear-gradient(90deg, #8b0000, #ff4500, #ff6347);
-    --gradient-mana: linear-gradient(90deg, #191970, #4169e1, #87ceeb);
-
-    /* Font */
-    --font-family: 'Inter', sans-serif;
+    /* Rarity Colors (kept from old theme) */
+    --color-common: #95a5a6;
+    --color-uncommon: #27ae60;
+    --color-rare: #3498db;
+    --color-epic: #9b59b6;
+    --color-mythic: #e67e22;
+    --color-legendary: #f1c40f;
 }
 
 /* Basic reset and body styling */
 body {
     margin: 0;
     padding: 0;
-    font-family: var(--font-family);
+    font-family: 'Cinzel', serif; /* UPDATED FONT */
     color: var(--color-text);
-    background: var(--color-background-end); /* Fallback */
-    background: radial-gradient(ellipse at center, var(--color-background-start) 0%, var(--color-background-mid) 40%, var(--color-background-end) 100%);
+    background: var(--color-background-end);
+    background: linear-gradient(180deg, var(--color-background-end) 0%, var(--color-background-mid) 30%, var(--color-background-start) 100%);
     display: flex;
-    justify-content: center; /* Center content horizontally */
-    align-items: center; /* Center content vertically */
-    min-height: 100vh; /* Full viewport height */
-    overflow: hidden; /* Prevent scrolling on the body */
-    position: relative; /* For fixed elements */
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+    position: relative;
 }
 
-/* Game Container - Ensures portrait mode and mobile-first sizing */
+/* Game Container */
 .game-container {
     width: 100%;
-    max-width: 480px; /* Mobile-first sizing */
-    height: 100vh; /* Full height for mobile portrait */
+    max-width: 480px;
+    height: 100vh;
     display: flex;
     flex-direction: column;
-    position: relative; /* For positioning child elements */
-    overflow: hidden; /* Ensure no internal scrolling unless specified */
-    background-color: rgba(0, 0, 0, 0.5); /* Slightly transparent background for game area */
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
-    border-radius: 15px; /* Rounded corners */
+    position: relative;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 /* Loading Screen */
@@ -63,12 +56,12 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(ellipse at center, var(--color-background-start) 0%, var(--color-background-mid) 40%, var(--color-background-end) 100%);
+    background: var(--color-background-end);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    z-index: 1000; /* On top of everything */
+    z-index: 1000;
     color: var(--color-text);
 }
 
@@ -76,11 +69,10 @@ body {
     width: 80%;
     max-width: 300px;
     height: 15px;
-    background-color: var(--color-secondary);
+    background-color: var(--color-border);
     border-radius: 8px;
     overflow: hidden;
-    margin-bottom: 20px;
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--color-secondary);
 }
 
 .loading-bar {
@@ -91,130 +83,54 @@ body {
     transition: width 0.3s ease-out;
 }
 
-.loading-text {
-    font-size: 1.2em;
-    text-shadow: 0 0 5px rgba(248, 228, 192, 0.5);
-}
-
-/* Global HUD */
+/* Global HUD (Now hidden for battle screen) */
 .global-hud {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
     padding: 10px;
-    background-color: rgba(0, 0, 0, 0.7);
-    border-bottom: 1px solid var(--color-secondary);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-    z-index: 10; /* Above screen content */
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
+    background-color: rgba(10, 8, 6, 0.7);
+    border-bottom: 1px solid var(--color-border);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
 }
 
-.hud-element {
-    font-size: 1.1em;
-    font-weight: bold;
-    color: var(--color-text);
-    text-shadow: 0 0 3px rgba(248, 228, 192, 0.5);
-}
-
-.hud-button {
-    background: var(--color-primary);
-    color: var(--color-background-end);
-    border: none;
-    padding: 8px 15px;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    transition: background-color 0.2s ease, transform 0.1s ease;
-}
-
-.hud-button:hover {
-    background-color: #e0b46a;
-    transform: translateY(-2px);
-}
-
-.hud-button:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-/* Language Toggle Button - Globe Icon, Top-Left, Stationary */
-.language-toggle {
-    position: fixed; /* Stationary */
-    top: 15px; /* Top position */
-    left: 15px; /* Left position */
-    background: var(--color-secondary);
-    color: var(--color-text);
-    border: 2px solid var(--color-primary);
-    width: 40px; /* Fixed width for icon */
-    height: 40px; /* Fixed height for icon */
-    border-radius: 50%; /* Make it round */
-    font-size: 1.2em; /* Icon size */
-    display: flex; /* For centering icon */
+/* Language & Debug Toggles */
+.language-toggle, .debug-toggle-btn {
+    position: fixed;
+    background: rgba(30, 22, 16, 0.7);
+    color: var(--color-primary);
+    border: 1px solid var(--color-secondary);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.2em;
+    display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    z-index: 100; /* Above most elements */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    z-index: 100;
+    backdrop-filter: blur(5px);
     transition: background-color 0.2s ease, transform 0.1s ease;
 }
+.language-toggle { top: 15px; left: 15px; }
+.debug-toggle-btn { bottom: 15px; left: 15px; }
 
-.language-toggle i {
-    pointer-events: none; /* Prevent icon itself from blocking click on button */
-}
-
-.language-toggle:hover {
-    background-color: #7a5f3e;
-    transform: translateY(-2px);
-}
-
-.language-toggle:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+.language-toggle:hover, .debug-toggle-btn:hover {
+    background-color: var(--color-secondary);
+    transform: scale(1.1);
 }
 
 /* Screen Content Area */
 .screen-content {
-    flex-grow: 1; /* Takes up remaining space */
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    overflow: hidden; /* Prevent internal scrolling unless a screen specifies it */
-    position: relative; /* For absolute positioning of screen elements */
-}
-
-/* Debugger Toggle Button - Bottom-Left, Stationary */
-.debug-toggle-btn {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    background: var(--color-primary);
-    color: var(--color-background-end);
-    border: none;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    font-size: 1.5em;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-    z-index: 100;
-    transition: background-color 0.2s ease, transform 0.1s ease;
-}
-
-.debug-toggle-btn:hover {
-    background-color: #e0b46a;
-    transform: translateY(-2px);
-}
-
-.debug-toggle-btn:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    position: relative;
 }
 
 /* Debugger Panel */
@@ -224,16 +140,15 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.95);
+    background-color: rgba(10, 8, 6, 0.95);
     color: var(--color-text);
-    z-index: 1000; /* On top of everything */
+    z-index: 1000;
     display: flex;
     flex-direction: column;
     padding: 20px;
     box-sizing: border-box;
-    overflow: hidden; /* Prevent panel itself from scrolling */
+    overflow: hidden;
 }
-
 .debug-header {
     display: flex;
     justify-content: space-between;
@@ -242,98 +157,13 @@ body {
     border-bottom: 1px solid var(--color-secondary);
     padding-bottom: 10px;
 }
-
-.debug-header h3 {
-    margin: 0;
-    font-size: 1.8em;
-    color: var(--color-primary);
-    text-shadow: 0 0 5px rgba(212, 166, 86, 0.7);
-}
-
-.debug-close-btn {
-    background: none;
-    border: none;
-    color: var(--color-text);
-    font-size: 2em;
-    cursor: pointer;
-    padding: 5px 10px;
-    border-radius: 5px;
-    transition: color 0.2s ease;
-}
-
-.debug-close-btn:hover {
-    color: var(--color-primary);
-}
-
-.debug-content-wrapper {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    overflow-y: auto; /* Allow content inside panel to scroll */
-    padding-right: 10px; /* Space for scrollbar */
-}
-
-.debug-section {
-    background-color: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    padding: 15px;
-    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.debug-section h4 {
-    margin-top: 0;
-    color: var(--color-uncommon);
-    border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
-    padding-bottom: 5px;
-    margin-bottom: 10px;
-    font-size: 1.3em;
-}
-
-.debug-content,
-.debug-log-content {
-    white-space: pre-wrap; /* Preserve whitespace and wrap text */
-    word-wrap: break-word; /* Break long words */
-    font-family: 'Courier New', monospace;
-    font-size: 0.9em;
-    max-height: 250px; /* Limit height of log sections */
-    overflow-y: auto; /* Scroll for log content */
-    background-color: rgba(0, 0, 0, 0.2);
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.debug-copy-btn {
-    background: var(--color-rare);
-    color: var(--color-background-end);
-    border: none;
-    padding: 10px 15px;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-top: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    transition: background-color 0.2s ease, transform 0.1s ease;
-}
-
-.debug-copy-btn:hover {
-    background-color: #4da9ed;
-    transform: translateY(-2px);
-}
+.debug-header h3 { margin: 0; color: var(--color-primary); }
+.debug-close-btn { background: none; border: none; color: var(--color-text); font-size: 2em; cursor: pointer; }
+.debug-content-wrapper { flex-grow: 1; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; }
+.debug-section { background-color: rgba(0, 0, 0, 0.2); border-radius: 10px; padding: 15px; }
+.debug-content, .debug-log-content { white-space: pre-wrap; word-wrap: break-word; font-family: 'Courier New', monospace; max-height: 250px; overflow-y: auto; }
 
 /* Utility classes */
 .hidden {
     display: none !important;
-}
-
-/* RTL support for Arabic - Only apply text alignment, not positioning for global elements */
-[dir="rtl"] body {
-    direction: rtl;
-    text-align: right;
-}
-
-[dir="rtl"] .global-hud {
-    flex-direction: row-reverse; /* Reverse order for RTL */
 }
