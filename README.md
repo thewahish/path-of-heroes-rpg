@@ -1,4 +1,3 @@
-ahahahafdsa das
 Path of Heroes – Master README (v37.26)
 Last Updated: July 15, 2025
 GitHub Repository: [https://github.com/thewahish/path-of-heroes-rpg](https://github.com/thewahish/path-of-heroes-rpg)
