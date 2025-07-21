@@ -1,223 +1,305 @@
-// filename: js/screens/battle.js
+// filename: js/core/game.js
 
-let _game;
-let _gameState;
-let _combatSystem;
+import { GameConfig } from './config.js';
+import { Localization } from './localization.js';
+import { GameState } from './state.js';
+import { CombatSystem } from '../systems/combat.js';
+import { InventorySystem } from '../systems/inventory.js';
 
-export function init(gameInstance) {
-    _game = gameInstance;
-    _gameState = _game.getSystem('gameState');
-    _combatSystem = _game.getSystem('combatSystem');
+export class PathOfHeroes {
+    #systems = {};
+    #screenContentArea;
     
-    const setup = () => {
-        setupEventListeners();
-        updateBattleUI();
-        createBackgroundParticles();
-        _game.getSystem('localization').updateLocalizedElements();
-        
-        // Start the battle if it hasn't been started yet
-        if (_gameState.current.battleInProgress && _combatSystem.currentBattle) {
-            _combatSystem.startNextTurn();
-        }
-    };
-    requestAnimationFrame(setup);
-}
+    constructor() {
+        this.bindMethods();
+        this.#screenContentArea = document.getElementById('screen-content');
+    }
 
-function setupEventListeners() {
-    document.getElementById('attack-btn')?.addEventListener('click', () => {
-        console.log("Attack button clicked");
-        _combatSystem.playerAttack();
-    });
-    
-    document.getElementById('skill-btn')?.addEventListener('click', () => {
-        console.log("Skill button clicked");
-        _combatSystem.playerSkill();
-    });
-    
-    document.getElementById('defend-btn')?.addEventListener('click', () => {
-        console.log("Defend button clicked");
-        _combatSystem.playerDefend();
-    });
-    
-    document.getElementById('flee-btn')?.addEventListener('click', () => {
-        console.log("Flee button clicked");
-        _combatSystem.playerFlee();
-    });
-    
-    document.getElementById('potion-btn')?.addEventListener('click', () => {
-        console.log("Potion button clicked");
-        handlePotionClick();
-    });
-    
-    document.getElementById('inventory-btn')?.addEventListener('click', () => {
-        console.log("Inventory button clicked");
-        handleInventoryClick();
-    });
-}
+    bindMethods() {
+        this.handleLanguageToggle = this.handleLanguageToggle.bind(this);
+        this.startGame = this.startGame.bind(this);
+        this.updateBar = this.updateBar.bind(this);
+        this.updateElement = this.updateElement.bind(this);
+    }
 
-export function updateBattleUI() {
-    if (!_gameState?.current?.gameStarted) {
-        console.warn("Game not started, cannot update battle UI");
-        return;
-    }
-    
-    const player = _gameState.current.player;
-    const enemy = _gameState.current.enemies[0];
-    
-    if (!player) {
-        console.error("Player data not found");
-        return;
-    }
-    
-    // Update Player UI
-    const playerNameEl = document.getElementById('player-name');
-    const playerHpTextEl = document.getElementById('player-hp-text');
-    const playerHpBarEl = document.getElementById('player-hp-bar');
-    const playerResourceTextEl = document.getElementById('player-resource-text');
-    const playerResourceBarEl = document.getElementById('player-resource-bar');
-    
-    if (playerNameEl) playerNameEl.textContent = player.name;
-    if (playerHpTextEl) playerHpTextEl.textContent = `${player.stats.hp}/${player.stats.maxHp}`;
-    if (playerHpBarEl) {
-        const hpPercent = (player.stats.hp / player.stats.maxHp) * 100;
-        playerHpBarEl.style.width = `${hpPercent}%`;
-    }
-    
-    if (playerResourceTextEl) playerResourceTextEl.textContent = `${player.resource.current}/${player.resource.max}`;
-    if (playerResourceBarEl) {
-        const resourcePercent = (player.resource.current / player.resource.max) * 100;
-        playerResourceBarEl.style.width = `${resourcePercent}%`;
-        playerResourceBarEl.className = `bar-fill ${player.resource.name.toLowerCase()}-bar`;
-    }
-    
-    // Update Enemy UI
-    if (enemy) {
-        const enemyNameEl = document.getElementById('enemy-name');
-        const enemyHpTextEl = document.getElementById('enemy-hp-text');
-        const enemyHpBarEl = document.getElementById('enemy-hp-bar');
-        
-        if (enemyNameEl) enemyNameEl.textContent = enemy.name;
-        if (enemyHpTextEl) enemyHpTextEl.textContent = `${enemy.stats.hp}/${enemy.stats.maxHp}`;
-        if (enemyHpBarEl) {
-            const enemyHpPercent = (enemy.stats.hp / enemy.stats.maxHp) * 100;
-            enemyHpBarEl.style.width = `${enemyHpPercent}%`;
+    async init() {
+        try {
+            console.log("Initializing Path of Heroes game...");
+            await this.initializeSystems();
+            this.setupEventListeners();
+            await this.startLoadingSequence();
+            await this.setScreen('intro');
+            console.log("Game initialization complete!");
+        } catch (error) {
+            console.error("Critical game initialization error:", error);
+            alert("A critical error occurred during game initialization. Please refresh the page.");
         }
     }
-    
-    // Update top bar
-    const floorEl = document.getElementById('floor-number');
-    const goldEl = document.getElementById('gold-count');
-    if (floorEl) floorEl.textContent = _gameState.current.currentFloor;
-    if (goldEl) goldEl.textContent = _gameState.current.gold;
-}
 
-export function enablePlayerActions(isEnabled) {
-    const actionButtons = document.querySelectorAll('.action-button');
-    actionButtons.forEach(button => {
-        button.disabled = !isEnabled;
-        if (isEnabled) {
-            button.style.opacity = '1';
-            button.style.cursor = 'pointer';
+    async initializeSystems() {
+        try {
+            // Initialize Localization System
+            this.#systems.localization = new Localization(GameConfig.DEFAULT_LANGUAGE);
+            console.log("System initialized: Localization");
+
+            // Initialize Game State System
+            this.#systems.gameState = GameState;
+            console.log("System initialized: GameState");
+
+            // Initialize Combat System
+            this.#systems.combatSystem = new CombatSystem(this);
+            console.log("System initialized: CombatSystem");
+
+            // Initialize Inventory System
+            this.#systems.inventorySystem = new InventorySystem(this);
+            console.log("System initialized: InventorySystem");
+            
+            // Initialize inventory system properly
+            if (this.#systems.inventorySystem.init) {
+                this.#systems.inventorySystem.init();
+            }
+            
+            // Update initial localized elements
+            this.#systems.localization.updateLocalizedElements();
+            
+            console.log("All systems initialized successfully");
+        } catch (error) {
+            console.error("Error during system initialization:", error);
+            throw error;
+        }
+    }
+
+    setupEventListeners() {
+        // Language toggle button
+        const languageToggle = document.getElementById('language-toggle');
+        if (languageToggle) {
+            languageToggle.addEventListener('click', this.handleLanguageToggle);
+            console.log("Language toggle event listener attached");
+        }
+
+        // Global inventory button (when visible)
+        const inventoryButton = document.getElementById('inventory-button');
+        if (inventoryButton) {
+            inventoryButton.addEventListener('click', () => {
+                console.log("Global inventory button clicked");
+                this.toggleInventory();
+            });
+        }
+    }
+
+    handleLanguageToggle() {
+        const loc = this.getSystem('localization');
+        const newLang = loc.getCurrentLanguage() === 'en' ? 'ar' : 'en';
+        console.log(`Switching language to: ${newLang}`);
+        loc.setLanguage(newLang);
+        
+        // Re-update any screen-specific content
+        const activeModule = this.getActiveScreenModule();
+        if (activeModule && activeModule.updateBattleUI) {
+            activeModule.updateBattleUI();
+        }
+    }
+
+    async startLoadingSequence() {
+        console.log("Starting loading sequence...");
+        
+        const loadingScreen = document.getElementById('loading-screen');
+        const gameContainer = document.getElementById('game-container');
+        const loadingBar = document.getElementById('loading-bar');
+        
+        if (loadingBar) {
+            // Simulate loading progress
+            let progress = 0;
+            const loadingInterval = setInterval(() => {
+                progress += Math.random() * 30;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(loadingInterval);
+                    
+                    // Hide loading screen and show game
+                    setTimeout(() => {
+                        if (loadingScreen) loadingScreen.classList.add('hidden');
+                        if (gameContainer) gameContainer.classList.remove('hidden');
+                    }, 200);
+                }
+                loadingBar.style.width = progress + '%';
+            }, 100);
         } else {
-            button.style.opacity = '0.6';
-            button.style.cursor = 'not-allowed';
+            // Fallback if no loading bar
+            setTimeout(() => {
+                if (loadingScreen) loadingScreen.classList.add('hidden');
+                if (gameContainer) gameContainer.classList.remove('hidden');
+            }, GameConfig.LOADING_DURATION_MS || 1000);
         }
-    });
-    
-    console.log(`Player actions ${isEnabled ? 'enabled' : 'disabled'}`);
-}
-
-export function animateCharacter(characterBoxId, animationType) {
-    const character = document.getElementById(characterBoxId);
-    if (!character) {
-        console.warn(`Character box with ID '${characterBoxId}' not found`);
-        return;
+        
+        return Promise.resolve();
     }
-    
-    character.classList.add(animationType);
-    setTimeout(() => {
-        character.classList.remove(animationType);
-    }, 400);
-}
 
-export function showFloatingText(text, type, isCritical = false) {
-    const zone = document.getElementById('floating-text-zone');
-    if (!zone) {
-        console.warn("Floating text zone not found");
-        return;
-    }
-    
-    const span = document.createElement('span');
-    span.className = `floating-text ${type} ${isCritical ? 'critical' : ''}`;
-    span.textContent = text;
-    
-    // Position based on type
-    span.style.position = 'absolute';
-    span.style.left = (type === 'heal') ? '25%' : '75%';
-    span.style.top = '50%';
-    span.style.color = isCritical ? '#ff6b6b' : (type === 'heal' ? '#4ecdc4' : '#f39c12');
-    span.style.fontSize = isCritical ? '1.5em' : '1.2em';
-    span.style.fontWeight = 'bold';
-    span.style.textShadow = '2px 2px 4px rgba(0,0,0,0.8)';
-    span.style.animation = 'floatUp 1.4s ease-out forwards';
-    span.style.pointerEvents = 'none';
-    span.style.zIndex = '1000';
-    
-    zone.appendChild(span);
-    
-    setTimeout(() => {
-        if (span.parentNode) {
-            span.remove();
+    async setScreen(screenId) {
+        const screenInfo = GameConfig.SCREENS[screenId];
+        if (!screenInfo) {
+            console.error(`Screen configuration not found for ID: ${screenId}`);
+            return;
         }
-    }, 1400);
-}
 
-function handlePotionClick() {
-    const inventory = _gameState.current.inventory;
-    const potions = inventory.filter(item => item.consumable && item.effect === 'heal_hp');
-    
-    if (potions.length === 0) {
-        alert("No health potions available!");
-        return;
+        try {
+            console.log(`Loading screen: ${screenId}`);
+            
+            // Fetch the HTML content
+            const response = await fetch(screenInfo.html);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            // Load HTML content
+            this.#screenContentArea.innerHTML = await response.text();
+            
+            // Import and initialize the screen module
+            const module = await import(`../../${screenInfo.js}`);
+            this.#systems.activeScreenModule = module; // Store active module
+            
+            if (module.init && typeof module.init === 'function') {
+                module.init(this);
+            }
+
+            // Update global HUD visibility
+            this.updateGlobalHUDVisibility(screenId);
+            
+            // Update localized elements
+            this.getSystem('localization').updateLocalizedElements();
+            
+            console.log(`Screen loaded successfully: ${screenId}`);
+        } catch (error) {
+            console.error(`Error loading screen: ${screenId}`, error);
+            alert(`Failed to load screen: ${screenId}. Please try again.`);
+        }
     }
     
-    // Use the first available potion
-    const potion = potions[0];
-    const inventorySystem = _game.getSystem('inventorySystem');
-    const success = inventorySystem.useItem(potion);
-    
-    if (success) {
-        updateBattleUI();
-        showFloatingText(`+${potion.value}`, 'heal');
-        // End the player's turn after using a potion
-        setTimeout(() => _combatSystem.endTurn(), 800);
+    startGame(characterId) {
+        console.log(`--- Starting new game with character: ${characterId} ---`);
+        
+        try {
+            const gameState = this.getSystem('gameState');
+            const inventorySystem = this.getSystem('inventorySystem');
+            
+            // Initialize new game
+            gameState.newGame(characterId);
+            console.log("Game state initialized for new game");
+            
+            // Give starting equipment
+            const startingWeapon = inventorySystem.generateItem('sword', 1, 'common');
+            if (startingWeapon) {
+                gameState.addItemToInventory(startingWeapon);
+                gameState.equipItem(startingWeapon);
+                console.log("Starting weapon equipped:", startingWeapon.name);
+            }
+
+            // Add some starting potions
+            const healthPotion = inventorySystem.generateItem('hp_potion', 1, 'common');
+            if (healthPotion) {
+                gameState.addItemToInventory(healthPotion);
+                console.log("Starting health potion added");
+            }
+
+            // Create dummy enemy for battle
+            const dummyEnemy = {
+                id: 'skeleton_1',
+                name: 'Skeleton Warrior',
+                stats: { 
+                    hp: 30, 
+                    maxHp: 30, 
+                    atk: 8, 
+                    def: 3, 
+                    spd: 6, 
+                    crit: 5 
+                },
+                resource: {},
+            };
+            
+            // Start the battle
+            gameState.startBattle([dummyEnemy]);
+            console.log("Battle initialized with enemy:", dummyEnemy.name);
+
+            // Navigate to battle screen
+            this.setScreen('battle');
+            
+        } catch (error) {
+            console.error("Error starting new game:", error);
+            alert("Failed to start new game. Please try again.");
+        }
     }
-}
 
-function handleInventoryClick() {
-    // For now, just show a message - full inventory integration would be more complex
-    alert("Inventory opened! (Full inventory system integration pending)");
-    
-    // Log current inventory for debugging
-    console.log("Current inventory:", _gameState.current.inventory);
-    console.log("Equipped items:", _gameState.current.equipped);
-}
+    updateGlobalHUDVisibility(screenId) {
+        const hud = document.getElementById('global-hud');
+        if (!hud) return;
+        
+        // Hide global HUD on intro, character-select, and battle screens
+        // (battle screen has its own integrated HUD)
+        const hideHudScreens = ['intro', 'character-select', 'battle'];
+        
+        if (hideHudScreens.includes(screenId)) {
+            hud.classList.add('hidden');
+        } else {
+            hud.classList.remove('hidden');
+            this.updateGlobalHUD();
+        }
+    }
 
-function createBackgroundParticles() {
-    const particlesContainer = document.querySelector('.background-particles');
-    if (!particlesContainer) return;
+    updateGlobalHUD() {
+        const gameState = this.getSystem('gameState');
+        if (!gameState || !gameState.current.gameStarted) return;
+
+        // Update floor number
+        this.updateElement('floor-number', gameState.current.currentFloor);
+        
+        // Update gold count
+        this.updateElement('gold-count', gameState.current.gold);
+    }
+
+    toggleInventory() {
+        // Placeholder for inventory toggle functionality
+        console.log("Inventory toggle requested");
+        alert("Inventory system integration pending!");
+    }
     
-    // Clear existing particles
-    particlesContainer.innerHTML = '';
+    // Utility method to update progress bars
+    updateBar(barId, current, max) {
+        const bar = document.getElementById(barId);
+        if (bar && max > 0) {
+            const percentage = Math.max(0, Math.min(100, (current / max) * 100));
+            bar.style.width = percentage + '%';
+        }
+    }
+
+    // Utility method to update text content
+    updateElement(elementId, value) {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.textContent = value;
+        }
+    }
     
-    // Create floating particles for ambiance
-    for (let i = 0; i < 15; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.left = Math.random() * 100 + '%';
-        particle.style.top = Math.random() * 100 + '%';
-        particle.style.animationDelay = Math.random() * 8 + 's';
-        particle.style.animationDuration = (6 + Math.random() * 4) + 's';
-        particlesContainer.appendChild(particle);
+    // System getter method
+    getSystem(systemName) {
+        const system = this.#systems[systemName];
+        if (!system) {
+            console.warn(`System '${systemName}' not found or not initialized`);
+        }
+        return system;
+    }
+    
+    // Get the currently active screen module
+    getActiveScreenModule() {
+        return this.getSystem('activeScreenModule');
+    }
+
+    // Method to handle errors gracefully
+    handleError(error, context = 'Unknown') {
+        console.error(`Error in ${context}:`, error);
+        
+        // Log to debugger if available
+        if (window.pathOfHeroesDebugger) {
+            window.pathOfHeroesDebugger.handleError(error.message, 'game.js', 0, 0, error);
+        }
     }
 }
