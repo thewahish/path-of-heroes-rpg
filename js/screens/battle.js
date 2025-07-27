@@ -11,7 +11,10 @@ export function init(gameInstance) {
     const setup = () => {
         setupEventListeners();
         updateBattleUI();
-        _combatSystem.startNextTurn();
+        // Only start turn if combat system has an active battle
+        if (_combatSystem.currentBattle) {
+            _combatSystem.startNextTurn();
+        }
     };
     requestAnimationFrame(setup);
 }
