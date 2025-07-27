@@ -15,9 +15,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: var(--primary-color);
+    color: var(--color-primary);
     padding: 0 1rem 1rem 1rem;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--color-border);
     width: 100%;
     max-width: 900px;
 }
@@ -51,7 +51,7 @@
     width: 100%;
     aspect-ratio: 1 / 1;
     background-color: #111;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--color-border);
     border-radius: 4px;
     display: flex;
     align-items: center;
@@ -87,7 +87,7 @@
 
 .char-stats-table td {
     padding: 0.4rem 0.2rem;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--color-border);
 }
 
 .char-stats-table tr:last-child td {
@@ -151,8 +151,8 @@
 .item-tooltip,
 .tooltip {
     position: fixed;
-    background-color: #2c2c2c;
-    border: 1px solid var(--primary-color);
+    background-color: #1a1208; /* Align with modal background */
+    border: 1px solid var(--color-primary);
     border-radius: 8px;
     padding: 0.75rem;
     width: 250px;
@@ -182,8 +182,8 @@
 }
 
 .tooltip-stats {
-    border-top: 1px solid var(--border-color);
-    border-bottom: 1px solid var(--border-color);
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
     padding: 0.5rem 0;
     margin: 0.5rem 0;
 }

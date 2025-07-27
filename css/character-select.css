@@ -88,20 +88,10 @@
 
 .action-buttons { display: flex; gap: 8px; width: 100%; max-width: 380px; flex-shrink: 0; }
 
+/* Assumes the HTML element has class="btn action-btn" */
 .action-btn {
     flex: 1;
-    padding: 12px 10px;
-    background: var(--color-secondary);
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
-    color: var(--color-text);
-    font-family: 'Cinzel', serif;
-    font-size: 1em;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s ease;
 }
-.action-btn:hover { background-color: var(--color-primary); color: #1a1208; }
 
 .details-modal {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;

@@ -4,9 +4,34 @@ import { Characters } from '../core/characters.js';
 let _gameInstance;
 let _selectedCharId = Characters.WARRIOR.id;
 
+// NEW: A map for trait icons to make them unique and data-driven
+const traitIcons = {
+    // Warrior
+    highDefenseTrait: '🛡️',
+    resoluteTrait: '❤️',
+    areaStrikesTrait: '⚔️',
+    // Sorceress
+    elementalMagicTrait: '🔮',
+    spellMasteryTrait: '📜',
+    ancientKnowledgeTrait: '📚',
+    // Rogue
+    berserkerRageTrait: '😡',
+    rawStrengthTrait: '💪',
+    intimidatingTrait: '💀',
+};
+
 export function init(gameInstance) {
     _gameInstance = gameInstance;
     const setup = () => {
+        // Populate the character tile icons when the screen loads
+        document.querySelectorAll('.character-tile').forEach(tile => {
+            const charId = tile.dataset.charId;
+            const iconContainer = tile.querySelector('.tile-icon');
+            if (charId && iconContainer) {
+                iconContainer.innerHTML = getCharacterPortraitSVG(charId);
+            }
+        });
+
         setupEventListeners();
         displayCharacter(_selectedCharId);
         _gameInstance.getSystem('localization').updateLocalizedElements();
@@ -63,8 +88,8 @@ function displayCharacter(charId) {
         character.traits.forEach(key => {
             const el = document.createElement('div');
             el.className = 'trait-item';
-            let icon = '✨';
-            if (key === 'highDefenseTrait') icon = '🛡️';
+            // REFACTORED: Use the new icon map for a more dynamic display
+            const icon = traitIcons[key] || '✨'; // Fallback to a default icon
             el.innerHTML = `<span class="trait-icon">${icon}</span><span>${loc.get(key)}</span>`;
             traitsContainer.appendChild(el);
         });

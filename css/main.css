@@ -167,3 +167,30 @@ body {
 .hidden {
     display: none !important;
 }
+
+/* Generic Button Style */
+.btn {
+    padding: 12px 15px;
+    background: var(--color-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    color: var(--color-text);
+    font-family: 'Cinzel', serif;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    background-color: var(--color-primary);
+    color: #1a1208; /* Dark color for contrast on gold background */
+    transform: translateY(-2px);
+}
+
+.btn:disabled {
+    filter: grayscale(80%) brightness(0.7);
+    cursor: not-allowed;
+    opacity: 0.6;
+}

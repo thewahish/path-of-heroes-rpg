@@ -146,30 +146,35 @@ export class CombatSystem {
     }
 
     playerAttack() {
-        console.log("🗡️ Player Attack clicked!"); // ← ADD this debug line
-        
+        console.log("🗡️ Player Attack clicked!");
+    
         if (!this.currentBattle) {
             console.log("❌ No active battle for attack");
             return;
         }
-        
+    
         const battleScreen = this.game.getActiveScreenModule();
         if (battleScreen && battleScreen.enablePlayerActions) {
             battleScreen.enablePlayerActions(false);
         }
-        
+    
         const player = this.currentBattle.player;
         const target = this.currentBattle.enemies[0];
-        
+    
         if (!target || target.stats.hp <= 0) {
             console.warn("⚠️ No valid target for attack");
             this.endTurn();
             return;
         }
-        
+    
+        // ADD THIS LINE - Combat log entry for attack
+        if (battleScreen && battleScreen.addCombatLog) {
+            battleScreen.addCombatLog(`⚔️ ${player.name} attacks ${target.name}`, "log-player");
+        }
+    
         console.log(`⚔️ ${player.name} attacks ${target.name}`);
         this.executeAttack(player, target);
-        
+    
         setTimeout(() => this.endTurn(), 1200);
     }
 
@@ -313,6 +318,11 @@ export class CombatSystem {
             
             if (battleScreen.showFloatingText) {
                 battleScreen.showFloatingText(`-${finalDamage}`, 'damage', isCrit);
+            }
+
+            // Update health bars immediately after the attack
+            if (battleScreen.updateBattleUI) {
+                setTimeout(() => battleScreen.updateBattleUI(), 100);
             }
         }
     }
