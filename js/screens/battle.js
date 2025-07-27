@@ -11,7 +11,13 @@ export function init(gameInstance) {
     const setup = () => {
         setupEventListeners();
         updateBattleUI();
-        // Only start turn if combat system has an active battle
+        
+        // Initialize the battle in combat system if not already done
+        if (_gameState.current.enemies.length > 0 && !_combatSystem.currentBattle) {
+            _combatSystem.startBattle(_gameState.current.enemies);
+        }
+        
+        // Start the first turn
         if (_combatSystem.currentBattle) {
             _combatSystem.startNextTurn();
         }
@@ -75,8 +81,6 @@ export function showFloatingText(text, type, isCritical = false) {
     zone.appendChild(span);
     setTimeout(() => span.remove(), 1400);
 }
-
-// NEW FUNCTIONS ADDED BELOW - These are the missing functions that combat.js needs
 
 export function addCombatLog(text, type = '') {
     const log = document.getElementById('combat-log');

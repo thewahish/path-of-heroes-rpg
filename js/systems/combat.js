@@ -146,7 +146,12 @@ export class CombatSystem {
     }
 
     playerAttack() {
-        if (!this.currentBattle) return;
+        console.log("🗡️ Player Attack clicked!"); // ← ADD this debug line
+        
+        if (!this.currentBattle) {
+            console.log("❌ No active battle for attack");
+            return;
+        }
         
         const battleScreen = this.game.getActiveScreenModule();
         if (battleScreen && battleScreen.enablePlayerActions) {
@@ -154,34 +159,29 @@ export class CombatSystem {
         }
         
         const player = this.currentBattle.player;
-        const target = this.currentBattle.enemies[0]; // Simple targeting for now
+        const target = this.currentBattle.enemies[0];
         
         if (!target || target.stats.hp <= 0) {
-            console.warn("No valid target for attack");
+            console.warn("⚠️ No valid target for attack");
             this.endTurn();
             return;
         }
         
-        console.log(`${player.name} attacks ${target.name}`);
+        console.log(`⚔️ ${player.name} attacks ${target.name}`);
         this.executeAttack(player, target);
         
         setTimeout(() => this.endTurn(), 1200);
     }
-    
-    playerSkill() {
-        console.log("Player uses skill (not implemented yet)");
-        
-        // For now, just end the turn
-        const battleScreen = this.game.getActiveScreenModule();
-        if (battleScreen && battleScreen.enablePlayerActions) {
-            battleScreen.enablePlayerActions(false);
-        }
-        
-        setTimeout(() => this.endTurn(), 800);
-    }
 
     playerDefend() {
-        console.log("Player defends (reducing incoming damage for this turn)");
+        console.log("🛡️ Player Defend clicked!"); // ← ADD this debug line
+        
+        if (!this.currentBattle) {
+            console.log("❌ No active battle for defend");
+            return;
+        }
+        
+        console.log("🛡️ Player defends (reducing incoming damage for this turn)");
         
         // Add a temporary defense boost
         const player = this.currentBattle.player;
@@ -192,34 +192,78 @@ export class CombatSystem {
             battleScreen.enablePlayerActions(false);
         }
         
+        // Add combat log entry
+        if (battleScreen && battleScreen.addCombatLog) {
+            battleScreen.addCombatLog("🛡️ You take a defensive stance", "log-player");
+        }
+        
         setTimeout(() => this.endTurn(), 800);
     }
 
     playerFlee() {
-        console.log("Player attempts to flee...");
+        console.log("🏃 Player Flee clicked!"); // ← ADD this debug line
         
-        const fleeChance = GameConfig.COMBAT.fleeChance || 0.5;
+        if (!this.currentBattle) {
+            console.log("❌ No active battle for flee");
+            return;
+        }
+        
+        console.log("🏃 Player attempts to flee...");
+        
+        const fleeChance = 0.7; // 70% success rate
         const success = Math.random() < fleeChance;
         
+        const battleScreen = this.game.getActiveScreenModule();
+        
         if (success) {
-            console.log("Flee successful!");
-            alert("You successfully escaped from battle!");
-            this.game.setScreen('character-select');
+            console.log("✅ Flee successful!");
+            if (battleScreen && battleScreen.addCombatLog) {
+                battleScreen.addCombatLog("🏃 You successfully escaped!", "log-player");
+            }
             
-            const gameState = this.game.getSystem('gameState');
-            gameState.endBattle(false);
-            this.currentBattle = null;
+            setTimeout(() => {
+                alert("You successfully escaped from battle!");
+                this.game.setScreen('character-select');
+                
+                const gameState = this.game.getSystem('gameState');
+                gameState.endBattle(false);
+                this.currentBattle = null;
+            }, 1000);
         } else {
-            console.log("Flee failed!");
-            alert("You couldn't escape!");
+            console.log("❌ Flee failed!");
+            if (battleScreen && battleScreen.addCombatLog) {
+                battleScreen.addCombatLog("🏃 Failed to escape!", "log-enemy");
+            }
             
-            const battleScreen = this.game.getActiveScreenModule();
             if (battleScreen && battleScreen.enablePlayerActions) {
                 battleScreen.enablePlayerActions(false);
             }
             
             setTimeout(() => this.endTurn(), 800);
         }
+    }
+
+    playerSkill() {
+        console.log("✨ Player Skill clicked!"); // ← ADD this debug line
+        
+        if (!this.currentBattle) {
+            console.log("❌ No active battle for skill");
+            return;
+        }
+        
+        console.log("✨ Player uses skill (implementation in progress)");
+        
+        const battleScreen = this.game.getActiveScreenModule();
+        if (battleScreen && battleScreen.addCombatLog) {
+            battleScreen.addCombatLog("✨ Skill system in development", "log-player");
+        }
+        
+        // For now, just end the turn
+        if (battleScreen && battleScreen.enablePlayerActions) {
+            battleScreen.enablePlayerActions(false);
+        }
+        
+        setTimeout(() => this.endTurn(), 800);
     }
 
     executeEnemyAction(enemy) {
