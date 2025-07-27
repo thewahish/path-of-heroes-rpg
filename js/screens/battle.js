@@ -72,3 +72,40 @@ export function showFloatingText(text, type, isCritical = false) {
     zone.appendChild(span);
     setTimeout(() => span.remove(), 1400);
 }
+
+// NEW FUNCTIONS ADDED BELOW - These are the missing functions that combat.js needs
+
+export function addCombatLog(text, type = '') {
+    const log = document.getElementById('combat-log');
+    if (!log) return;
+    
+    const entry = document.createElement('div');
+    entry.className = `log-entry ${type}`;
+    entry.textContent = text;
+    log.appendChild(entry);
+    
+    // Keep only last 8 entries and auto-scroll
+    while (log.children.length > 8) {
+        log.removeChild(log.firstChild);
+    }
+    
+    // Smooth scroll to bottom
+    log.scrollTop = log.scrollHeight;
+}
+
+export function showBossWarning(text) {
+    const warning = document.createElement('div');
+    warning.className = 'boss-ability-warning';
+    warning.textContent = text;
+    document.body.appendChild(warning);
+    setTimeout(() => warning.remove(), 2000);
+}
+
+export function setBossCharging(isCharging) {
+    const enemyBox = document.getElementById('enemy-box');
+    if (isCharging) {
+        enemyBox.classList.add('charging');
+    } else {
+        enemyBox.classList.remove('charging');
+    }
+}

@@ -205,6 +205,8 @@ export class PathOfHeroes {
             const dummyEnemy = {
                 id: 'skeleton_1',
                 name: 'Skeleton Warrior',
+                type: 'skeleton',    // ← ADDED THIS LINE - needed by combat system
+                isBoss: false,       // ← ADDED THIS LINE - needed by combat system
                 stats: { 
                     hp: 30, 
                     maxHp: 30, 

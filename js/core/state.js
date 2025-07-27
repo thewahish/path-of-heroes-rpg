@@ -69,6 +69,7 @@ export const GameState = {
         return {
             id: characterData.id,
             name: characterData.name,
+            class: characterData.id,  // ← ADDED THIS LINE - needed by combat system
             title: characterData.role, // Using role as title
             sprite: '...', // Placeholder
             stats: { ...characterData.baseStats },

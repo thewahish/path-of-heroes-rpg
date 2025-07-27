@@ -41,12 +41,12 @@ export class Localization {
             optionsButton: "Options",
             creditsButton: "Credits",
 
-            // Character Select Screen (Blended with "Courtyard of Fate" concepts)
-            charSelectTitle: "Choose Your Hero", // Keeping existing title
-            rosterTitle: "Choose Your Champion", // New title for character tiles section
-            warriorTab: "Warrior", // Used for tile name
-            sorceressTab: "Sorceress", // Used for tile name
-            rogueTab: "Rogue", // Used for tile name
+            // Character Select Screen
+            charSelectTitle: "Choose Your Hero",
+            rosterTitle: "Choose Your Champion",
+            warriorTab: "Warrior",
+            sorceressTab: "Sorceress",
+            rogueTab: "Rogue",
             charDescription: "Description:",
             charRole: "Role:",
             charSpecialization: "Specialization:",
@@ -57,20 +57,27 @@ export class Localization {
             defStat: "DEF:",
             spdStat: "SPD:",
             critStat: "CRIT:",
-            startGameButton: "Start Your Journey", // Keeping existing button text
-            detailsButton: "Details", // New button text
+            startGameButton: "Start Your Journey",
+            detailsButton: "Details",
+
+            // Battle Screen - THESE ARE THE NEW ADDITIONS
+            attackButton: "Attack",
+            skillButton: "Skill",
+            potionButton: "Potions",
+            defendButton: "Defend",
+            fleeButton: "Flee",
 
             // Character Resource Names
             vigorResource: "Vigor",
             manaResource: "Mana",
             energyResource: "Energy",
 
-            // Character Descriptions (from Characters.js, localized here)
+            // Character Descriptions
             warriorDesc: "A formidable warrior, Taha leads with unyielding defense and immense vitality. He excels in direct combat, soaking up damage while delivering powerful strikes.",
             sorceressDesc: "Mais commands elemental forces, unleashing devastating area-of-effect spells and freezing foes in their tracks. Though fragile, her magic can turn the tide of any battle.",
             rogueDesc: "Swift and deadly, Ibrahim strikes from the shadows with unparalleled speed and precision. His critical hits can dispatch even the toughest enemies before they know what hit them.",
 
-            // Character specific traits (from Characters.js, localized here)
+            // Character specific traits
             highDefenseTrait: "High Defense",
             areaStrikesTrait: "Area Strikes",
             resoluteTrait: "Resolute",
@@ -111,12 +118,12 @@ export class Localization {
             optionsButton: "الخيارات",
             creditsButton: "الاعتمادات",
 
-            // Character Select Screen (Blended with "Courtyard of Fate" concepts)
-            charSelectTitle: "اختر بطلك", // Keeping existing title
-            rosterTitle: "اختر بطلك", // New title for character tiles section (same as main title for now)
-            warriorTab: "محارب", // Used for tile name
-            sorceressTab: "ساحرة", // Used for tile name
-            rogueTab: "لص", // Used for tile name
+            // Character Select Screen
+            charSelectTitle: "اختر بطلك",
+            rosterTitle: "اختر بطلك",
+            warriorTab: "محارب",
+            sorceressTab: "ساحرة",
+            rogueTab: "لص",
             charDescription: "الوصف:",
             charRole: "الدور:",
             charSpecialization: "التخصص:",
@@ -127,20 +134,27 @@ export class Localization {
             defStat: "الدفاع:",
             spdStat: "السرعة:",
             critStat: "الضرر الحرج:",
-            startGameButton: "ابدأ رحلتك", // Keeping existing button text
-            detailsButton: "التفاصيل", // New button text
+            startGameButton: "ابدأ رحلتك",
+            detailsButton: "التفاصيل",
+
+            // Battle Screen - THESE ARE THE NEW ADDITIONS
+            attackButton: "هجوم",
+            skillButton: "مهارة",
+            potionButton: "جرعات",
+            defendButton: "دفاع",
+            fleeButton: "هروب",
 
             // Character Resource Names
-            vigorResource: "نشاط", // Arabic for Vigor
-            manaResource: "مانا",   // Arabic for Mana
-            energyResource: "طاقة",  // Arabic for Energy
+            vigorResource: "نشاط",
+            manaResource: "مانا",
+            energyResource: "طاقة",
 
-            // Character Descriptions (from Characters.js, localized here)
+            // Character Descriptions
             warriorDesc: "محارب هائل، يقود طه بدفاع لا يتزعزع وحيوية هائلة. إنه يتفوق في القتال المباشر، ويمتص الضرر بينما يوجه ضربات قوية.",
             sorceressDesc: "ميس تتحكم بالقوى العنصرية، تطلق تعويذات منطقة واسعة مدمرة وتجمد الأعداء في مساراتهم. على الرغم من ضعفها، يمكن لسحرها تغيير مجرى أي معركة.",
             rogueDesc: "سريع وقاتل، يضرب إبراهيم من الظلال بسرعة ودقة لا مثيل لهما. يمكن لضرباته الحاسمة القضاء على أصعب الأعداء قبل أن يدركوا ما أصابهم.",
 
-            // Character specific traits (from Characters.js, localized here)
+            // Character specific traits
             highDefenseTrait: "دفاع عالٍ",
             areaStrikesTrait: "ضربات منطقة",
             resoluteTrait: "عزيمة",
