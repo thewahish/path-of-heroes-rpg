@@ -121,7 +121,7 @@
 }
 
 .combat-log {
-    position: fixed; bottom: 10px; right: 10px; width: 280px;
+    position: fixed; top: 10px; right: 10px; width: 280px;
     height: 120px; background: rgba(0, 0, 0, 0.8);
     border: 1px solid var(--color-primary); border-radius: 8px;
     padding: 10px; font-size: 0.8rem; overflow-y: auto; z-index: 1000;
